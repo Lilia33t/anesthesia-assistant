@@ -74,7 +74,32 @@
   // Service worker for offline use
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", function () {
-      navigator.serviceWorker.register("sw.js").catch(function (err) {
+      navigator.serviceWorker.register("sw.js").then(function (reg) {
+        function showUpdateBanner() {
+          if (document.getElementById("upd-banner")) return;
+          var b = document.createElement("div");
+          b.id = "upd-banner";
+          b.innerHTML = "⬆️ Νέα έκδοση διαθέσιμη — <b>πατήστε για ανανέωση</b> / New version — <b>tap to refresh</b>";
+          b.style.cssText = "position:fixed;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:99999;" +
+            "background:#1E3A5F;color:#fff;padding:12px 16px;border-radius:14px;font:600 13.5px/1.4 Commissioner,system-ui,sans-serif;" +
+            "text-align:center;box-shadow:0 6px 20px rgba(20,37,63,.35);cursor:pointer";
+          b.onclick = function () { location.reload(); };
+          document.body.appendChild(b);
+        }
+        // New SW activated while an old page is in control → update ready
+        reg.addEventListener("updatefound", function () {
+          var nw = reg.installing;
+          if (!nw) return;
+          nw.addEventListener("statechange", function () {
+            if (nw.state === "activated" && navigator.serviceWorker.controller) showUpdateBanner();
+          });
+        });
+        // Re-check for updates when the app is reopened / brought to foreground
+        document.addEventListener("visibilitychange", function () {
+          if (!document.hidden) reg.update().catch(function () {});
+        });
+        setInterval(function () { reg.update().catch(function () {}); }, 60 * 60 * 1000);
+      }).catch(function (err) {
         console.warn("SW registration failed:", err);
       });
     });

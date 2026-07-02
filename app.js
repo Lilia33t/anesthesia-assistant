@@ -165,6 +165,33 @@ const DRUGS = [{
   ciEl: "Μυασθένεια gravis (σχετική), οξεία γλαύκωμα κλειστής γωνίας",
   ciEn: "Myasthenia gravis (relative), acute angle-closure glaucoma"
 }, {
+  id: "remimazolam",
+  name: "Remimazolam (Byfavo)",
+  cat: "induction",
+  doses: [{
+    el: "Καταστολή — φόρτιση",
+    en: "Procedural sedation — bolus",
+    fixed: "5 mg IV, μετά 2.5 mg κάθε ≥2 min κατ' ανάγκη"
+  }, {
+    el: "Γενική — εισαγωγή",
+    en: "GA — induction",
+    lo: 0.1,
+    hi: 0.3,
+    unit: "mg/kg",
+    max: null
+  }, {
+    el: "Γενική — συντήρηση",
+    en: "GA — maintenance",
+    lo: 1,
+    hi: 2,
+    unit: "mg/kg/h",
+    max: null
+  }],
+  notesEl: "Νέα υπερβραχείας δράσης βενζοδιαζεπίνη, μεταβολισμός από εστεράσες (ουδέτερος ως προς ήπαρ/νεφρό, χωρίς συσσώρευση). Ταχεία & προβλέψιμη ανάνηψη. Καρδιαγγειακή σταθερότητα. Αναστρέφεται με φλουμαζενίλη.",
+  notesEn: "Novel ultra-short-acting benzodiazepine, esterase-metabolised (organ-independent, no accumulation). Rapid, predictable recovery. Cardiovascular stability. Reversed with flumazenil.",
+  ciEl: "Γνωστή υπερευαισθησία σε δεξτράνη 40 (έκδοχο), σοβαρή μη αντιρροπούμενη ΚΑ",
+  ciEn: "Known hypersensitivity to dextran 40 (excipient), severe decompensated HF"
+}, {
   id: "thiopental",
   name: "Thiopental",
   cat: "induction",
@@ -180,6 +207,61 @@ const DRUGS = [{
   notesEn: "Rapid onset. Cerebroprotection (↓CMRO2).",
   ciEl: "Πορφυρία, σοβαρό άσθμα, υποογκαιμία",
   ciEn: "Porphyria, severe asthma, hypovolemia"
+}, {
+  id: "sevoflurane",
+  name: "Sevoflurane",
+  cat: "volatile",
+  doses: [{
+    el: "MAC (40 ετών)",
+    en: "MAC (age 40)",
+    fixed: "2.0% (χωρίς N₂O)"
+  }, {
+    el: "Εισαγωγή με μάσκα",
+    en: "Mask induction",
+    fixed: "6–8% (σταδιακά)"
+  }, {
+    el: "Συντήρηση",
+    en: "Maintenance",
+    fixed: "1.5–2.5% (τιτλοποίηση)"
+  }],
+  notesEl: "Χαμηλή διαλυτότητα → ταχεία εισαγωγή/ανάνηψη. Μη ερεθιστικό → κατάλληλο για εισαγωγή με μάσκα. Age-adjusted MAC: βλ. Εργαλεία → MAC.",
+  notesEn: "Low solubility → rapid induction/emergence. Non-irritant → suitable for mask induction. Age-adjusted MAC: see Tools → MAC.",
+  ciEl: "Ιστορικό κακοήθους υπερθερμίας, σοβαρή υποογκαιμία",
+  ciEn: "History of malignant hyperthermia, severe hypovolaemia"
+}, {
+  id: "desflurane",
+  name: "Desflurane",
+  cat: "volatile",
+  doses: [{
+    el: "MAC (40 ετών)",
+    en: "MAC (age 40)",
+    fixed: "6.4% (χωρίς N₂O)"
+  }, {
+    el: "Συντήρηση",
+    en: "Maintenance",
+    fixed: "4–7% (τιτλοποίηση)"
+  }],
+  notesEl: "Χαμηλότερη διαλυτότητα → ταχύτερη ανάνηψη (χρήσιμο σε παχύσαρκους/μακρές επεμβάσεις). Ερεθιστικό αεραγωγού → ΟΧΙ για εισαγωγή με μάσκα (βήχας, λαρυγγόσπασμος). Ταχεία αύξηση → συμπαθητική διέγερση.",
+  notesEn: "Lower solubility → fastest emergence (useful in obesity/long cases). Airway irritant → NOT for mask induction (cough, laryngospasm). Rapid ↑ → sympathetic stimulation.",
+  ciEl: "Ιστορικό κακοήθους υπερθερμίας· αποφυγή σε αντιδραστικό αεραγωγό",
+  ciEn: "History of malignant hyperthermia; avoid in reactive airway"
+}, {
+  id: "isoflurane",
+  name: "Isoflurane",
+  cat: "volatile",
+  doses: [{
+    el: "MAC (40 ετών)",
+    en: "MAC (age 40)",
+    fixed: "1.15% (χωρίς N₂O)"
+  }, {
+    el: "Συντήρηση",
+    en: "Maintenance",
+    fixed: "0.8–1.5% (τιτλοποίηση)"
+  }],
+  notesEl: "Οικονομικό. Μέτρια διαλυτότητα → βραδύτερη ανάνηψη. Ερεθιστικό → όχι για εισαγωγή. Αγγειοδιαστολή, πιθανή coronary steal (θεωρητικά).",
+  notesEn: "Economical. Intermediate solubility → slower emergence. Irritant → not for induction. Vasodilation, theoretical coronary steal.",
+  ciEl: "Ιστορικό κακοήθους υπερθερμίας",
+  ciEn: "History of malignant hyperthermia"
 }, {
   id: "fentanyl",
   name: "Fentanyl",
@@ -198,9 +280,86 @@ const DRUGS = [{
     hi: 1,
     unit: "mcg/kg",
     max: null
+  }, {
+    el: "Ραχιαία (spinal)",
+    en: "Spinal",
+    fixed: "10–25 mcg (adjunct σε τοπικό)"
+  }, {
+    el: "Επισκληρίδιος (bolus)",
+    en: "Epidural (bolus)",
+    fixed: "50–100 mcg"
+  }, {
+    el: "Επισκληρίδιος (έγχυση)",
+    en: "Epidural (infusion)",
+    fixed: "2–4 mcg/mL στο μείγμα"
   }],
-  notesEl: "Κορύφωση 3–5 min. Δύσκαμπτος θώρακας σε ταχεία υψηλή δόση.",
-  notesEn: "Peak 3–5 min. Chest wall rigidity with rapid high dose.",
+  notesEl: "Κορύφωση 3–5 min. Δύσκαμπτος θώρακας σε ταχεία υψηλή δόση. Νευραξονικά: λιπόφιλο, ταχεία έναρξη, εντοπισμένη δράση.",
+  notesEn: "Peak 3–5 min. Chest wall rigidity with rapid high dose. Neuraxial: lipophilic, fast onset, segmental effect.",
+  ciEl: "—",
+  ciEn: "—"
+}, {
+  id: "sufentanil",
+  name: "Sufentanil",
+  cat: "opioid",
+  doses: [{
+    el: "Εισαγωγή",
+    en: "Induction",
+    lo: 0.1,
+    hi: 0.5,
+    unit: "mcg/kg",
+    max: null
+  }, {
+    el: "Διεγχειρητικά bolus",
+    en: "Intraop bolus",
+    lo: 0.1,
+    hi: 0.25,
+    unit: "mcg/kg",
+    max: null
+  }, {
+    el: "Ραχιαία (spinal)",
+    en: "Spinal",
+    fixed: "2.5–10 mcg (adjunct)"
+  }, {
+    el: "Επισκληρίδιος (bolus)",
+    en: "Epidural (bolus)",
+    fixed: "10–20 mcg"
+  }, {
+    el: "Επισκληρίδιος (έγχυση)",
+    en: "Epidural (infusion)",
+    fixed: "0.5–1 mcg/mL στο μείγμα"
+  }],
+  notesEl: "~10× ισχυρότερη της φαιντανύλης. Υψηλή λιποφιλία, γρήγορη έναρξη. Νευραξονικά συχνά με τοκετό/μαιευτική.",
+  notesEn: "~10× more potent than fentanyl. Highly lipophilic, rapid onset. Neuraxial common in labour/obstetrics.",
+  ciEl: "—",
+  ciEn: "—"
+}, {
+  id: "alfentanil",
+  name: "Alfentanil",
+  cat: "opioid",
+  doses: [{
+    el: "Bolus (εισαγωγή)",
+    en: "Bolus (induction)",
+    lo: 10,
+    hi: 20,
+    unit: "mcg/kg",
+    max: null
+  }, {
+    el: "Απόσβεση λαρυγγοσκόπησης",
+    en: "Blunt laryngoscopy",
+    lo: 10,
+    hi: 15,
+    unit: "mcg/kg",
+    max: null
+  }, {
+    el: "Έγχυση",
+    en: "Infusion",
+    lo: 0.5,
+    hi: 2,
+    unit: "mcg/kg/min",
+    max: null
+  }],
+  notesEl: "Ταχεία έναρξη (~1 min) λόγω υψηλού μη-ιονισμένου κλάσματος. Σύντομη δράση. Ιδανικό για βραχείες έντονες διεγέρσεις. Δεν χρησιμοποιείται νευραξονικά.",
+  notesEn: "Rapid onset (~1 min) due to high un-ionised fraction. Short duration. Ideal for brief intense stimuli. Not used neuraxially.",
   ciEl: "—",
   ciEn: "—"
 }, {
@@ -222,10 +381,10 @@ const DRUGS = [{
     unit: "mcg/kg",
     max: null
   }],
-  notesEl: "Υπερταχεία αποδρομή (εστεράσες). Σχεδιασμός μετεγχειρητικής αναλγησίας πριν τη διακοπή. Βραδυκαρδία/υπόταση.",
-  notesEn: "Ultra-rapid offset (esterases). Plan postop analgesia before stopping. Bradycardia/hypotension.",
-  ciEl: "Όχι bolus σε αυτόματη αναπνοή χωρίς ετοιμότητα αερισμού",
-  ciEn: "No bolus in spontaneous ventilation without airway readiness"
+  notesEl: "Υπερταχεία αποδρομή (εστεράσες). Σχεδιασμός μετεγχειρητικής αναλγησίας πριν τη διακοπή. Βραδυκαρδία/υπόταση. Δεν χορηγείται νευραξονικά (η γλυκίνη στο σκεύασμα είναι νευροτοξική).",
+  notesEn: "Ultra-rapid offset (esterases). Plan postop analgesia before stopping. Bradycardia/hypotension. Not for neuraxial use (glycine excipient is neurotoxic).",
+  ciEl: "Όχι bolus σε αυτόματη αναπνοή χωρίς ετοιμότητα αερισμού. Όχι νευραξονικά.",
+  ciEn: "No bolus in spontaneous ventilation without airway readiness. Not neuraxial."
 }, {
   id: "morphine",
   name: "Morphine",
@@ -237,9 +396,17 @@ const DRUGS = [{
     hi: 0.1,
     unit: "mg/kg",
     max: null
+  }, {
+    el: "Ραχιαία (spinal)",
+    en: "Spinal",
+    fixed: "100–300 mcg (0.1–0.3 mg)"
+  }, {
+    el: "Επισκληρίδιος",
+    en: "Epidural",
+    fixed: "2–4 mg"
   }],
-  notesEl: "Έναρξη 5–10 min, διάρκεια 3–4 h. Ισταμινοαπελευθέρωση. Προσοχή σε νεφρική ανεπάρκεια (M6G).",
-  notesEn: "Onset 5–10 min, duration 3–4 h. Histamine release. Caution in renal failure (M6G).",
+  notesEl: "Έναρξη 5–10 min, διάρκεια 3–4 h. Ισταμινοαπελευθέρωση. Προσοχή σε νεφρική ανεπάρκεια (M6G). Νευραξονικά: υδρόφιλο → όψιμη αναπνευστική καταστολή (έως 24 h) — παρακολούθηση.",
+  notesEn: "Onset 5–10 min, duration 3–4 h. Histamine release. Caution in renal failure (M6G). Neuraxial: hydrophilic → delayed respiratory depression (up to 24 h) — monitor.",
   ciEl: "Σοβαρή νεφρική ανεπάρκεια (σχετική)",
   ciEn: "Severe renal failure (relative)"
 }, {
@@ -364,6 +531,55 @@ const DRUGS = [{
   notesEn: "With glycopyrrolate 0.01 mg/kg or atropine 0.02 mg/kg.",
   ciEl: "Μηχανική απόφραξη εντέρου/ουροφόρων",
   ciEn: "Mechanical bowel/urinary obstruction"
+}, {
+  id: "naloxone",
+  name: "Naloxone (Narcan)",
+  cat: "reversal",
+  doses: [{
+    el: "Ανακοπή αναπνοής (τιτλοποίηση)",
+    en: "Respiratory arrest (titrate)",
+    fixed: "0.4 mg IV, επανάληψη κάθε 2–3 min"
+  }, {
+    el: "Περιεγχειρητικά (προσεκτικά)",
+    en: "Perioperative (careful)",
+    fixed: "20–40 mcg IV bolus, τιτλοποίηση"
+  }, {
+    el: "Παιδιά",
+    en: "Paediatric",
+    lo: 0.01,
+    hi: 0.01,
+    unit: "mg/kg",
+    max: 0.4
+  }, {
+    el: "Έγχυση",
+    en: "Infusion",
+    fixed: "~2/3 της αρχικής αποτελεσματικής δόσης ανά ώρα"
+  }],
+  notesEl: "Ανταγωνιστής οπιοειδών. Τιτλοποίηση σε μικρές δόσεις περιεγχειρητικά (αποφυγή οξέος πόνου/υπέρτασης/πνευμονικού οιδήματος). Διάρκεια (30–60 min) συχνά < του οπιοειδούς → κίνδυνος επαναναρκοποίησης, χρειάζεται παρακολούθηση ή έγχυση.",
+  notesEn: "Opioid antagonist. Titrate in small doses perioperatively (avoid acute pain/hypertension/pulmonary oedema). Duration (30–60 min) often shorter than the opioid → re-narcotisation risk, needs monitoring or infusion.",
+  ciEl: "Οπιοειδοεξαρτημένοι (οξύ στερητικό) — σχετική",
+  ciEn: "Opioid-dependent (acute withdrawal) — relative"
+}, {
+  id: "flumazenil",
+  name: "Flumazenil (Anexate)",
+  cat: "reversal",
+  doses: [{
+    el: "Αρχική",
+    en: "Initial",
+    fixed: "0.2 mg IV σε 15 s"
+  }, {
+    el: "Επανάληψη",
+    en: "Repeat",
+    fixed: "0.1 mg κάθε 60 s (max ~1 mg· 3 mg/h)"
+  }, {
+    el: "Έγχυση (υποτροπή)",
+    en: "Infusion (resedation)",
+    fixed: "0.1–0.4 mg/h"
+  }],
+  notesEl: "Ανταγωνιστής βενζοδιαζεπινών. Βραχεία δράση (~1 h) → κίνδυνος επανακαταστολής. Χρήση με προσοχή: μπορεί να προκαλέσει σπασμούς (χρόνια λήψη BZD, μικτή δηλητηρίαση με τρικυκλικά).",
+  notesEn: "Benzodiazepine antagonist. Short duration (~1 h) → resedation risk. Use cautiously: may precipitate seizures (chronic BZD use, mixed TCA overdose).",
+  ciEl: "Χρόνια εξάρτηση BZD, συγχορήγηση με προσπασμωδικά, μικτή δηλητηρίαση με τρικυκλικά",
+  ciEn: "Chronic BZD dependence, co-ingested proconvulsants, mixed TCA overdose"
 }, {
   id: "atropine",
   name: "Atropine",
@@ -714,7 +930,7 @@ const DRUGS = [{
 }, {
   id: "ondansetron",
   name: "Ondansetron",
-  cat: "adjunct",
+  cat: "antiemetic",
   doses: [{
     el: "Προφύλαξη PONV",
     en: "PONV prophylaxis",
@@ -723,14 +939,40 @@ const DRUGS = [{
     unit: "mg/kg",
     max: 4
   }],
-  notesEl: "Χορήγηση στο τέλος. Προσοχή QT.",
-  notesEn: "Give at end of surgery. QT caution.",
+  notesEl: "5-HT₃ ανταγωνιστής. Χορήγηση στο τέλος. Προσοχή QT.",
+  notesEn: "5-HT₃ antagonist. Give at end of surgery. QT caution.",
   ciEl: "Συγγενές μακρύ QT",
   ciEn: "Congenital long QT"
 }, {
+  id: "metoclopramide",
+  name: "Metoclopramide",
+  cat: "antiemetic",
+  doses: [{
+    el: "Αντιεμετικό",
+    en: "Antiemetic",
+    fixed: "10 mg IV (παιδιά 0.15 mg/kg)"
+  }],
+  notesEl: "D₂ ανταγωνιστής + προκινητικό. Λιγότερο ισχυρό ως μονοθεραπεία PONV. Εξωπυραμιδικά/δυστονία (ιδίως νέοι/υψηλές δόσεις).",
+  notesEn: "D₂ antagonist + prokinetic. Weak PONV monotherapy. Extrapyramidal/dystonia (esp. young/high dose).",
+  ciEl: "Απόφραξη/διάτρηση εντέρου, φαιοχρωμοκύττωμα, Parkinson",
+  ciEn: "Bowel obstruction/perforation, phaeochromocytoma, Parkinson's"
+}, {
+  id: "droperidol",
+  name: "Droperidol",
+  cat: "antiemetic",
+  doses: [{
+    el: "Προφύλαξη PONV",
+    en: "PONV prophylaxis",
+    fixed: "0.625–1.25 mg IV"
+  }],
+  notesEl: "Βουτυροφαινόνη (D₂). Ισχυρό αντιεμετικό σε χαμηλή δόση. Παρακολούθηση QT (black box). Αποφυγή σε βραδυκαρδία/υποκαλιαιμία.",
+  notesEn: "Butyrophenone (D₂). Potent low-dose antiemetic. Monitor QT (black box). Avoid in bradycardia/hypokalaemia.",
+  ciEl: "Μακρύ QT, φαιοχρωμοκύττωμα",
+  ciEn: "Long QT, phaeochromocytoma"
+}, {
   id: "dexamethasone",
   name: "Dexamethasone",
-  cat: "adjunct",
+  cat: "antiemetic",
   doses: [{
     el: "PONV / αναλγησία",
     en: "PONV / analgesia",
@@ -763,6 +1005,159 @@ const DRUGS = [{
   notesEn: "Reduce in hepatic disease/cachexia (max 3 g/24h or 60 mg/kg).",
   ciEl: "Σοβαρή ηπατική ανεπάρκεια",
   ciEn: "Severe hepatic failure"
+}, {
+  id: "parecoxib",
+  name: "Parecoxib (Dynastat)",
+  cat: "adjunct",
+  doses: [{
+    el: "IV/IM",
+    en: "IV/IM",
+    fixed: "40 mg, μετά 20–40 mg q6–12h (max 80 mg/24h)"
+  }],
+  notesEl: "Εκλεκτικός COX-2 (χωρίς επίδραση αιμοπεταλίων → κατάλληλο περιεγχειρητικά). Αποφυγή σε στεφανιαία/ΑΕΕ, νεφρική βλάβη, αλλεργία σουλφοναμιδίων.",
+  notesEn: "Selective COX-2 (no platelet effect → good perioperatively). Avoid in CAD/stroke, renal impairment, sulfonamide allergy.",
+  ciEl: "Ισχαιμική καρδιοπάθεια, ΑΕΕ, ενεργό έλκος, σοβαρή καρδιακή/νεφρική ανεπάρκεια, 3ο τρίμηνο",
+  ciEn: "Ischaemic heart disease, stroke, active ulcer, severe HF/renal failure, 3rd trimester"
+}, {
+  id: "ketorolac",
+  name: "Ketorolac",
+  cat: "adjunct",
+  doses: [{
+    el: "IV/IM",
+    en: "IV/IM",
+    fixed: "10–30 mg q6h (max 90 mg/24h· >65y ή <50kg: 60 mg/24h)"
+  }],
+  notesEl: "Ισχυρό ΜΣΑΦ. Μέγιστη διάρκεια 5 ημέρες (κίνδυνος έλκους/αιμορραγίας). Επίδραση αιμοπεταλίων.",
+  notesEn: "Potent NSAID. Max 5 days (ulcer/bleeding risk). Platelet effect.",
+  ciEl: "Νεφρική ανεπάρκεια, αιμορραγικός κίνδυνος, ενεργό έλκος, bypass στεφανιαίων",
+  ciEn: "Renal impairment, bleeding risk, active ulcer, CABG"
+}, {
+  id: "diclofenac_ad",
+  name: "Diclofenac",
+  cat: "adjunct",
+  doses: [{
+    el: "IV/IM/PO/PR",
+    en: "IV/IM/PO/PR",
+    fixed: "50 mg q8h ή 75 mg q12h (max 150 mg/24h)"
+  }],
+  notesEl: "Μη εκλεκτικό ΜΣΑΦ. IV έγχυση σε 30 min. Καρδιαγγειακός κίνδυνος σε παρατεταμένη/υψηλή δόση.",
+  notesEn: "Non-selective NSAID. IV over 30 min. Cardiovascular risk with prolonged/high dose.",
+  ciEl: "Νεφρική/καρδιακή ανεπάρκεια, ενεργό έλκος, αιμορραγικός κίνδυνος, 3ο τρίμηνο",
+  ciEn: "Renal/heart failure, active ulcer, bleeding risk, 3rd trimester"
+}, {
+  id: "ibuprofen_ad",
+  name: "Ibuprofen",
+  cat: "adjunct",
+  doses: [{
+    el: "PO / IV",
+    en: "PO / IV",
+    fixed: "400 mg q6–8h (max 2.4 g/24h PO· 1.2 g IV)"
+  }],
+  notesEl: "Μη εκλεκτικό ΜΣΑΦ, ηπιότερο προφίλ. Λήψη με τροφή PO.",
+  notesEn: "Non-selective NSAID, milder profile. Take with food PO.",
+  ciEl: "Νεφρική/καρδιακή ανεπάρκεια, ενεργό έλκος, σοβαρό άσθμα (ΜΣΑΦ-ευαίσθητο)",
+  ciEn: "Renal/heart failure, active ulcer, severe (NSAID-sensitive) asthma"
+}, {
+  id: "lornoxicam",
+  name: "Lornoxicam (Xefo)",
+  cat: "adjunct",
+  doses: [{
+    el: "IV/IM/PO",
+    en: "IV/IM/PO",
+    fixed: "8 mg q12h (max 16 mg/24h)"
+  }],
+  notesEl: "Οξικάμη (μη εκλεκτικό). Ευρεία χρήση στην Ελλάδα περιεγχειρητικά.",
+  notesEn: "Oxicam (non-selective). Widely used perioperatively in Greece.",
+  ciEl: "Νεφρική/καρδιακή ανεπάρκεια, ενεργό έλκος, αιμορραγικός κίνδυνος",
+  ciEn: "Renal/heart failure, active ulcer, bleeding risk"
+}, {
+  id: "magnesium",
+  name: "Magnesium sulfate",
+  cat: "adjunct",
+  doses: [{
+    el: "Opioid-sparing (φόρτιση)",
+    en: "Opioid-sparing (load)",
+    lo: 30,
+    hi: 50,
+    unit: "mg/kg",
+    max: 4000
+  }, {
+    el: "Pre-eclampsia (φόρτιση)",
+    en: "Pre-eclampsia (load)",
+    fixed: "4 g IV σε 15–20 min"
+  }, {
+    el: "Pre-eclampsia (έγχυση)",
+    en: "Pre-eclampsia (infusion)",
+    fixed: "1 g/h"
+  }, {
+    el: "Torsades",
+    en: "Torsades",
+    fixed: "2 g IV"
+  }],
+  notesEl: "Αναλγητικό adjunct (NMDA), αντιαρρυθμικό, ενισχύει NMBDs. Παρακολούθηση αντανακλαστικών/αναπνοής σε pre-eclampsia (τοξικότητα > 3.5 mmol/L → ασβέστιο αντίδοτο).",
+  notesEn: "Analgesic adjunct (NMDA), antiarrhythmic, potentiates NMBDs. Monitor reflexes/respiration in pre-eclampsia (toxicity > 3.5 mmol/L → calcium antidote).",
+  ciEl: "Σοβαρή νεφρική ανεπάρκεια, μυασθένεια, κολποκοιλιακός αποκλεισμός",
+  ciEn: "Severe renal failure, myasthenia, heart block"
+}, {
+  id: "glycopyrrolate",
+  name: "Glycopyrrolate",
+  cat: "adjunct",
+  doses: [{
+    el: "Με νεοστιγμίνη",
+    en: "With neostigmine",
+    lo: 0.01,
+    hi: 0.01,
+    unit: "mg/kg",
+    max: 0.6
+  }, {
+    el: "Αντισιελόρροια",
+    en: "Antisialagogue",
+    fixed: "0.2–0.4 mg IV"
+  }],
+  notesEl: "Αντιμουσκαρινικό. Δεν διαπερνά ΑΕΦ (χωρίς κεντρικά φαινόμενα). Λιγότερη ταχυκαρδία από ατροπίνη.",
+  notesEn: "Antimuscarinic. Does not cross BBB (no central effects). Less tachycardia than atropine.",
+  ciEl: "Ταχυαρρυθμίες, γλαύκωμα κλειστής γωνίας",
+  ciEn: "Tachyarrhythmias, angle-closure glaucoma"
+}, {
+  id: "ketamine_analgesic",
+  name: "Ketamine (analgesic)",
+  cat: "adjunct",
+  doses: [{
+    el: "Bolus (χαμηλή δόση)",
+    en: "Bolus (low-dose)",
+    lo: 0.15,
+    hi: 0.5,
+    unit: "mg/kg",
+    max: null
+  }, {
+    el: "Έγχυση",
+    en: "Infusion",
+    fixed: "0.1–0.3 mg/kg/h"
+  }],
+  notesEl: "Υπο-αναισθητική δόση: opioid-sparing, αντι-υπεραλγησία, χρόνιος/opioid-tolerant πόνος. NMDA ανταγωνιστής.",
+  notesEn: "Sub-anaesthetic dose: opioid-sparing, anti-hyperalgesia, chronic/opioid-tolerant pain. NMDA antagonist.",
+  ciEl: "Ανεξέλεγκτη υπέρταση, ενεργή ψύχωση, αυξημένη ΕΚΠ (σχετική)",
+  ciEn: "Uncontrolled hypertension, active psychosis, raised ICP (relative)"
+}, {
+  id: "lidocaine_iv",
+  name: "Lidocaine IV (systemic)",
+  cat: "adjunct",
+  doses: [{
+    el: "Bolus",
+    en: "Bolus",
+    lo: 1,
+    hi: 1.5,
+    unit: "mg/kg",
+    max: null
+  }, {
+    el: "Έγχυση",
+    en: "Infusion",
+    fixed: "1–2 mg/kg/h (διεγχειρητικά)"
+  }],
+  notesEl: "Συστηματική: opioid-sparing, αντιφλεγμονώδες, ↓ ειλεός (κοιλιακή/λαπαροσκοπική). Παρακολούθηση σημείων LAST· διακοπή στο τέλος ή έως 1h μετά. Προσοχή σε ηπατική/καρδιακή νόσο.",
+  notesEn: "Systemic: opioid-sparing, anti-inflammatory, ↓ ileus (abdominal/laparoscopic). Watch for LAST; stop at end or ≤1h postop. Caution in hepatic/cardiac disease.",
+  ciEl: "Καρδιακός αποκλεισμός, σοβαρή ηπατική ανεπάρκεια, ταυτόχρονο νευραξονικό/περιοχικό (αθροιστική τοξικότητα)",
+  ciEn: "Heart block, severe hepatic failure, concurrent neuraxial/regional (additive toxicity)"
 }, {
   id: "txa",
   name: "Tranexamic acid",
@@ -980,6 +1375,10 @@ const CATS = [{
   el: "Εισαγωγή",
   en: "Induction"
 }, {
+  id: "volatile",
+  el: "Πτητικά",
+  en: "Volatiles"
+}, {
   id: "opioid",
   el: "Οπιοειδή",
   en: "Opioids"
@@ -999,6 +1398,10 @@ const CATS = [{
   id: "antihtn",
   el: "Αντιυπερτασικά",
   en: "Antihypertensives"
+}, {
+  id: "antiemetic",
+  el: "Αντιεμετικά",
+  en: "Antiemetics"
 }, {
   id: "hemostatic",
   el: "Αιμοστατικά & Αντίδοτα",
@@ -1792,7 +2195,11 @@ async function callGemini(messages, system, key) {
         },
         contents,
         generationConfig: {
-          maxOutputTokens: 1500
+          maxOutputTokens: 4096,
+          temperature: 0.4,
+          thinkingConfig: {
+            thinkingBudget: 0
+          }
         }
       })
     });
@@ -1857,18 +2264,43 @@ function aiPatientCtx(lang, weight, age, height, sex) {
   return parts.join(", ");
 }
 
-// Minimal markdown renderer (headers, bold, lists)
+// Minimal markdown renderer (headers, bold, italic, lists)
 function Md({
   text
 }) {
+  // normalise: bullets written as "* " → "- "; collapse leftover emphasis runs
   const lines = text.split("\n");
+  const inline = s => {
+    // split on **bold** and *italic* while keeping delimiters
+    const out = [];
+    let rest = s;
+    let key = 0;
+    const re = /(\*\*[^*]+\*\*|\*[^*\n]+\*)/;
+    let m;
+    while (m = rest.match(re)) {
+      const idx = m.index;
+      if (idx > 0) out.push(rest.slice(0, idx));
+      const tok = m[0];
+      if (tok.startsWith("**")) out.push(/*#__PURE__*/React.createElement("strong", {
+        key: key++,
+        style: {
+          color: "#1C2836"
+        }
+      }, tok.slice(2, -2)));else out.push(/*#__PURE__*/React.createElement("em", {
+        key: key++,
+        style: {
+          color: "#1C2836",
+          fontStyle: "normal",
+          fontWeight: 700
+        }
+      }, tok.slice(1, -1)));
+      rest = rest.slice(idx + tok.length);
+    }
+    if (rest) out.push(rest.replace(/\*+/g, "")); // strip any stray unmatched stars
+    return out;
+  };
   return /*#__PURE__*/React.createElement("div", null, lines.map((ln, i) => {
-    const boldify = s => s.split(/(\*\*[^*]+\*\*)/g).map((p, j) => p.startsWith("**") ? /*#__PURE__*/React.createElement("strong", {
-      key: j,
-      style: {
-        color: "#1C2836"
-      }
-    }, p.slice(2, -2)) : p);
+    const boldify = inline;
     if (/^###?#?\s/.test(ln)) return /*#__PURE__*/React.createElement("div", {
       key: i,
       style: {
@@ -1878,8 +2310,8 @@ function Md({
         margin: "14px 0 4px",
         letterSpacing: 0.2
       }
-    }, ln.replace(/^#+\s/, ""));
-    if (/^\s*[-•]\s/.test(ln)) return /*#__PURE__*/React.createElement("div", {
+    }, ln.replace(/^#+\s/, "").replace(/\*+/g, ""));
+    if (/^\s*[-•*]\s/.test(ln)) return /*#__PURE__*/React.createElement("div", {
       key: i,
       style: {
         paddingLeft: 16,
@@ -1892,7 +2324,7 @@ function Md({
         left: 2,
         color: "#1E3A5F"
       }
-    }, "›"), boldify(ln.replace(/^\s*[-•]\s/, "")));
+    }, "›"), boldify(ln.replace(/^\s*[-•*]\s/, "")));
     if (/^\s*\d+\.\s/.test(ln)) return /*#__PURE__*/React.createElement("div", {
       key: i,
       style: {
@@ -1962,6 +2394,21 @@ function PatientBar({
     padding: "8px 8px",
     fontSize: 14
   };
+  // Age is always stored in YEARS. The unit toggle only changes what the user types/sees.
+  const [ageUnit, setAgeUnit] = useState("y"); // "y" | "m"
+  const ageDisplay = age === "" ? "" : ageUnit === "m" ? String(Math.round(parseFloat(age) * 12 * 100) / 100) : age;
+  const onAgeChange = val => {
+    if (val === "") {
+      setAge("");
+      return;
+    }
+    const num = parseFloat(val);
+    if (isNaN(num)) {
+      setAge(val);
+      return;
+    }
+    setAge(ageUnit === "m" ? String(num / 12) : val);
+  };
   return /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
@@ -2005,19 +2452,45 @@ function PatientBar({
       flex: 1.2,
       minWidth: 0
     }
-  }), /*#__PURE__*/React.createElement("input", {
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1.15,
+      minWidth: 0,
+      display: "flex",
+      position: "relative"
+    }
+  }, /*#__PURE__*/React.createElement("input", {
     type: "number",
     inputMode: "decimal",
-    value: age,
-    onChange: e => setAge(e.target.value),
-    placeholder: t.age,
+    value: ageDisplay,
+    onChange: e => onAgeChange(e.target.value),
+    placeholder: ageUnit === "m" ? lang === "el" ? "Ηλικία (μήν)" : "Age (mo)" : t.age,
     "aria-label": t.age,
     style: {
       ...fieldStyle,
       flex: 1,
-      minWidth: 0
+      minWidth: 0,
+      paddingRight: 34
     }
-  }), /*#__PURE__*/React.createElement("input", {
+  }), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setAgeUnit(ageUnit === "y" ? "m" : "y"),
+    "aria-label": lang === "el" ? "Εναλλαγή έτη/μήνες" : "Toggle years/months",
+    style: {
+      position: "absolute",
+      right: 3,
+      top: 3,
+      bottom: 3,
+      width: 28,
+      border: "none",
+      borderRadius: 7,
+      background: ageUnit === "m" ? S.teal : "#EEF2F7",
+      color: ageUnit === "m" ? "#fff" : S.muted,
+      fontWeight: 800,
+      fontSize: 12,
+      cursor: "pointer",
+      fontFamily: "inherit"
+    }
+  }, ageUnit === "m" ? lang === "el" ? "μ" : "m" : lang === "el" ? "ε" : "y")), /*#__PURE__*/React.createElement("input", {
     type: "number",
     inputMode: "decimal",
     value: height,
@@ -4702,7 +5175,8 @@ function PedsCard({
   const Row = ({
     l,
     v,
-    hint
+    hint,
+    warn
   }) => /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
@@ -4711,7 +5185,8 @@ function PedsCard({
       gap: 8,
       background: S.bg,
       borderRadius: 10,
-      padding: "8px 12px"
+      padding: "8px 12px",
+      boxShadow: warn ? `inset 0 0 0 1.5px ${S.amber}` : "none"
     }
   }, /*#__PURE__*/React.createElement("span", {
     style: {
@@ -4727,7 +5202,7 @@ function PedsCard({
     style: {
       fontWeight: 800,
       fontSize: 14.5,
-      color: S.teal,
+      color: warn ? S.amber : S.teal,
       fontVariantNumeric: "tabular-nums",
       whiteSpace: "nowrap"
     }
@@ -4839,63 +5314,256 @@ function PedsCard({
     hint: el ? "10 µg/kg = 0.1 mL/kg 1:10.000" : "10 µg/kg = 0.1 mL/kg 1:10,000"
   }), /*#__PURE__*/React.createElement(Row, {
     l: el ? "Ατροπίνη" : "Atropine",
-    v: `${fmt(Math.max(0.02 * w, 0.1))} mg`,
-    hint: "0.02 mg/kg, min 0.1"
+    v: `${fmt(Math.min(Math.max(0.02 * w, 0.1), 0.6))} mg`,
+    hint: el ? "20 µg/kg · min 0.1, max 0.6 mg" : "20 µg/kg · min 0.1, max 0.6 mg"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Αδενοσίνη (1η)" : "Adenosine (1st)",
+    v: `${fmt(Math.min(0.1 * w, 6))} mg`,
+    hint: el ? "0.1 mg/kg · max 6 mg" : "0.1 mg/kg · max 6 mg"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Αδενοσίνη (2η)" : "Adenosine (2nd)",
+    v: `${fmt(Math.min(0.2 * w, 12))} mg`,
+    hint: el ? "0.2 mg/kg · max 12 mg" : "0.2 mg/kg · max 12 mg"
   }), /*#__PURE__*/React.createElement(Row, {
     l: el ? "Αμιωδαρόνη" : "Amiodarone",
     v: `${fmt(5 * w)} mg`,
-    hint: "5 mg/kg"
+    hint: el ? "5 mg/kg (φόρτιση βραδεία)" : "5 mg/kg (slow load)"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Λιδοκαΐνη (αντιαρρυθμικό)" : "Lidocaine (antiarrhythmic)",
+    v: `${fmt(w)} mg`,
+    hint: "1 mg/kg IV"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Δαντρολένιο" : "Dantrolene",
+    v: `${fmt(w)} mg`,
+    hint: el ? "1 mg/kg q5–10min · max 10 mg/kg" : "1 mg/kg q5–10min · max 10 mg/kg"
   }), /*#__PURE__*/React.createElement(Row, {
     l: el ? "Σουκινυλοχολίνη" : "Succinylcholine",
     v: `${fmt(1.5 * w)}–${fmt(2 * w)} mg`,
     hint: "1.5–2 mg/kg IV"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Ασβεστίου χλωριούχο 10%" : "Calcium chloride 10%",
+    v: `${fmt(0.2 * w)} mL`,
+    hint: el ? "0.2 mL/kg IV βραδέως" : "0.2 mL/kg slow IV"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Ασβεστίου γλυκονικό 10%" : "Calcium gluconate 10%",
+    v: `${fmt(0.5 * w)} mL`,
+    hint: el ? "0.5 mL/kg IV βραδέως" : "0.5 mL/kg slow IV"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Διττανθρακικά 8.4%" : "Bicarbonate 8.4%",
+    v: `${fmt(w)} mL`,
+    hint: el ? "1 mL/kg (1–2 mmol/kg σε οξέωση)" : "1 mL/kg (1–2 mmol/kg in acidosis)"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Μαννιτόλη" : "Mannitol",
+    v: `${fmt(0.25 * w)}–${fmt(w)} g`,
+    hint: el ? "0.25–1 g/kg σε 20–30 min" : "0.25–1 g/kg over 20–30 min"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Φουροσεμίδη" : "Furosemide",
+    v: `${fmt(w)} mg`,
+    hint: "1 mg/kg/dose IV"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Ναλοξόνη (ανάνηψη)" : "Naloxone (resus)",
+    v: `${fmt(10 * w)} µg`,
+    hint: "10 µg/kg IV"
   }), /*#__PURE__*/React.createElement(Row, {
     l: el ? "Bolus υγρών" : "Fluid bolus",
     v: `${fmt(10 * w)}–${fmt(20 * w)} mL`,
     hint: "10–20 mL/kg"
   }), /*#__PURE__*/React.createElement(Row, {
     l: el ? "Γλυκόζη 10%" : "Glucose 10%",
-    v: `${fmt(2 * w)} mL`,
-    hint: "2 mL/kg"
+    v: `${fmt(2 * w)}–${fmt(5 * w)} mL`,
+    hint: "2–5 mL/kg"
   }), /*#__PURE__*/React.createElement(Row, {
     l: el ? "Συντήρηση 4-2-1" : "Maintenance 4-2-1",
     v: `${fmt(maint421(w))} mL/h`,
     hint: el ? "βλ. Εργαλεία → Υγρά & Αίμα" : "see Tools → Fluids & Blood"
-  }), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Αναλγησία" : "Analgesia"), /*#__PURE__*/React.createElement(Row, {
-    l: el ? "Παρακεταμόλη IV" : "Paracetamol IV",
-    v: `${fmt(Math.min(15 * w, 1000))} mg`,
-    hint: el ? "15 mg/kg q6h · max 60 mg/kg/24h" : "15 mg/kg q6h · max 60 mg/kg/24h"
+  }), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Αντιμετώπιση βρογχόσπασμου" : "Bronchospasm management"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Σαλβουταμόλη (νεφελ.)" : "Salbutamol (neb)",
+    v: a > 0 && a < 5 ? "2.5 mg" : "2.5–5 mg",
+    hint: el ? a > 0 && a < 5 ? "<5 ετών" : "≥5 ετών" : a > 0 && a < 5 ? "<5 y" : "≥5 y"
   }), /*#__PURE__*/React.createElement(Row, {
-    l: el ? "Παρακεταμόλη PO" : "Paracetamol PO",
-    v: `${fmt(Math.min(20 * w, 1000))} mg`,
-    hint: el ? "20 mg/kg φόρτιση, μετά 15 q4–6h" : "20 mg/kg loading, then 15 q4–6h"
+    l: el ? "Σαλβουταμόλη IV" : "Salbutamol IV",
+    v: `${fmt(4 * w)} µg`,
+    hint: el ? "4 µg/kg βραδέως, μετά 0.1–1 µg/kg/min" : "4 µg/kg slow, then 0.1–1 µg/kg/min"
   }), /*#__PURE__*/React.createElement(Row, {
-    l: el ? "Ιβουπροφαίνη PO" : "Ibuprofen PO",
-    v: `${fmt(Math.min(10 * w, 400))} mg`,
-    hint: el ? "10 mg/kg q6–8h · ≥3 μηνών" : "10 mg/kg q6–8h · ≥3 months"
+    l: el ? "Μεθυλπρεδνιζολόνη/Υδροκορτιζόνη" : "Methylpred/Hydrocortisone",
+    v: `${fmt(w)}–${fmt(2 * w)} mg`,
+    hint: "1–2 mg/kg IV"
   }), /*#__PURE__*/React.createElement(Row, {
-    l: el ? "Κετορολάκη IV" : "Ketorolac IV",
-    v: `${fmt(Math.min(0.5 * w, 15))} mg`,
-    hint: el ? "0.5 mg/kg q6h · ≥6 μηνών, ≤48–72h" : "0.5 mg/kg q6h · ≥6 months, ≤48–72h"
-  }), /*#__PURE__*/React.createElement(Row, {
-    l: el ? "Δικλοφαινάκη" : "Diclofenac",
-    v: `${fmt(Math.min(1 * w, 50))} mg`,
-    hint: el ? "1 mg/kg q8h · ≥6 μηνών" : "1 mg/kg q8h · ≥6 months"
-  }), /*#__PURE__*/React.createElement(Row, {
-    l: el ? "Ναλβουφίνη IV" : "Nalbuphine IV",
-    v: `${fmt(0.1 * w)}–${fmt(0.2 * w)} mg`,
-    hint: el ? "0.1–0.2 mg/kg q4–6h" : "0.1–0.2 mg/kg q4–6h"
-  }), /*#__PURE__*/React.createElement(Row, {
-    l: el ? "Μορφίνη IV" : "Morphine IV",
-    v: `${fmt(0.05 * w)}–${fmt(0.1 * w)} mg`,
-    hint: el ? "0.05–0.1 mg/kg, τιτλοποίηση · νεογνά ↓" : "0.05–0.1 mg/kg, titrate · neonates ↓"
+    l: el ? "Αμινοφυλλίνη (φόρτιση)" : "Aminophylline (load)",
+    v: `${fmt(5 * w)} mg`,
+    hint: el ? "5 mg/kg σε 20–30 min, μετά έγχυση" : "5 mg/kg over 20–30 min, then infusion"
   }), /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 10.5,
       color: S.muted,
       lineHeight: 1.4
     }
-  }, el ? "ΜΣΑΦ: αποφυγή σε νεφρική βλάβη/υποογκαιμία/αιμορραγικό κίνδυνο. Οπιοειδή: τιτλοποίηση + παρακολούθηση αναπνοής· μειωμένες δόσεις σε νεογνά." : "NSAIDs: avoid in renal impairment/hypovolaemia/bleeding risk. Opioids: titrate + monitor respiration; reduce in neonates."), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Νηστεία — ESAIC 2022" : "Fasting — ESAIC 2022"), /*#__PURE__*/React.createElement("div", {
+  }, el ? "Αμινοφυλλίνη έγχυση: 1 mg/kg/h (<9 ετών), 0.8 mg/kg/h (9–16 ετών). Απειλητικός βρογχόσπασμος → αδρεναλίνη (βλ. κάτω)." : "Aminophylline infusion: 1 mg/kg/h (<9 y), 0.8 mg/kg/h (9–16 y). Life-threatening → adrenaline (see below)."), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Αναφυλαξία — Αδρεναλίνη IM (1:1000)" : "Anaphylaxis — Adrenaline IM (1:1000)"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Δόση IM (0.01 mg/kg)" : "IM dose (0.01 mg/kg)",
+    v: `${fmt(Math.min(0.01 * w, 0.5))} mg`,
+    hint: el ? "max 0.5 mg · επανάληψη q5min" : "max 0.5 mg · repeat q5min",
+    warn: true
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11.5,
+      color: S.ink,
+      lineHeight: 1.5,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Κατά ηλικία/βάρος (1:1000):", /*#__PURE__*/React.createElement("br", null), "• ≤6 ετών (>10 kg): ", /*#__PURE__*/React.createElement("strong", null, "150 µg"), " (0.15 mL)", /*#__PURE__*/React.createElement("br", null), "• 6–12 ετών (10–30 kg): ", /*#__PURE__*/React.createElement("strong", null, "300 µg"), " (0.3 mL)", /*#__PURE__*/React.createElement("br", null), "• >12 ετών (>30 kg): ", /*#__PURE__*/React.createElement("strong", null, "500 µg"), " (0.5 mL) — αν <30 kg: 300 µg", /*#__PURE__*/React.createElement("br", null), "Ανθεκτική υπόταση → έγχυση αδρεναλίνης 0.1 µg/kg/min, τιτλοποίηση.") : /*#__PURE__*/React.createElement(React.Fragment, null, "By age/weight (1:1000):", /*#__PURE__*/React.createElement("br", null), "• ≤6 y (>10 kg): ", /*#__PURE__*/React.createElement("strong", null, "150 µg"), " (0.15 mL)", /*#__PURE__*/React.createElement("br", null), "• 6–12 y (10–30 kg): ", /*#__PURE__*/React.createElement("strong", null, "300 µg"), " (0.3 mL)", /*#__PURE__*/React.createElement("br", null), "• >12 y (>30 kg): ", /*#__PURE__*/React.createElement("strong", null, "500 µg"), " (0.5 mL) — if <30 kg: 300 µg", /*#__PURE__*/React.createElement("br", null), "Refractory hypotension → adrenaline infusion 0.1 µg/kg/min, titrate.")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 800,
+      fontSize: 12.5,
+      color: S.teal,
+      marginBottom: 4
+    }
+  }, el ? "Έγχυση αδρεναλίνης (παρασκευή)" : "Adrenaline infusion (prep)"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.ink,
+      lineHeight: 1.5
+    }
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("strong", null, "0.3 × ", fmt(w), " = ", fmt(0.3 * w), " mg"), " αδρεναλίνης σε 50 mL Dw5%. Τότε ", /*#__PURE__*/React.createElement("strong", null, "1 mL/h = 0.1 µg/kg/min"), ".") : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("strong", null, "0.3 × ", fmt(w), " = ", fmt(0.3 * w), " mg"), " adrenaline in 50 mL D5W. Then ", /*#__PURE__*/React.createElement("strong", null, "1 mL/h = 0.1 µg/kg/min"), "."))), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Λαρυγγίτιδα — Εισπνοές αδρεναλίνης" : "Croup — Nebulised adrenaline"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12.5,
+      color: S.ink,
+      lineHeight: 1.5,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "• ≤4 ετών: νεφελοποιητής ", /*#__PURE__*/React.createElement("strong", null, "2.5 mL αδρεναλίνης + 3 mL NaCl 0.9%"), /*#__PURE__*/React.createElement("br", null), "• >4 ετών: νεφελοποιητής ", /*#__PURE__*/React.createElement("strong", null, "5 mL αδρεναλίνης + 3 mL NaCl 0.9%")) : /*#__PURE__*/React.createElement(React.Fragment, null, "• ≤4 y: nebulise ", /*#__PURE__*/React.createElement("strong", null, "2.5 mL adrenaline + 3 mL NaCl 0.9%"), /*#__PURE__*/React.createElement("br", null), "• >4 y: nebulise ", /*#__PURE__*/React.createElement("strong", null, "5 mL adrenaline + 3 mL NaCl 0.9%"))), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Μετεγχειρητική αναλγησία (πρωτόκολλο)" : "Postop analgesia (protocol)"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: S.muted,
+      lineHeight: 1.45,
+      marginBottom: 2
+    }
+  }, el ? "Πολυπαραγοντική: παρακεταμόλη + ΜΣΑΦ + τοποπεριοχική ± οπιοειδή, ανάλογα την ένταση του πόνου." : "Multimodal: paracetamol + NSAID + regional ± opioids, per pain intensity."), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Παρακεταμόλη IV" : "Paracetamol IV",
+    v: w < 5 ? `${fmt(7.5 * w)} mg` : w <= 10 ? `${fmt(10 * w)} mg` : w <= 50 ? `${fmt(15 * w)} mg` : "1 g",
+    hint: w < 5 ? el ? "7.5 mg/kg q4–6h · max 30 mg/kg/24h" : "7.5 mg/kg q4–6h · max 30/kg/d" : w <= 10 ? el ? "10 mg/kg q4–6h · max 40 mg/kg/24h" : "10 mg/kg q4–6h · max 40/kg/d" : w <= 50 ? el ? "15 mg/kg q4–6h · max 60 mg/kg/24h" : "15 mg/kg q4–6h · max 60/kg/d" : el ? "1 g q4–6h · max 4 g/24h" : "1 g q4–6h · max 4 g/d"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Παρακεταμόλη PO φόρτιση" : "Paracetamol PO load",
+    v: `${fmt(20 * w)} mg`,
+    hint: el ? "20 mg/kg, μετά 15 q4–6h (>3μ)" : "20 mg/kg, then 15 q4–6h (>3m)"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Παρακεταμόλη PR φόρτιση" : "Paracetamol PR load",
+    v: `${fmt(40 * w)} mg`,
+    hint: el ? "40 mg/kg, μετά 20 q6h (>3μ)" : "40 mg/kg, then 20 q6h (>3m)"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.4
+    }
+  }, el ? "IV: βραδεία έγχυση >15 min· μεσοδιάστημα ≥4h (≥6h σε νεφρική δυσλειτουργία). Μέγιστη χορήγηση μέγιστης δόσης: 48h." : "IV: infuse >15 min; interval ≥4h (≥6h if renal impairment). Max-dose duration: 48h."), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Ιβουπροφαίνη PO" : "Ibuprofen PO",
+    v: `${fmt(Math.min(10 * w, 400))} mg`,
+    hint: el ? "5–10 mg/kg q6–8h · max 30 mg/kg/24h (έφηβοι 1.2 g) · ≥3μ" : "5–10 mg/kg q6–8h · max 30/kg/d (adol 1.2 g) · ≥3m"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Μεφαιναμικό οξύ (Ponstan)" : "Mefenamic acid (Ponstan)",
+    v: `${fmt(5 * w)}–${fmt(6 * w)} mg`,
+    hint: el ? "5–6 mg/kg ×3–4/ημ PO · έως 48h" : "5–6 mg/kg 3–4×/day PO · up to 48h"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Δεξαμεθαζόνη IV" : "Dexamethasone IV",
+    v: `${fmt(0.1 * w)}–${fmt(Math.min(0.2 * w, 8))} mg`,
+    hint: el ? "0.1–0.2 mg/kg · max 8 mg" : "0.1–0.2 mg/kg · max 8 mg"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.4
+    }
+  }, el ? "ΜΣΑΦ: αποφυγή σε νεφρική ανεπάρκεια, βαρύ άσθμα, καρδιακή ανεπάρκεια, έλκος." : "NSAIDs: avoid in renal failure, severe asthma, heart failure, peptic ulcer."), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Ναλβουφίνη IV" : "Nalbuphine IV",
+    v: `${fmt(0.2 * w)}–${fmt(0.3 * w)} mg`,
+    hint: el ? "0.2–0.3 mg/kg σε 20mL N/S αργά (20min) q6h · max 1.2 mg/kg/24h" : "0.2–0.3 mg/kg slow in 20mL (20min) q6h · max 1.2/kg/d"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Μορφίνη IV/IM" : "Morphine IV/IM",
+    v: `${fmt(0.05 * w)}–${fmt(0.1 * w)} mg`,
+    hint: el ? "0.05–0.1 mg/kg · ΟΧΙ στον θάλαμο χωρίς monitoring" : "0.05–0.1 mg/kg · NOT on ward without monitoring"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Τραμαδόλη IV" : "Tramadol IV",
+    v: `${fmt(w)}–${fmt(Math.min(2 * w, 100))} mg`,
+    hint: el ? "1–2 mg/kg q4–6h · max 100/δόση, 400/24h · >12 ετών" : "1–2 mg/kg q4–6h · max 100/dose, 400/d · >12 y",
+    warn: a > 0 && a < 12
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Κωδεΐνη PO" : "Codeine PO",
+    v: `${fmt(0.5 * w)}–${fmt(w)} mg`,
+    hint: el ? "0.5–1 mg/kg ×4–6 PO · ΠΟΤΕ IV · μόνο >12 ετών" : "0.5–1 mg/kg 4–6× PO · NEVER IV · only >12 y",
+    warn: a > 0 && a < 12
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Πεθιδίνη IV/IM" : "Pethidine IV/IM",
+    v: `${fmt(0.5 * w)}–${fmt(w)} mg`,
+    hint: el ? "0.5–1 mg/kg ×4–6 · ΟΧΙ σε επιληψία" : "0.5–1 mg/kg 4–6× · NOT in epilepsy"
+  }), a >= 5 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px",
+      marginTop: 2
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 800,
+      fontSize: 12.5,
+      color: S.teal,
+      marginBottom: 4
+    }
+  }, "💉 ", el ? "Μορφίνη με PCA (>5 ετών, συνεργάσιμα)" : "Morphine PCA (>5 y, cooperative)"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.ink,
+      lineHeight: 1.5
+    }
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Φόρτιση 0.05–0.1 mg/kg IV = ", /*#__PURE__*/React.createElement("strong", null, fmt(0.05 * w), "–", fmt(0.1 * w), " mg"), ".", /*#__PURE__*/React.createElement("br", null)) : /*#__PURE__*/React.createElement(React.Fragment, null, "Loading 0.05–0.1 mg/kg IV = ", /*#__PURE__*/React.createElement("strong", null, fmt(0.05 * w), "–", fmt(0.1 * w), " mg"), ".", /*#__PURE__*/React.createElement("br", null)), w <= 50 ? el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Διάλυμα (<50 kg): μορφίνη 1 mg/kg σε 50 mL (=20 µg/kg/mL). ", /*#__PURE__*/React.createElement("strong", null, "Bolus 20 µg/kg"), " (1 mL), lockout 10–15 min, ", /*#__PURE__*/React.createElement("strong", null, "max 4h: 400 µg/kg"), ".") : /*#__PURE__*/React.createElement(React.Fragment, null, "Solution (<50 kg): morphine 1 mg/kg in 50 mL (=20 µg/kg/mL). ", /*#__PURE__*/React.createElement("strong", null, "Bolus 20 µg/kg"), " (1 mL), lockout 10–15 min, ", /*#__PURE__*/React.createElement("strong", null, "4h max: 400 µg/kg"), ".") : el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Διάλυμα (>50 kg): μορφίνη 50 mg σε 50 mL (=1 mg/mL). ", /*#__PURE__*/React.createElement("strong", null, "Bolus 1 mg"), ", lockout 10–15 min, ", /*#__PURE__*/React.createElement("strong", null, "max 4h: 20 mg"), ".") : /*#__PURE__*/React.createElement(React.Fragment, null, "Solution (>50 kg): morphine 50 mg in 50 mL (=1 mg/mL). ", /*#__PURE__*/React.createElement("strong", null, "Bolus 1 mg"), ", lockout 10–15 min, ", /*#__PURE__*/React.createElement("strong", null, "4h max: 20 mg"), "."))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 800,
+      fontSize: 12.5,
+      color: S.teal,
+      marginBottom: 4
+    }
+  }, el ? "Ναλοξόνη (αντίδοτο)" : "Naloxone (antidote)"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.ink,
+      lineHeight: 1.5
+    }
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Αναπνευστική καταστολή: ", /*#__PURE__*/React.createElement("strong", null, "4 µg/kg = ", fmt(4 * w), " µg"), " IV, επανάληψη μετά 20 min (προτιμότερη η αναπνευστική υποστήριξη).", /*#__PURE__*/React.createElement("br", null), "Κνησμός / επίσχεση ούρων: ", /*#__PURE__*/React.createElement("strong", null, "0.5 µg/kg = ", fmt(0.5 * w), " µg"), " IV q10min έως max 2 µg/kg.") : /*#__PURE__*/React.createElement(React.Fragment, null, "Respiratory depression: ", /*#__PURE__*/React.createElement("strong", null, "4 µg/kg = ", fmt(4 * w), " µg"), " IV, repeat after 20 min (prefer respiratory support).", /*#__PURE__*/React.createElement("br", null), "Pruritus / urinary retention: ", /*#__PURE__*/React.createElement("strong", null, "0.5 µg/kg = ", fmt(0.5 * w), " µg"), " IV q10min up to max 2 µg/kg."))), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Τοπικά αναισθητικά (διήθηση/περιφ. αποκλεισμός)" : "Local anaesthetics (infiltration/PNB)"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Βουπιβακαΐνη 0.25%" : "Bupivacaine 0.25%",
+    v: `${fmt(1 * w)} mL`,
+    hint: el ? "max 1 mL/kg (≈2.5 mg/kg)" : "max 1 mL/kg (≈2.5 mg/kg)"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "L-βουπιβακαΐνη 0.25%" : "L-bupivacaine 0.25%",
+    v: `${fmt(1 * w)} mL`,
+    hint: el ? "max 1 mL/kg (≈2.5 mg/kg)" : "max 1 mL/kg (≈2.5 mg/kg)"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Ροπιβακαΐνη 0.2%" : "Ropivacaine 0.2%",
+    v: `${fmt(1.5 * w)} mL`,
+    hint: el ? "max 1.5 mL/kg (≈3 mg/kg) · ΟΧΙ σε πεϊκό" : "max 1.5 mL/kg (≈3 mg/kg) · NOT penile block"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45,
+      marginTop: 2
+    }
+  }, el ? "⚠ Κωδεΐνη/τραμαδόλη: μόνο >12 ετών & μόνο όταν ο πόνος δεν ανακουφίζεται από παρακεταμόλη/ιβουπροφαίνη· ΠΟΤΕ σε ιστορικό υπνικής άπνοιας ή αναπνευστικά προβλήματα. Επιλέξτε κατάλληλη κλίμακα αξιολόγησης πόνου βάσει ηλικίας." : "⚠ Codeine/tramadol: only >12 y & only when paracetamol/ibuprofen insufficient; NEVER with sleep apnoea or respiratory problems. Use an age-appropriate pain assessment scale."), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Νηστεία — ESAIC 2022" : "Fasting — ESAIC 2022"), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
       flexDirection: "column",
@@ -6537,6 +7205,423 @@ function PeriopMedCard({
   }, el ? "Για νευραξονικό: βλ. Εργαλεία → Αντιπηκτικά & Νευραξονικός (ASRA)." : "For neuraxial: see Tools → Anticoagulants & Neuraxial (ASRA).")));
 }
 
+// ============ ADULT ACUTE POSTOP ANALGESIA (multimodal) ============
+function PostopAnalgesiaCard({
+  lang,
+  weight
+}) {
+  const el = lang === "el";
+  const w = parseFloat(weight) || 0;
+  const SectionLabel = ({
+    children
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 800,
+      fontSize: 13,
+      color: S.teal,
+      letterSpacing: 0.2,
+      marginTop: 6
+    }
+  }, children);
+  const Row = ({
+    l,
+    v,
+    hint,
+    warn
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "baseline",
+      gap: 8,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "8px 12px",
+      boxShadow: warn ? `inset 0 0 0 1.5px ${S.amber}` : "none"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 13,
+      color: S.ink
+    }
+  }, l, hint && /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: S.muted,
+      fontSize: 11.5
+    }
+  }, " · ", hint)), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      fontSize: 14.5,
+      color: warn ? S.amber : S.teal,
+      fontVariantNumeric: "tabular-nums",
+      whiteSpace: "nowrap"
+    }
+  }, v));
+  const Box = ({
+    title,
+    children
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 800,
+      fontSize: 12.5,
+      color: S.teal,
+      marginBottom: 4
+    }
+  }, title), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.ink,
+      lineHeight: 1.55
+    }
+  }, children));
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11.5,
+      color: S.muted,
+      lineHeight: 1.45
+    }
+  }, el ? "Πολυπαραγοντική αναλγησία ενηλίκων — κλιμάκωση κατά ένταση (NRS). Παιδιά: βλ. καρτέλα Παιδιά." : "Adult multimodal analgesia — escalate by intensity (NRS). Children: see Peds tab."), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Βάση (όλοι, εκτός αντενδείξεων)" : "Baseline (all, unless contraindicated)"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Παρακεταμόλη IV/PO" : "Paracetamol IV/PO",
+    v: "1 g q6h",
+    hint: el ? "max 4 g/24h (3 g σε ηπατική/καχεξία)" : "max 4 g/d (3 g hepatic/cachexia)"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "ΜΣΑΦ (επιλογή)" : "NSAID (choose one)",
+    v: el ? "βλ. Φάρμακα" : "see Meds",
+    hint: el ? "παρεκοξίμπη 40 mg / κετορολάκη 15–30 mg / λορνοξικάμη 8 mg" : "parecoxib 40 / ketorolac 15–30 / lornoxicam 8 mg"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Τοποπεριοχική / διήθηση" : "Regional / infiltration",
+    v: "✓",
+    hint: el ? "όποτε εφικτό (βλ. Νευραξονική & Blocks)" : "whenever feasible (see Neuraxial & Blocks)"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Δεξαμεθαζόνη (διεγχ.)" : "Dexamethasone (intraop)",
+    v: "4–8 mg IV",
+    hint: el ? "αναλγησία + PONV" : "analgesia + PONV"
+  }), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Μέτριος πόνος (NRS 4–6)" : "Moderate pain (NRS 4–6)"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Τραμαδόλη IV/PO" : "Tramadol IV/PO",
+    v: "50–100 mg q6–8h",
+    hint: el ? "max 400 mg/24h · ναυτία" : "max 400 mg/d · nausea"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Ναλβουφίνη IV" : "Nalbuphine IV",
+    v: w ? `${fmt(0.1 * w)}–${fmt(0.2 * w)} mg` : "0.1–0.2 mg/kg",
+    hint: "q4–6h"
+  }), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Σοβαρός πόνος (NRS ≥ 7)" : "Severe pain (NRS ≥ 7)"), /*#__PURE__*/React.createElement(Box, {
+    title: el ? "Τιτλοποίηση μορφίνης (PACU)" : "Morphine titration (PACU)"
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("strong", null, w ? `${fmt(Math.max(1, 0.02 * w))}–${fmt(0.05 * w)} mg` : "1–3 mg"), " IV (0.02–0.05 mg/kg) κάθε 5 min έως NRS < 4.", /*#__PURE__*/React.createElement("br", null), "Παρακολούθηση καταστολής & αναπνοών· διακοπή αν RR < 10 ή καταστολή.") : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("strong", null, w ? `${fmt(Math.max(1, 0.02 * w))}–${fmt(0.05 * w)} mg` : "1–3 mg"), " IV (0.02–0.05 mg/kg) q5min until NRS < 4.", /*#__PURE__*/React.createElement("br", null), "Monitor sedation & RR; stop if RR < 10 or sedated.")), /*#__PURE__*/React.createElement(Box, {
+    title: el ? "PCA Μορφίνη (ενήλικες)" : "Morphine PCA (adults)"
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Διάλυμα 1 mg/mL. ", /*#__PURE__*/React.createElement("strong", null, "Bolus 1 mg"), ", lockout ", /*#__PURE__*/React.createElement("strong", null, "5–10 min"), ", χωρίς βασική έγχυση (εκτός opioid-tolerant). Όριο 4h κατά πρωτόκολλο.") : /*#__PURE__*/React.createElement(React.Fragment, null, "Solution 1 mg/mL. ", /*#__PURE__*/React.createElement("strong", null, "Bolus 1 mg"), ", lockout ", /*#__PURE__*/React.createElement("strong", null, "5–10 min"), ", no background (unless opioid-tolerant). 4-h limit per protocol.")), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Οξυκωδόνη PO (αποκλιμάκωση)" : "Oxycodone PO (step-down)",
+    v: "5–10 mg q4–6h",
+    hint: el ? "άμεσης αποδέσμευσης" : "immediate release"
+  }), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Adjuncts (υψηλές ανάγκες / opioid-sparing)" : "Adjuncts (high needs / opioid-sparing)"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Κεταμίνη bolus" : "Ketamine bolus",
+    v: w ? `${fmt(0.15 * w)}–${fmt(0.25 * w)} mg` : "0.15–0.25 mg/kg",
+    hint: el ? "± έγχυση 0.1–0.2 mg/kg/h" : "± infusion 0.1–0.2 mg/kg/h"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Λιδοκαΐνη IV έγχυση" : "Lidocaine IV infusion",
+    v: "1–2 mg/kg/h",
+    hint: el ? "κοιλιακή/λαπαρ. · ΟΧΙ με περιοχικό" : "abdominal/lap · NOT with regional"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Μαγνήσιο" : "Magnesium",
+    v: w ? `${fmt(Math.min(40 * w, 4000) / 1000)} g` : "30–50 mg/kg",
+    hint: el ? "φόρτιση διεγχειρητικά" : "intraop load"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45
+    }
+  }, el ? "Οπιοειδή: τακτική εκτίμηση καταστολής (π.χ. POSS) & αναπνοών· προσοχή σε OSA/ηλικιωμένους. Στόχος PROSPECT: procedure-specific πολυπαραγοντική με ελάχιστα οπιοειδή." : "Opioids: regular sedation (e.g. POSS) & RR checks; caution in OSA/elderly. PROSPECT goal: procedure-specific multimodal with minimal opioids."));
+}
+
+// ============ NEURAXIAL & REGIONAL (typical doses/volumes) ============
+function NeuraxialCard({
+  lang,
+  weight
+}) {
+  const el = lang === "el";
+  const w = parseFloat(weight) || 0;
+  const SectionLabel = ({
+    children
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 800,
+      fontSize: 13,
+      color: S.teal,
+      letterSpacing: 0.2,
+      marginTop: 6
+    }
+  }, children);
+  const Row = ({
+    l,
+    v,
+    hint
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "baseline",
+      gap: 8,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "8px 12px"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 13,
+      color: S.ink
+    }
+  }, l, hint && /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: S.muted,
+      fontSize: 11.5
+    }
+  }, " · ", hint)), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      fontSize: 14,
+      color: S.teal,
+      fontVariantNumeric: "tabular-nums",
+      whiteSpace: "nowrap",
+      textAlign: "right"
+    }
+  }, v));
+  const blocks = [{
+    el: "Διασκαληνικός",
+    en: "Interscalene",
+    v: "10–15 mL",
+    hint: el ? "ώμος · φρενικό 100%" : "shoulder · phrenic 100%"
+  }, {
+    el: "Υπερκλείδιος",
+    en: "Supraclavicular",
+    v: "20–25 mL",
+    hint: el ? "άνω άκρο · pneumo κίνδυνος" : "upper limb · PTX risk"
+  }, {
+    el: "Μασχαλιαίος",
+    en: "Axillary",
+    v: "20–30 mL",
+    hint: el ? "αντιβράχιο/χέρι" : "forearm/hand"
+  }, {
+    el: "Μηριαίος",
+    en: "Femoral",
+    v: "15–20 mL",
+    hint: el ? "μηρός/γόνατο · πτώσεις" : "thigh/knee · falls"
+  }, {
+    el: "Adductor canal",
+    en: "Adductor canal",
+    v: "10–20 mL",
+    hint: el ? "γόνατο · motor-sparing" : "knee · motor-sparing"
+  }, {
+    el: "Ισχιακός (ιγνυακός)",
+    en: "Popliteal sciatic",
+    v: "20–30 mL",
+    hint: el ? "κάτω κνήμη/άκρο πόδι" : "leg/foot"
+  }, {
+    el: "TAP",
+    en: "TAP",
+    v: el ? "15–20 mL/πλευρά" : "15–20 mL/side",
+    hint: el ? "κοιλιακό τοίχωμα" : "abdominal wall"
+  }, {
+    el: "ESP",
+    en: "ESP",
+    v: "20–30 mL",
+    hint: el ? "θωρακ./κοιλιακή αναλγησία" : "thoracic/abdominal analgesia"
+  }, {
+    el: "Rectus sheath",
+    en: "Rectus sheath",
+    v: el ? "15–20 mL/πλευρά" : "15–20 mL/side",
+    hint: el ? "μέση γραμμή" : "midline"
+  }];
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Ραχιαία (υπέρβαρη βουπιβακαΐνη 0.5%)" : "Spinal (hyperbaric bupivacaine 0.5%)"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Κάτω κοιλία / ΚΤ" : "Lower abdomen / CS",
+    v: "10–12.5 mg",
+    hint: "2–2.5 mL"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Κάτω άκρο / TURP" : "Lower limb / TURP",
+    v: "10–15 mg",
+    hint: "2–3 mL"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Saddle (περινεϊκό)" : "Saddle (perineal)",
+    v: "5–7.5 mg",
+    hint: el ? "1–1.5 mL καθιστός" : "1–1.5 mL sitting"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "+ Fentanyl" : "+ Fentanyl",
+    v: "10–25 µg",
+    hint: el ? "βελτιώνει ποιότητα" : "improves quality"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "+ Μορφίνη (ΚΤ/μείζων)" : "+ Morphine (CS/major)",
+    v: "100–150 µg",
+    hint: el ? "24h αναλγησία · monitoring" : "24h analgesia · monitoring"
+  }), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Επισκληρίδιος" : "Epidural"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Test dose" : "Test dose",
+    v: "3 mL",
+    hint: el ? "λιδοκαΐνη 1.5% + αδρ 1:200.000" : "lidocaine 1.5% + adr 1:200,000"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Φόρτιση (χειρουργική)" : "Loading (surgical)",
+    v: "10–20 mL",
+    hint: el ? "ροπι 0.5–0.75% / βουπι 0.25–0.5% · κλασματικά ανά 5 mL" : "ropi 0.5–0.75% / bupi 0.25–0.5% · 5 mL aliquots"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Έγχυση (μετεγχ.)" : "Infusion (postop)",
+    v: "6–12 mL/h",
+    hint: el ? "ροπι 0.2% ή βουπι 0.1–0.125% + fent 2 µg/mL" : "ropi 0.2% or bupi 0.1–0.125% + fent 2 µg/mL"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Τοκετός (έγχυση)" : "Labour (infusion)",
+    v: "8–12 mL/h",
+    hint: el ? "βουπι 0.0625–0.1% + fent 2 µg/mL" : "bupi 0.0625–0.1% + fent 2 µg/mL"
+  }), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Συχνοί περιφερικοί αποκλεισμοί (US)" : "Common peripheral blocks (US)"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: S.muted,
+      marginBottom: 2
+    }
+  }, el ? "Τυπικά: ροπιβακαΐνη 0.375–0.5% ή βουπι/λεβοβουπι 0.25% — εντός max δόσης." : "Typical: ropivacaine 0.375–0.5% or (levo)bupivacaine 0.25% — within max dose."), blocks.map((b, i) => /*#__PURE__*/React.createElement(Row, {
+    key: i,
+    l: el ? b.el : b.en,
+    v: b.v,
+    hint: b.hint
+  })), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Μέγιστες δόσεις ΤΑ" : "LA max doses", w ? ` — ${fmt(w)} kg` : ""), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Ροπιβακαΐνη" : "Ropivacaine",
+    v: w ? `${fmt(Math.min(3 * w, 225))} mg` : "3 mg/kg",
+    hint: w ? `= ${fmt(Math.min(3 * w, 225) / 5)} mL 0.5%` : "max 225 mg"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "(Λεβο)βουπιβακαΐνη" : "(Levo)bupivacaine",
+    v: w ? `${fmt(Math.min(2 * w, 150))} mg` : "2 mg/kg",
+    hint: w ? `= ${fmt(Math.min(2 * w, 150) / 2.5)} mL 0.25%` : "max 150 mg"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Λιδοκαΐνη (+αδρ)" : "Lidocaine (+adr)",
+    v: w ? `${fmt(Math.min(4.5 * w, 300))} / ${fmt(Math.min(7 * w, 500))} mg` : "4.5 / 7 mg/kg",
+    hint: el ? "χωρίς / με αδρεναλίνη" : "plain / with adrenaline"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45
+    }
+  }, el ? "Αναρρόφηση προ έγχυσης, κλασματική χορήγηση, US καθοδήγηση. Intralipid & LAST αλγόριθμος: Εργαλεία → Κρίσεις. Αντιπηκτικά & νευραξονική: Εργαλεία → ASRA. Μείωση δόσεων σε ηλικιωμένους/εγκύους/καχεκτικούς." : "Aspirate before injection, incremental dosing, US guidance. Intralipid & LAST algorithm: Tools → Crises. Anticoagulants & neuraxial: Tools → ASRA. Reduce doses in elderly/pregnant/frail."));
+}
+
+// ============ AGE-ADJUSTED MAC (Nickalls/Mapleson; meta-regression 6.47%/decade) ============
+function MACCard({
+  lang,
+  age
+}) {
+  const el = lang === "el";
+  const a = parseFloat(age) || 0;
+  // MAC(age) = MAC40 × 10^(−0.00269 × (age − 40))  → 6.47%/decade decline
+  const factor = a > 0 ? Math.pow(10, -0.00269 * (a - 40)) : 1;
+  const agents = [{
+    name: "Sevoflurane",
+    mac40: 2.03,
+    key: "sevo"
+  }, {
+    name: "Desflurane",
+    mac40: 6.44,
+    key: "des"
+  }, {
+    name: "Isoflurane",
+    mac40: 1.16,
+    key: "iso"
+  }];
+  const fmtPct = n => (Math.round(n * 100) / 100).toFixed(2);
+  const SectionLabel = ({
+    children
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 800,
+      fontSize: 13,
+      color: S.teal,
+      letterSpacing: 0.2,
+      marginTop: 6
+    }
+  }, children);
+  const Row = ({
+    l,
+    v,
+    hint
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "baseline",
+      gap: 8,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "8px 12px"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 13,
+      color: S.ink
+    }
+  }, l, hint && /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: S.muted,
+      fontSize: 11.5
+    }
+  }, " · ", hint)), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      fontSize: 14.5,
+      color: S.teal,
+      fontVariantNumeric: "tabular-nums",
+      whiteSpace: "nowrap"
+    }
+  }, v));
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 8
+    }
+  }, !a ? /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 13,
+      color: S.amber,
+      fontWeight: 600
+    }
+  }, "⚖ ", el ? "Εισάγετε ηλικία στην μπάρα ασθενούς για MAC κατά ηλικία (αλλιώς εμφανίζεται MAC στα 40 έτη)." : "Enter age in the patient bar for age-adjusted MAC (otherwise MAC at age 40 shown).") : /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.muted
+    }
+  }, el ? `Προσαρμογή για ηλικία ${fmt(a)} ετών (−6.47%/δεκαετία).` : `Adjusted for age ${fmt(a)} y (−6.47%/decade).`), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "1.0 MAC (χωρίς N₂O)" : "1.0 MAC (without N₂O)"), agents.map(ag => /*#__PURE__*/React.createElement(Row, {
+    key: ag.key,
+    l: el ? ag.name : ag.name,
+    v: `${fmtPct(ag.mac40 * factor)} %`,
+    hint: `MAC₄₀ ${ag.mac40}%`
+  })), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Χρήσιμα κλάσματα MAC" : "Useful MAC fractions"), agents.map(ag => /*#__PURE__*/React.createElement(Row, {
+    key: ag.key + "f",
+    l: ag.name,
+    v: `${fmtPct(0.7 * ag.mac40 * factor)} / ${fmtPct(1.3 * ag.mac40 * factor)} %`,
+    hint: el ? "0.7 / 1.3 MAC" : "0.7 / 1.3 MAC"
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45,
+      marginTop: 2
+    }
+  }, el ? "MAC-awake ≈ 0.3–0.4 MAC · MAC-BAR (απόσβεση συμπαθητικής) ≈ 1.5–2 MAC · MAC-intubation (σεβοφλ.) ≈ 1.3× ενήλικες. Το N₂O 50–67% μειώνει την απαιτούμενη συγκέντρωση πτητικού (αθροιστικό MAC). Παιδιά: MAC υψηλότερο (κορύφωση βρεφική ηλικία). Επιβεβαιώστε με end-tidal & κλινική εικόνα." : "MAC-awake ≈ 0.3–0.4 MAC · MAC-BAR (blunts sympathetic) ≈ 1.5–2 MAC · MAC-intubation (sevo) ≈ 1.3× adult. N₂O 50–67% reduces required volatile (additive MAC). Children: higher MAC (peaks in infancy). Confirm with end-tidal & clinical signs."));
+}
+
 // ============ QUICK CALCULATORS (electrolytes) ============
 function QuickCalcCard({
   lang,
@@ -6883,6 +7968,21 @@ function ToolsTab({
     en: "Quick calculators",
     icon: "🧮"
   }, {
+    id: "mac",
+    el: "MAC πτητικών (κατά ηλικία)",
+    en: "Volatile MAC (age-adjusted)",
+    icon: "💨"
+  }, {
+    id: "postop",
+    el: "Οξεία μετεγχειρητική αναλγησία",
+    en: "Acute postop analgesia",
+    icon: "💉"
+  }, {
+    id: "neuraxial",
+    el: "Νευραξονική & Περιοχική",
+    en: "Neuraxial & Regional",
+    icon: "🎯"
+  }, {
     id: "guidelines",
     el: "Κατευθυντήριες",
     en: "Guidelines",
@@ -7026,6 +8126,15 @@ function ToolsTab({
     }), sec.id === "periop" && /*#__PURE__*/React.createElement(PeriopMedCard, {
       lang: lang
     }), sec.id === "quickcalc" && /*#__PURE__*/React.createElement(QuickCalcCard, {
+      lang: lang,
+      weight: weight
+    }), sec.id === "mac" && /*#__PURE__*/React.createElement(MACCard, {
+      lang: lang,
+      age: age
+    }), sec.id === "postop" && /*#__PURE__*/React.createElement(PostopAnalgesiaCard, {
+      lang: lang,
+      weight: weight
+    }), sec.id === "neuraxial" && /*#__PURE__*/React.createElement(NeuraxialCard, {
       lang: lang,
       weight: weight
     }), sec.id === "vent" && /*#__PURE__*/React.createElement(VentilationCalc, {
