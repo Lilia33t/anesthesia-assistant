@@ -2699,7 +2699,14 @@ function MedsTab({
         color: S.red,
         lineHeight: 1.45
       }
-    }, /*#__PURE__*/React.createElement("strong", null, t.ci, ": "), lang === "el" ? d.ciEl : d.ciEn)));
+    }, /*#__PURE__*/React.createElement("strong", null, t.ci, ": "), lang === "el" ? d.ciEl : d.ciEn), w > 0 && d.doses.some(ds => typeof doseText(ds, w, lang) !== "string") && /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: S.amber,
+        fontWeight: 600,
+        lineHeight: 1.4
+      }
+    }, lang === "el" ? "⚠ Υπολογισμένες τιμές στο βάρος — επαληθεύστε πριν τη χορήγηση." : "⚠ Weight-calculated values — verify before administration.")));
   }));
 }
 function PlanTab({
@@ -2909,6 +2916,16 @@ function AITab({
       fontFamily: "inherit"
     }
   }, lang === "el" ? "🗑 Νέα συνομιλία" : "🗑 New chat")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11.5,
+      color: S.amber,
+      background: "#FBF3E6",
+      borderRadius: 10,
+      padding: "8px 11px",
+      lineHeight: 1.45,
+      fontWeight: 600
+    }
+  }, lang === "el" ? "⚠ Η AI μπορεί να κάνει λάθη — επαληθεύστε κάθε δόση/πρόταση. Μην εισάγετε αναγνωρίσιμα στοιχεία ασθενών (το κείμενο αποστέλλεται στον πάροχο AI)." : "⚠ AI can make mistakes — verify every dose/suggestion. Do not enter identifiable patient data (text is sent to the AI provider)."), /*#__PURE__*/React.createElement("div", {
     style: {
       flex: 1,
       overflowY: "auto",
@@ -5252,7 +5269,17 @@ function PedsCard({
       flexDirection: "column",
       gap: 6
     }
-  }, /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Βάρος & Αεραγωγός" : "Weight & Airway"), /*#__PURE__*/React.createElement(Row, {
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: S.amber,
+      fontWeight: 600,
+      lineHeight: 1.4,
+      background: "#FBF3E6",
+      borderRadius: 8,
+      padding: "7px 10px"
+    }
+  }, el ? "⚠ Παιδιατρικές δόσεις — υψηλός κίνδυνος λάθους. Επιβεβαιώστε βάρος & τοπικό πρωτόκολλο πριν τη χορήγηση." : "⚠ Paediatric doses — high error risk. Confirm weight & local protocol before administration."), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Βάρος & Αεραγωγός" : "Weight & Airway"), /*#__PURE__*/React.createElement(Row, {
     l: el ? "Βάρος" : "Weight",
     v: `${fmt(w)} kg${p.est ? el ? " (εκτίμηση APLS)" : " (APLS estimate)" : ""}`
   }), /*#__PURE__*/React.createElement(Row, {
@@ -8420,6 +8447,7 @@ function AnesthesiaAssistant() {
   }, []);
   const [lang, setLang] = useState(() => storeGet("aa_lang") || "el");
   const [tab, setTab] = useState("meds");
+  const [accepted, setAccepted] = useState(() => storeGet("aa_disclaimer_ok") === true);
   // Patient data persists for 1h (same-case convenience), then clears automatically
   const [weight, setWeight] = useState(() => (storeGet("aa_patient") || {}).w || "");
   const [age, setAge] = useState(() => (storeGet("aa_patient") || {}).a || "");
@@ -8460,6 +8488,111 @@ function AnesthesiaAssistant() {
     id: "lists",
     icon: "🚨"
   }];
+
+  // First-run disclaimer gate
+  if (!accepted) {
+    return /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: "'Commissioner', 'Segoe UI', system-ui, -apple-system, sans-serif",
+        background: S.bg,
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "24px 20px",
+        maxWidth: 560,
+        margin: "0 auto"
+      }
+    }, /*#__PURE__*/React.createElement("img", {
+      src: LOGO_DATA,
+      alt: "",
+      style: {
+        width: 84,
+        height: 84,
+        borderRadius: 20,
+        marginBottom: 16
+      }
+    }), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontWeight: 900,
+        fontSize: 20,
+        color: S.ink,
+        textAlign: "center",
+        marginBottom: 4
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: S.teal,
+        fontStyle: "italic"
+      }
+    }, "Efstathia's"), " Anesthesia Assistant"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        background: S.card,
+        borderRadius: 16,
+        padding: "18px 18px",
+        border: `1.5px solid ${S.line}`,
+        marginTop: 16,
+        boxShadow: "0 2px 10px rgba(20,37,63,.06)"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontWeight: 800,
+        fontSize: 15,
+        color: S.red,
+        marginBottom: 8
+      }
+    }, lang === "el" ? "⚠ Σημαντική προειδοποίηση" : "⚠ Important notice"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 13.5,
+        color: S.ink,
+        lineHeight: 1.6
+      }
+    }, lang === "el" ? /*#__PURE__*/React.createElement(React.Fragment, null, "Το εργαλείο αυτό προορίζεται ", /*#__PURE__*/React.createElement("strong", null, "αποκλειστικά για εξειδικευμένους επαγγελματίες υγείας"), " ως βοήθημα υποστήριξης απόφασης και εκπαίδευσης.", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("strong", null, "Δεν υποκαθιστά την κλινική κρίση."), " Όλες οι δόσεις, οι υπολογισμοί και οι προτάσεις πρέπει να ", /*#__PURE__*/React.createElement("strong", null, "επαληθεύονται ανεξάρτητα"), " με έγκυρες πηγές και τα τοπικά πρωτόκολλα πριν από κάθε εφαρμογή σε ασθενή.", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("br", null), "Ο δημιουργός δεν φέρει ευθύνη για οποιαδήποτε βλάβη προκύψει από τη χρήση του. Η ευθύνη κάθε κλινικής απόφασης παραμένει στον θεράποντα ιατρό.", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: S.muted,
+        fontSize: 12
+      }
+    }, "Μην εισάγετε αναγνωρίσιμα στοιχεία ασθενών (ονόματα, ΑΜΚΑ) — ειδικά στο AI.")) : /*#__PURE__*/React.createElement(React.Fragment, null, "This tool is intended ", /*#__PURE__*/React.createElement("strong", null, "solely for qualified healthcare professionals"), " as a decision-support and educational aid.", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("strong", null, "It does not replace clinical judgement."), " All doses, calculations and suggestions must be ", /*#__PURE__*/React.createElement("strong", null, "independently verified"), " against authoritative sources and local protocols before any application to a patient.", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("br", null), "The author accepts no liability for any harm arising from its use. Responsibility for every clinical decision remains with the treating clinician.", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: S.muted,
+        fontSize: 12
+      }
+    }, "Do not enter identifiable patient data (names, IDs) — especially in the AI."))), /*#__PURE__*/React.createElement("button", {
+      onClick: () => {
+        setAccepted(true);
+        storeSet("aa_disclaimer_ok", true);
+      },
+      style: {
+        width: "100%",
+        marginTop: 16,
+        padding: "13px",
+        borderRadius: 12,
+        border: "none",
+        background: S.teal,
+        color: "#fff",
+        fontWeight: 800,
+        fontSize: 15,
+        cursor: "pointer",
+        fontFamily: "inherit"
+      }
+    }, lang === "el" ? "Κατανοώ & Αποδέχομαι" : "I understand & accept"), /*#__PURE__*/React.createElement("button", {
+      onClick: () => setLang(lang === "el" ? "en" : "el"),
+      style: {
+        width: "100%",
+        marginTop: 8,
+        padding: "8px",
+        borderRadius: 10,
+        border: "none",
+        background: "transparent",
+        color: S.muted,
+        fontWeight: 700,
+        fontSize: 13,
+        cursor: "pointer",
+        fontFamily: "inherit"
+      }
+    }, lang === "el" ? "English" : "Ελληνικά")));
+  }
   return /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: "'Commissioner', 'Segoe UI', system-ui, -apple-system, sans-serif",
