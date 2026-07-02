@@ -2264,12 +2264,20 @@ function aiPatientCtx(lang, weight, age, height, sex) {
   return parts.join(", ");
 }
 
+// Strip common LaTeX artefacts the model sometimes emits ($...$, \mu, _2, \ge, etc.)
+function deLatex(s) {
+  return s.replace(/\$\\?text\{([^}]*)\}\$/g, "$1").replace(/\$+/g, "") // drop $ delimiters
+  .replace(/\\mu\s?g/g, "µg").replace(/\\mu/g, "µ").replace(/\\ge\b/g, "≥").replace(/\\geq\b/g, "≥").replace(/\\le\b/g, "≤").replace(/\\leq\b/g, "≤").replace(/\\times\b/g, "×").replace(/\\cdot\b/g, "·").replace(/\\pm\b/g, "±").replace(/\\approx\b/g, "≈").replace(/\\rightarrow\b|\\to\b/g, "→").replace(/\\%/g, "%").replace(/([A-Za-z])_\{?(\d)\}?/g, (m, a, d) => a + "₀₁₂₃₄₅₆₇₈₉"[+d]) // O_2 → O₂
+  .replace(/\^\{?(\d)\}?/g, (m, d) => "⁰¹²³⁴⁵⁶⁷⁸⁹"[+d]) // m^3 → m³
+  .replace(/\\left|\\right|\\,|\\;/g, "").replace(/\\[a-zA-Z]+/g, ""); // any remaining \command → drop
+}
+
 // Minimal markdown renderer (headers, bold, italic, lists)
 function Md({
   text
 }) {
-  // normalise: bullets written as "* " → "- "; collapse leftover emphasis runs
-  const lines = text.split("\n");
+  // normalise: strip LaTeX; bullets written as "* " → "- "; collapse leftover emphasis runs
+  const lines = deLatex(text).split("\n");
   const inline = s => {
     // split on **bold** and *italic* while keeping delimiters
     const out = [];
@@ -2713,7 +2721,7 @@ function PlanTab({
     setErr(false);
     setPlan("");
     const ctx = aiPatientCtx(lang, weight, age, height, sex);
-    const sys = lang === "el" ? "Είσαι έμπειρος αναισθησιολόγος-σύμβουλος. Δημιούργησε δομημένο, πρακτικό αναισθησιολογικό πλάνο στα Ελληνικά, με επικεφαλίδες σε μορφή ## : ## Προεγχειρητική Εκτίμηση (ASA, κίνδυνοι, βελτιστοποίηση), ## Monitoring, ## Τεχνική Αναισθησίας, ## Αεραγωγός (αξιολόγηση & σχέδιο κατά DAS 2025: βιντεολαρυγγοσκόπιο 1ης γραμμής, peroxygenation, Plan A–D), ## Φάρμακα & Δόσεις (υπολόγισε στο βάρος του ασθενούς όταν δίνεται, με μονάδες mg/µg/mL), ## Διεγχειρητική Διαχείριση, ## Αναλγησία, ## Μετεγχειρητικά & PONV, ## Σημεία Προσοχής. Βάσει σύγχρονων κατευθυντηρίων (ESAIC/ASA/DAS 2025/ASRA). Αν λείπουν κρίσιμα στοιχεία, ανέφερε σύντομα τι χρειάζεται και κάνε λογικές παραδοχές. Συνοπτικά, με bullets. Είναι εργαλείο υποστήριξης απόφασης — κλείσε με σύντομη υπενθύμιση επαλήθευσης δόσεων. Απευθύνεσαι σε αναισθησιολόγο." : "You are an expert consultant anesthesiologist. Create a structured, practical anesthetic plan in English, with ## headings: ## Preoperative Assessment (ASA, risks, optimization), ## Monitoring, ## Anesthetic Technique, ## Airway (assessment & plan per DAS 2025: first-line videolaryngoscopy, peroxygenation, Plan A–D), ## Drugs & Doses (weight-calculated when given, with mg/µg/mL units), ## Intraoperative Management, ## Analgesia, ## Postoperative & PONV, ## Key Concerns. Based on current guidelines (ESAIC/ASA/DAS 2025/ASRA). If critical data is missing, briefly note what's needed and make reasonable assumptions. Concise, bulleted. This is a decision-support tool — end with a brief dose-verification reminder. Audience: anesthesiologist.";
+    const sys = lang === "el" ? "Είσαι έμπειρος αναισθησιολόγος-σύμβουλος. Δημιούργησε δομημένο, πρακτικό αναισθησιολογικό πλάνο στα Ελληνικά, με επικεφαλίδες σε μορφή ## : ## Προεγχειρητική Εκτίμηση (ASA, κίνδυνοι, βελτιστοποίηση), ## Monitoring, ## Τεχνική Αναισθησίας, ## Αεραγωγός (αξιολόγηση & σχέδιο κατά DAS 2025: βιντεολαρυγγοσκόπιο 1ης γραμμής, peroxygenation, Plan A–D), ## Φάρμακα & Δόσεις (υπολόγισε στο βάρος του ασθενούς όταν δίνεται, με μονάδες mg/µg/mL), ## Διεγχειρητική Διαχείριση, ## Αναλγησία, ## Μετεγχειρητικά & PONV, ## Σημεία Προσοχής. Βάσει σύγχρονων κατευθυντηρίων (ESAIC/ASA/DAS 2025/ASRA). Αν λείπουν κρίσιμα στοιχεία, ανέφερε σύντομα τι χρειάζεται και κάνε λογικές παραδοχές. Συνοπτικά, με bullets. Είναι εργαλείο υποστήριξης απόφασης — κλείσε με σύντομη υπενθύμιση επαλήθευσης δόσεων. Απευθύνεσαι σε αναισθησιολόγο. ΜΗΝ χρησιμοποιείς LaTeX ή σύμβολα δολαρίου ($). Γράψε απλό κείμενο: O₂, CO₂, µg/kg/min, ≥, ≤, × κατευθείαν ως χαρακτήρες Unicode." : "You are an expert consultant anesthesiologist. Create a structured, practical anesthetic plan in English, with ## headings: ## Preoperative Assessment (ASA, risks, optimization), ## Monitoring, ## Anesthetic Technique, ## Airway (assessment & plan per DAS 2025: first-line videolaryngoscopy, peroxygenation, Plan A–D), ## Drugs & Doses (weight-calculated when given, with mg/µg/mL units), ## Intraoperative Management, ## Analgesia, ## Postoperative & PONV, ## Key Concerns. Based on current guidelines (ESAIC/ASA/DAS 2025/ASRA). If critical data is missing, briefly note what's needed and make reasonable assumptions. Concise, bulleted. This is a decision-support tool — end with a brief dose-verification reminder. Audience: anesthesiologist. Do NOT use LaTeX or dollar signs ($). Write plain text: O₂, CO₂, µg/kg/min, ≥, ≤, × directly as Unicode characters.";
     try {
       const out = await callClaude([{
         role: "user",
@@ -2849,7 +2857,7 @@ function AITab({
     setInput("");
     setLoading(true);
     const ctx = aiPatientCtx(lang, weight, age, height, sex);
-    const sys = lang === "el" ? `Είσαι έμπειρος αναισθησιολόγος-σύμβουλος που απαντά σε συνάδελφο αναισθησιολόγο. Απαντάς στα Ελληνικά, συνοπτικά, πρακτικά και ακριβώς, με δόσεις (υπολογισμένες στο βάρος όταν δίνεται) και αναφορά σε σύγχρονες κατευθυντήριες (ESAIC/ASA/DAS 2025/ASRA/MHAUS) όπου σχετίζεται. Αν λείπει κρίσιμη πληροφορία για ασφαλή απάντηση, ζήτησέ την σύντομα. Εργαλείο υποστήριξης απόφασης — οι δόσεις να επαληθεύονται.${ctx ? ` Τρέχων ασθενής: ${ctx}.` : ""}` : `You are an expert consultant anesthesiologist answering a fellow anesthesiologist. Answer in English, concise, practical and precise, with doses (weight-calculated when given) and references to current guidelines (ESAIC/ASA/DAS 2025/ASRA/MHAUS) where relevant. If critical information is missing for a safe answer, briefly ask for it. Decision-support tool — doses should be verified.${ctx ? ` Current patient: ${ctx}.` : ""}`;
+    const sys = lang === "el" ? `Είσαι έμπειρος αναισθησιολόγος-σύμβουλος που απαντά σε συνάδελφο αναισθησιολόγο. Απαντάς στα Ελληνικά, συνοπτικά, πρακτικά και ακριβώς, με δόσεις (υπολογισμένες στο βάρος όταν δίνεται) και αναφορά σε σύγχρονες κατευθυντήριες (ESAIC/ASA/DAS 2025/ASRA/MHAUS) όπου σχετίζεται. Αν λείπει κρίσιμη πληροφορία για ασφαλή απάντηση, ζήτησέ την σύντομα. Εργαλείο υποστήριξης απόφασης — οι δόσεις να επαληθεύονται. ΜΗΝ χρησιμοποιείς LaTeX ή σύμβολα δολαρίου ($)· γράψε απλό κείμενο με Unicode (O₂, µg, ≥).${ctx ? ` Τρέχων ασθενής: ${ctx}.` : ""}` : `You are an expert consultant anesthesiologist answering a fellow anesthesiologist. Answer in English, concise, practical and precise, with doses (weight-calculated when given) and references to current guidelines (ESAIC/ASA/DAS 2025/ASRA/MHAUS) where relevant. If critical information is missing for a safe answer, briefly ask for it. Decision-support tool — doses should be verified. Do NOT use LaTeX or dollar signs ($); write plain text with Unicode (O₂, µg, ≥).${ctx ? ` Current patient: ${ctx}.` : ""}`;
     try {
       const out = await callClaude(next.map(m => ({
         role: m.role,
@@ -7366,6 +7374,210 @@ function PostopAnalgesiaCard({
   }, el ? "Οπιοειδή: τακτική εκτίμηση καταστολής (π.χ. POSS) & αναπνοών· προσοχή σε OSA/ηλικιωμένους. Στόχος PROSPECT: procedure-specific πολυπαραγοντική με ελάχιστα οπιοειδή." : "Opioids: regular sedation (e.g. POSS) & RR checks; caution in OSA/elderly. PROSPECT goal: procedure-specific multimodal with minimal opioids."));
 }
 
+// ============ ROTEM / TEG INTERPRETATION ============
+function ROTEMCard({
+  lang,
+  weight
+}) {
+  const el = lang === "el";
+  const w = parseFloat(weight) || 0;
+  const [view, setView] = useState("params");
+  const tabs = [{
+    id: "params",
+    el: "Παράμετροι",
+    en: "Parameters",
+    icon: "📊"
+  }, {
+    id: "algo",
+    el: "Αλγόριθμος",
+    en: "Algorithm",
+    icon: "🧭"
+  }];
+  const SectionLabel = ({
+    children
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 800,
+      fontSize: 13,
+      color: S.teal,
+      letterSpacing: 0.2,
+      marginTop: 6
+    }
+  }, children);
+  const Param = ({
+    name,
+    teg,
+    meaning,
+    low
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "baseline",
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      fontSize: 13.5,
+      color: S.ink
+    }
+  }, name), teg && /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11,
+      color: S.muted
+    }
+  }, "TEG: ", teg)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.muted,
+      lineHeight: 1.5,
+      marginTop: 3
+    }
+  }, meaning), low && /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.ink,
+      lineHeight: 1.5,
+      marginTop: 3
+    }
+  }, low));
+  const Step = ({
+    trigger,
+    action,
+    dose
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: S.bg,
+      borderRadius: 10,
+      padding: "10px 12px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 700,
+      fontSize: 13,
+      color: S.teal
+    }
+  }, trigger), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12.5,
+      color: S.ink,
+      lineHeight: 1.5,
+      marginTop: 3
+    }
+  }, action, dose && /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      color: S.teal
+    }
+  }, " ", dose)));
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 5
+    }
+  }, tabs.map(tb => /*#__PURE__*/React.createElement("button", {
+    key: tb.id,
+    onClick: () => setView(tb.id),
+    style: {
+      flex: 1,
+      padding: "8px 4px",
+      borderRadius: 9,
+      border: "none",
+      fontSize: 12.5,
+      fontWeight: 700,
+      cursor: "pointer",
+      fontFamily: "inherit",
+      background: view === tb.id ? S.ink : S.bg,
+      color: view === tb.id ? "#fff" : S.muted
+    }
+  }, tb.icon, " ", el ? tb.el : tb.en))), view === "params" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Assays (ROTEM)" : "Assays (ROTEM)"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.muted,
+      lineHeight: 1.55,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("strong", null, "EXTEM"), " — εξωγενής οδός (~PT/χειρουργική αιμορραγία). ", /*#__PURE__*/React.createElement("strong", null, "INTEM"), " — ενδογενής (~APTT/ηπαρίνη). ", /*#__PURE__*/React.createElement("strong", null, "FIBTEM"), " — συνεισφορά ινωδογόνου (αιμοπετάλια αποκλεισμένα). ", /*#__PURE__*/React.createElement("strong", null, "APTEM"), " — EXTEM + απροτινίνη → αν βελτιώνει = υπερινωδόλυση. ", /*#__PURE__*/React.createElement("strong", null, "HEPTEM"), " — INTEM + επαρινάση → σύγκριση για ηπαρίνη.") : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("strong", null, "EXTEM"), " — extrinsic pathway (~PT/surgical bleeding). ", /*#__PURE__*/React.createElement("strong", null, "INTEM"), " — intrinsic (~APTT/heparin). ", /*#__PURE__*/React.createElement("strong", null, "FIBTEM"), " — fibrinogen contribution (platelets blocked). ", /*#__PURE__*/React.createElement("strong", null, "APTEM"), " — EXTEM + aprotinin → improvement = hyperfibrinolysis. ", /*#__PURE__*/React.createElement("strong", null, "HEPTEM"), " — INTEM + heparinase → compare for heparin.")), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Παράμετροι" : "Parameters"), /*#__PURE__*/React.createElement(Param, {
+    name: "CT (Clotting Time)",
+    teg: "R",
+    meaning: el ? "Χρόνος έως έναρξη πήξης → παράγοντες πήξης / ηπαρίνη." : "Time to clot initiation → coagulation factors / heparin.",
+    low: el ? "↑ EXTEM-CT → FFP/PCC. ↑ INTEM-CT με φυσιολογικό HEPTEM → ηπαρίνη (πρωταμίνη)." : "↑ EXTEM-CT → FFP/PCC. ↑ INTEM-CT with normal HEPTEM → heparin (protamine)."
+  }), /*#__PURE__*/React.createElement(Param, {
+    name: "CFT (Clot Formation Time)",
+    teg: "K",
+    meaning: el ? "Ταχύτητα σχηματισμού θρόμβου → ινωδογόνο & αιμοπετάλια." : "Speed of clot build-up → fibrinogen & platelets.",
+    low: ""
+  }), /*#__PURE__*/React.createElement(Param, {
+    name: "α-angle",
+    teg: "α",
+    meaning: el ? "Κινητική σχηματισμού θρόμβου (ινωδογόνο/αιμοπετάλια)." : "Kinetics of clot build-up (fibrinogen/platelets).",
+    low: ""
+  }), /*#__PURE__*/React.createElement(Param, {
+    name: "A5 / A10 / MCF",
+    teg: "MA",
+    meaning: el ? "Δύναμη/σταθερότητα θρόμβου. Το A5/A10 δίνει πρώιμη πρόβλεψη του MCF." : "Clot strength/firmness. A5/A10 give early prediction of MCF.",
+    low: el ? "↓ EXTEM-A5/MCF + ↓ FIBTEM → ινωδογόνο. ↓ EXTEM με φυσιολογικό FIBTEM → αιμοπετάλια." : "↓ EXTEM-A5/MCF + ↓ FIBTEM → fibrinogen. ↓ EXTEM with normal FIBTEM → platelets."
+  }), /*#__PURE__*/React.createElement(Param, {
+    name: "ML / LI30 / LI60",
+    teg: "LY30",
+    meaning: el ? "Λύση θρόμβου. ML > 15% (ή Li30 < 94%) → υπερινωδόλυση." : "Clot lysis. ML > 15% (or Li30 < 94%) → hyperfibrinolysis.",
+    low: el ? "→ τρανεξαμικό οξύ." : "→ tranexamic acid."
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45
+    }
+  }, el ? "Τυπικά όρια (ROTEM): EXTEM CT 38–79s, CFT 34–159s, α 63–83°, MCF 50–72 mm, FIBTEM MCF 9–25 mm, ML <15%. Ελέγξτε τα όρια του δικού σας αναλυτή." : "Typical ranges (ROTEM): EXTEM CT 38–79s, CFT 34–159s, α 63–83°, MCF 50–72 mm, FIBTEM MCF 9–25 mm, ML <15%. Verify your analyser's reference ranges.")), view === "algo" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11.5,
+      color: S.muted,
+      lineHeight: 1.45
+    }
+  }, el ? "Στοχευμένη διόρθωση σε ενεργό αιμορραγία. Δίπλα: θερμοκρασία >36°C, pH, iCa²⁺ >1.0, Hb." : "Targeted correction in active bleeding. Alongside: temp >36°C, pH, iCa²⁺ >1.0, Hb."), /*#__PURE__*/React.createElement(Step, {
+    trigger: el ? "1. Υπερινωδόλυση (ML >15% / APTEM βελτιώνει)" : "1. Hyperfibrinolysis (ML >15% / APTEM improves)",
+    action: el ? "Τρανεξαμικό οξύ" : "Tranexamic acid",
+    dose: el ? "1 g (ή 15–30 mg/kg" + (w ? ` = ${fmt(15 * w)}–${fmt(30 * w)} mg` : "") + ")" : "1 g (or 15–30 mg/kg" + (w ? ` = ${fmt(15 * w)}–${fmt(30 * w)} mg` : "") + ")"
+  }), /*#__PURE__*/React.createElement(Step, {
+    trigger: el ? "2. Χαμηλό ινωδογόνο (FIBTEM A5 <9–10 mm)" : "2. Low fibrinogen (FIBTEM A5 <9–10 mm)",
+    action: el ? "Συμπύκνωμα ινωδογόνου ή κρυοκαθίζημα" : "Fibrinogen concentrate or cryoprecipitate",
+    dose: el ? w ? `~${fmt(0.06 * w)} g (25–50 mg/kg)` : "25–50 mg/kg" : w ? `~${fmt(0.06 * w)} g (25–50 mg/kg)` : "25–50 mg/kg"
+  }), /*#__PURE__*/React.createElement(Step, {
+    trigger: el ? "3. Καθυστέρηση έναρξης (EXTEM CT >80s, φυσιολ. FIBTEM)" : "3. Delayed initiation (EXTEM CT >80s, normal FIBTEM)",
+    action: el ? "PCC ή FFP (έλλειψη παραγόντων)" : "PCC or FFP (factor deficiency)",
+    dose: el ? "PCC 20–25 U/kg ή FFP 15 mL/kg" : "PCC 20–25 U/kg or FFP 15 mL/kg"
+  }), /*#__PURE__*/React.createElement(Step, {
+    trigger: el ? "4. Χαμηλός θρόμβος με φυσιολ. FIBTEM (EXTEM A5 ↓, FIBTEM ok)" : "4. Weak clot, normal FIBTEM (EXTEM A5 ↓, FIBTEM ok)",
+    action: el ? "Αιμοπετάλια (στόχος >50, >100 σε ΚΝΣ/πολυτραυματία)" : "Platelets (target >50, >100 if CNS/polytrauma)",
+    dose: "1 pool"
+  }), /*#__PURE__*/React.createElement(Step, {
+    trigger: el ? "5. INTEM-CT ↑ & HEPTEM φυσιολογικό" : "5. INTEM-CT ↑ & HEPTEM normal",
+    action: el ? "Υπολειπόμενη ηπαρίνη → πρωταμίνη" : "Residual heparin → protamine",
+    dose: ""
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45
+    }
+  }, el ? "Ακολουθεί τη λογική των ESAIC/European trauma (2023) αλγορίθμων. Συνδυάστε με το πρωτόκολλο μαζικής αιμορραγίας (Εργαλεία → Κρίσεις). Τα κατώφλια/δόσεις ποικίλλουν ανά ίδρυμα — επιβεβαιώστε τοπικά." : "Follows ESAIC/European trauma (2023) algorithm logic. Combine with massive haemorrhage protocol (Tools → Crises). Thresholds/doses vary by institution — confirm locally.")));
+}
+
 // ============ NEURAXIAL & REGIONAL (typical doses/volumes) ============
 function NeuraxialCard({
   lang,
@@ -8003,6 +8215,11 @@ function ToolsTab({
     en: "Neuraxial & Regional",
     icon: "🎯"
   }, {
+    id: "rotem",
+    el: "ROTEM / TEG (ερμηνεία)",
+    en: "ROTEM / TEG (interpretation)",
+    icon: "🩸"
+  }, {
     id: "guidelines",
     el: "Κατευθυντήριες",
     en: "Guidelines",
@@ -8155,6 +8372,9 @@ function ToolsTab({
       lang: lang,
       weight: weight
     }), sec.id === "neuraxial" && /*#__PURE__*/React.createElement(NeuraxialCard, {
+      lang: lang,
+      weight: weight
+    }), sec.id === "rotem" && /*#__PURE__*/React.createElement(ROTEMCard, {
       lang: lang,
       weight: weight
     }), sec.id === "vent" && /*#__PURE__*/React.createElement(VentilationCalc, {
