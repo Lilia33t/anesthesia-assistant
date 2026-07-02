@@ -2412,13 +2412,19 @@ function PatientBar({
   return /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
+      flexDirection: "column",
       gap: 8,
-      alignItems: "center",
       background: S.card,
       padding: "10px 12px",
       borderRadius: 16,
       boxShadow: "0 1px 3px rgba(80,64,48,0.06)",
       border: `1.5px solid ${S.line}`
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8,
+      alignItems: "center"
     }
   }, /*#__PURE__*/React.createElement("svg", {
     width: "24",
@@ -2452,45 +2458,19 @@ function PatientBar({
       flex: 1.2,
       minWidth: 0
     }
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      flex: 1.15,
-      minWidth: 0,
-      display: "flex",
-      position: "relative"
-    }
-  }, /*#__PURE__*/React.createElement("input", {
+  }), /*#__PURE__*/React.createElement("input", {
     type: "number",
     inputMode: "decimal",
     value: ageDisplay,
     onChange: e => onAgeChange(e.target.value),
-    placeholder: ageUnit === "m" ? lang === "el" ? "Ηλικία (μήν)" : "Age (mo)" : t.age,
+    placeholder: ageUnit === "m" ? lang === "el" ? "Ηλικία (μ)" : "Age (mo)" : t.age,
     "aria-label": t.age,
     style: {
       ...fieldStyle,
       flex: 1,
-      minWidth: 0,
-      paddingRight: 34
+      minWidth: 0
     }
-  }), /*#__PURE__*/React.createElement("button", {
-    onClick: () => setAgeUnit(ageUnit === "y" ? "m" : "y"),
-    "aria-label": lang === "el" ? "Εναλλαγή έτη/μήνες" : "Toggle years/months",
-    style: {
-      position: "absolute",
-      right: 3,
-      top: 3,
-      bottom: 3,
-      width: 28,
-      border: "none",
-      borderRadius: 7,
-      background: ageUnit === "m" ? S.teal : "#EEF2F7",
-      color: ageUnit === "m" ? "#fff" : S.muted,
-      fontWeight: 800,
-      fontSize: 12,
-      cursor: "pointer",
-      fontFamily: "inherit"
-    }
-  }, ageUnit === "m" ? lang === "el" ? "μ" : "m" : lang === "el" ? "ε" : "y")), /*#__PURE__*/React.createElement("input", {
+  }), /*#__PURE__*/React.createElement("input", {
     type: "number",
     inputMode: "decimal",
     value: height,
@@ -2520,7 +2500,41 @@ function PatientBar({
       fontSize: 18,
       lineHeight: 1
     }
-  }, sex === "M" ? "♂" : "♀")));
+  }, sex === "M" ? "♂" : "♀"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 8,
+      paddingLeft: 32
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11.5,
+      color: S.muted,
+      fontWeight: 600
+    }
+  }, lang === "el" ? "Μονάδα ηλικίας:" : "Age unit:"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      background: "#EEF2F7",
+      borderRadius: 8,
+      padding: 2
+    }
+  }, [["y", lang === "el" ? "Έτη" : "Years"], ["m", lang === "el" ? "Μήνες" : "Months"]].map(([u, lbl]) => /*#__PURE__*/React.createElement("button", {
+    key: u,
+    onClick: () => setAgeUnit(u),
+    style: {
+      border: "none",
+      borderRadius: 6,
+      padding: "4px 14px",
+      fontSize: 12.5,
+      fontWeight: 700,
+      cursor: "pointer",
+      fontFamily: "inherit",
+      background: ageUnit === u ? S.teal : "transparent",
+      color: ageUnit === u ? "#fff" : S.muted
+    }
+  }, lbl)))));
 }
 function MedsTab({
   lang,
