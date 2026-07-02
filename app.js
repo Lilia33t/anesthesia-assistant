@@ -1728,7 +1728,48 @@ function setApiKey(k) {
   } catch (e) {}
 }
 
+// ---- Generic safe storage with optional TTL (ms). Falls back to in-memory. ----
+const _mem = {};
+function storeSet(key, value, ttlMs) {
+  const rec = JSON.stringify({
+    v: value,
+    exp: ttlMs ? Date.now() + ttlMs : null
+  });
+  _mem[key] = rec;
+  try {
+    window.localStorage.setItem(key, rec);
+  } catch (e) {}
+}
+function storeGet(key) {
+  let raw = null;
+  try {
+    raw = window.localStorage.getItem(key);
+  } catch (e) {}
+  if (raw == null) raw = _mem[key] || null;
+  if (raw == null) return null;
+  try {
+    const rec = JSON.parse(raw);
+    if (rec.exp && Date.now() > rec.exp) {
+      storeDel(key);
+      return null;
+    }
+    return rec.v;
+  } catch (e) {
+    return null;
+  }
+}
+function storeDel(key) {
+  delete _mem[key];
+  try {
+    window.localStorage.removeItem(key);
+  } catch (e) {}
+}
+const PATIENT_TTL = 60 * 60 * 1000; // 1 hour — same-case convenience without stale carry-over
+
 // ---- AI backend: Gemini with user's key; falls back to Claude endpoint (works in claude.ai preview) ----
+// Model cascade: newest alias first, then stable fallbacks (Google retires models yearly —
+// gemini-2.0-flash was shut down 2026-06-01, hence the alias + cascade).
+const GEMINI_MODELS = ["gemini-flash-latest", "gemini-2.5-flash", "gemini-2.5-flash-lite"];
 async function callGemini(messages, system, key) {
   const contents = messages.map(m => ({
     role: m.role === "assistant" ? "model" : "user",
@@ -1736,32 +1777,42 @@ async function callGemini(messages, system, key) {
       text: m.content
     }]
   }));
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(key)}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      systemInstruction: {
-        parts: [{
-          text: system
-        }]
+  let lastErr = null;
+  for (const model of GEMINI_MODELS) {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
       },
-      contents,
-      generationConfig: {
-        maxOutputTokens: 1500
-      }
-    })
-  });
-  if (!res.ok) {
+      body: JSON.stringify({
+        systemInstruction: {
+          parts: [{
+            text: system
+          }]
+        },
+        contents,
+        generationConfig: {
+          maxOutputTokens: 1500
+        }
+      })
+    });
+    if (res.status === 404) {
+      lastErr = new Error("HTTP_404");
+      continue;
+    } // model retired → try next
     if (res.status === 400 || res.status === 403) throw new Error("BAD_KEY");
-    throw new Error("HTTP_" + res.status);
+    if (res.status === 429) throw new Error("QUOTA");
+    if (!res.ok) {
+      lastErr = new Error("HTTP_" + res.status);
+      continue;
+    }
+    const data = await res.json();
+    const parts = data?.candidates?.[0]?.content?.parts || [];
+    const text = parts.map(p => p.text || "").filter(Boolean).join("\n");
+    if (text) return text;
+    lastErr = new Error("EMPTY");
   }
-  const data = await res.json();
-  const parts = data?.candidates?.[0]?.content?.parts || [];
-  const text = parts.map(p => p.text || "").filter(Boolean).join("\n");
-  if (!text) throw new Error("EMPTY");
-  return text;
+  throw lastErr || new Error("EMPTY");
 }
 async function callClaude(messages, system) {
   const key = getApiKey();
@@ -2177,7 +2228,7 @@ function PlanTab({
       }], sys);
       setPlan(out);
     } catch (e) {
-      setErr(e && (e.message === "NO_KEY" || e.message === "BAD_KEY") ? e.message : true);
+      setErr(e && (e.message === "NO_KEY" || e.message === "BAD_KEY" || e.message === "QUOTA") ? e.message : true);
     }
     setLoading(false);
   };
@@ -2239,7 +2290,7 @@ function PlanTab({
       fontSize: 14,
       fontWeight: 600
     }
-  }, err === "NO_KEY" ? lang === "el" ? "Χρειάζεται Gemini API key — πρόσθεσέ το στο πεδίο πάνω. 🔑" : "A Gemini API key is needed — add it in the field above. 🔑" : err === "BAD_KEY" ? lang === "el" ? "Το κλειδί δεν έγινε δεκτό — έλεγξέ το και ξαναπροσπάθησε." : "The key was rejected — check it and try again." : t.errAI), plan && /*#__PURE__*/React.createElement("div", {
+  }, err === "NO_KEY" ? lang === "el" ? "Χρειάζεται Gemini API key — πρόσθεσέ το στο πεδίο πάνω. 🔑" : "A Gemini API key is needed — add it in the field above. 🔑" : err === "QUOTA" ? lang === "el" ? "Εξαντλήθηκε προσωρινά το δωρεάν όριο — δοκίμασε ξανά σε λίγα λεπτά." : "Free-tier quota temporarily exceeded — try again in a few minutes." : err === "BAD_KEY" ? lang === "el" ? "Το κλειδί δεν έγινε δεκτό — έλεγξέ το και ξαναπροσπάθησε." : "The key was rejected — check it and try again." : t.errAI), plan && /*#__PURE__*/React.createElement("div", {
     style: {
       background: S.card,
       borderRadius: 14,
@@ -2278,7 +2329,7 @@ function AITab({
   sex
 }) {
   const t = T[lang];
-  const [msgs, setMsgs] = useState([]);
+  const [msgs, setMsgs] = useState(() => storeGet("aa_chat") || []);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const endRef = useRef(null);
@@ -2287,6 +2338,13 @@ function AITab({
       behavior: "smooth"
     });
   }, [msgs, loading]);
+  useEffect(() => {
+    if (msgs.length) storeSet("aa_chat", msgs.slice(-30));else storeDel("aa_chat");
+  }, [msgs]);
+  const clearChat = () => {
+    setMsgs([]);
+    storeDel("aa_chat");
+  };
   const send = async () => {
     if (!input.trim() || loading) return;
     const userMsg = input.trim();
@@ -2309,7 +2367,7 @@ function AITab({
         content: out
       }]);
     } catch (e) {
-      const msg = e && e.message === "NO_KEY" ? lang === "el" ? "Χρειάζεται Gemini API key — πρόσθεσέ το στο πεδίο 🔑 πάνω από τη συνομιλία." : "A Gemini API key is needed — add it in the 🔑 field above the chat." : e && e.message === "BAD_KEY" ? lang === "el" ? "Το κλειδί δεν έγινε δεκτό — έλεγξέ το (πρέπει να αρχίζει με AIza) και ξαναπροσπάθησε." : "The key was rejected — check it (should start with AIza) and try again." : t.errAI;
+      const msg = e && e.message === "NO_KEY" ? lang === "el" ? "Χρειάζεται Gemini API key — πρόσθεσέ το στο πεδίο 🔑 πάνω από τη συνομιλία." : "A Gemini API key is needed — add it in the 🔑 field above the chat." : e && e.message === "QUOTA" ? lang === "el" ? "Εξαντλήθηκε προσωρινά το δωρεάν όριο του Gemini — δοκίμασε ξανά σε λίγα λεπτά." : "Gemini free-tier quota temporarily exceeded — try again in a few minutes." : e && e.message === "BAD_KEY" ? lang === "el" ? "Το κλειδί δεν έγινε δεκτό — έλεγξέ το (πρέπει να αρχίζει με AIza) και ξαναπροσπάθησε." : "The key was rejected — check it (should start with AIza) and try again." : t.errAI;
       setMsgs([...next, {
         role: "assistant",
         content: msg
@@ -2326,11 +2384,30 @@ function AITab({
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
       fontWeight: 800,
       fontSize: 18,
       color: S.ink
     }
-  }, t.aiTitle), /*#__PURE__*/React.createElement("div", {
+  }, t.aiTitle), msgs.length > 0 && /*#__PURE__*/React.createElement("button", {
+    onClick: clearChat,
+    style: {
+      border: `1.5px solid ${S.line}`,
+      background: "#fff",
+      color: S.muted,
+      borderRadius: 8,
+      padding: "4px 10px",
+      fontWeight: 700,
+      fontSize: 12,
+      cursor: "pointer",
+      fontFamily: "inherit"
+    }
+  }, lang === "el" ? "🗑 Νέα συνομιλία" : "🗑 New chat")), /*#__PURE__*/React.createElement("div", {
     style: {
       flex: 1,
       overflowY: "auto",
@@ -6992,12 +7069,28 @@ function AnesthesiaAssistant() {
     l.href = "https://fonts.googleapis.com/css2?family=Commissioner:wght@400;600;700;800&display=swap&subset=greek,latin";
     document.head.appendChild(l);
   }, []);
-  const [lang, setLang] = useState("el");
+  const [lang, setLang] = useState(() => storeGet("aa_lang") || "el");
   const [tab, setTab] = useState("meds");
-  const [weight, setWeight] = useState("");
-  const [age, setAge] = useState("");
-  const [height, setHeight] = useState("");
-  const [sex, setSex] = useState("M");
+  // Patient data persists for 1h (same-case convenience), then clears automatically
+  const [weight, setWeight] = useState(() => (storeGet("aa_patient") || {}).w || "");
+  const [age, setAge] = useState(() => (storeGet("aa_patient") || {}).a || "");
+  const [height, setHeight] = useState(() => (storeGet("aa_patient") || {}).h || "");
+  const [sex, setSex] = useState(() => (storeGet("aa_patient") || {}).s || "M");
+  useEffect(() => {
+    if (weight || age || height) {
+      storeSet("aa_patient", {
+        w: weight,
+        a: age,
+        h: height,
+        s: sex
+      }, PATIENT_TTL);
+    } else {
+      storeDel("aa_patient");
+    }
+  }, [weight, age, height, sex]);
+  useEffect(() => {
+    storeSet("aa_lang", lang);
+  }, [lang]);
   const t = T[lang];
   const tabs = [{
     id: "meds",
@@ -7139,10 +7232,14 @@ function AnesthesiaAssistant() {
       padding: "0 16px 8px",
       fontSize: 10,
       color: S.muted,
-      lineHeight: 1.4,
+      lineHeight: 1.5,
       textAlign: "center"
     }
-  }, "© ", new Date().getFullYear(), " Dr Efstathia Pistioli. ", lang === "el" ? "Με επιφύλαξη παντός δικαιώματος." : "All rights reserved."), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 700
+    }
+  }, lang === "el" ? "Δημιουργία: Dr Efstathia Pistioli" : "Created by Dr Efstathia Pistioli"), /*#__PURE__*/React.createElement("br", null), "© ", new Date().getFullYear(), " Dr Efstathia Pistioli. ", lang === "el" ? "Με επιφύλαξη παντός δικαιώματος." : "All rights reserved."), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
       borderTop: `1.5px solid ${S.line}`,
