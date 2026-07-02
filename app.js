@@ -2508,11 +2508,17 @@ function PatientBar({
     style: {
       ...fieldStyle,
       flex: 0.6,
-      minWidth: 38,
+      minWidth: 42,
+      padding: "4px 6px",
       cursor: "pointer",
       fontWeight: 800,
       color: S.teal,
-      fontFamily: "inherit"
+      fontFamily: "inherit",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize: 18,
+      lineHeight: 1
     }
   }, sex === "M" ? "♂" : "♀")));
 }
