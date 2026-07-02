@@ -1,6 +1,6 @@
 // Anesthesia Assistant — service worker
 // Bump CACHE version whenever app.js / index.html change to force an update.
-const CACHE = "anesthesia-v11";
+const CACHE = "anesthesia-v12";
 
 const APP_SHELL = [
   "./",

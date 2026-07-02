@@ -1710,21 +1710,84 @@ function doseText(d, w, lang) {
     capped
   };
 }
-async function callClaude(messages, system) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
+
+// ---- API key storage (safe: never crashes if storage unavailable) ----
+let _memKey = "";
+const KEY_STORE = "aa_gemini_key";
+function getApiKey() {
+  try {
+    return window.localStorage.getItem(KEY_STORE) || _memKey;
+  } catch (e) {
+    return _memKey;
+  }
+}
+function setApiKey(k) {
+  _memKey = k || "";
+  try {
+    k ? window.localStorage.setItem(KEY_STORE, k) : window.localStorage.removeItem(KEY_STORE);
+  } catch (e) {}
+}
+
+// ---- AI backend: Gemini with user's key; falls back to Claude endpoint (works in claude.ai preview) ----
+async function callGemini(messages, system, key) {
+  const contents = messages.map(m => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{
+      text: m.content
+    }]
+  }));
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(key)}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
-      system,
-      messages
+      systemInstruction: {
+        parts: [{
+          text: system
+        }]
+      },
+      contents,
+      generationConfig: {
+        maxOutputTokens: 1500
+      }
     })
   });
+  if (!res.ok) {
+    if (res.status === 400 || res.status === 403) throw new Error("BAD_KEY");
+    throw new Error("HTTP_" + res.status);
+  }
   const data = await res.json();
-  return data.content.map(i => i.type === "text" ? i.text : "").filter(Boolean).join("\n");
+  const parts = data?.candidates?.[0]?.content?.parts || [];
+  const text = parts.map(p => p.text || "").filter(Boolean).join("\n");
+  if (!text) throw new Error("EMPTY");
+  return text;
+}
+async function callClaude(messages, system) {
+  const key = getApiKey();
+  if (key) return callGemini(messages, system, key);
+  // No key: try the Anthropic endpoint (works inside claude.ai preview only)
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system,
+        messages
+      })
+    });
+    if (!res.ok) throw new Error("HTTP_" + res.status);
+    const data = await res.json();
+    const out = data.content.map(i => i.type === "text" ? i.text : "").filter(Boolean).join("\n");
+    if (!out) throw new Error("EMPTY");
+    return out;
+  } catch (e) {
+    throw new Error("NO_KEY");
+  }
 }
 
 // Build a concise patient-context string for the AI tabs (includes BMI when possible)
@@ -2114,7 +2177,7 @@ function PlanTab({
       }], sys);
       setPlan(out);
     } catch (e) {
-      setErr(true);
+      setErr(e && (e.message === "NO_KEY" || e.message === "BAD_KEY") ? e.message : true);
     }
     setLoading(false);
   };
@@ -2176,7 +2239,7 @@ function PlanTab({
       fontSize: 14,
       fontWeight: 600
     }
-  }, t.errAI), plan && /*#__PURE__*/React.createElement("div", {
+  }, err === "NO_KEY" ? lang === "el" ? "Χρειάζεται Gemini API key — πρόσθεσέ το στο πεδίο πάνω. 🔑" : "A Gemini API key is needed — add it in the field above. 🔑" : err === "BAD_KEY" ? lang === "el" ? "Το κλειδί δεν έγινε δεκτό — έλεγξέ το και ξαναπροσπάθησε." : "The key was rejected — check it and try again." : t.errAI), plan && /*#__PURE__*/React.createElement("div", {
     style: {
       background: S.card,
       borderRadius: 14,
@@ -2246,9 +2309,10 @@ function AITab({
         content: out
       }]);
     } catch (e) {
+      const msg = e && e.message === "NO_KEY" ? lang === "el" ? "Χρειάζεται Gemini API key — πρόσθεσέ το στο πεδίο 🔑 πάνω από τη συνομιλία." : "A Gemini API key is needed — add it in the 🔑 field above the chat." : e && e.message === "BAD_KEY" ? lang === "el" ? "Το κλειδί δεν έγινε δεκτό — έλεγξέ το (πρέπει να αρχίζει με AIza) και ξαναπροσπάθησε." : "The key was rejected — check it (should start with AIza) and try again." : t.errAI;
       setMsgs([...next, {
         role: "assistant",
-        content: t.errAI
+        content: msg
       }]);
     }
     setLoading(false);
@@ -2338,6 +2402,141 @@ function AITab({
     }
   }, t.send)));
 }
+function ApiKeyBar({
+  lang
+}) {
+  const el = lang === "el";
+  const [saved, setSaved] = useState(!!getApiKey());
+  const [editing, setEditing] = useState(!getApiKey());
+  const [val, setVal] = useState("");
+  const save = () => {
+    const k = val.trim();
+    if (!k) return;
+    setApiKey(k);
+    setVal("");
+    setSaved(true);
+    setEditing(false);
+  };
+  const clear = () => {
+    setApiKey("");
+    setSaved(false);
+    setEditing(true);
+  };
+  if (!editing && saved) {
+    return /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        background: S.card,
+        borderRadius: 10,
+        padding: "8px 12px",
+        border: `1.5px solid ${S.line}`
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 12.5,
+        color: S.muted,
+        flex: 1
+      }
+    }, "🔑 Gemini API key ", /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: "#3B8C6E",
+        fontWeight: 800
+      }
+    }, "✓")), /*#__PURE__*/React.createElement("button", {
+      onClick: () => setEditing(true),
+      style: {
+        border: "none",
+        background: "none",
+        color: S.teal,
+        fontWeight: 700,
+        fontSize: 12.5,
+        cursor: "pointer",
+        fontFamily: "inherit"
+      }
+    }, el ? "Αλλαγή" : "Change"), /*#__PURE__*/React.createElement("button", {
+      onClick: clear,
+      style: {
+        border: "none",
+        background: "none",
+        color: S.red,
+        fontWeight: 700,
+        fontSize: 12.5,
+        cursor: "pointer",
+        fontFamily: "inherit"
+      }
+    }, el ? "Διαγραφή" : "Remove"));
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 6,
+      background: S.card,
+      borderRadius: 12,
+      padding: "10px 12px",
+      border: `1.5px solid ${S.line}`
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12.5,
+      color: S.muted,
+      lineHeight: 1.45
+    }
+  }, el ? "Για να λειτουργήσει ο AI σύμβουλος, χρειάζεται δωρεάν Gemini API key: " : "The AI consultant needs a free Gemini API key: ", /*#__PURE__*/React.createElement("a", {
+    href: "https://aistudio.google.com/apikey",
+    target: "_blank",
+    rel: "noreferrer",
+    style: {
+      color: S.teal,
+      fontWeight: 700
+    }
+  }, "aistudio.google.com/apikey"), el ? " → Create API key → επικόλλησέ το εδώ. Αποθηκεύεται μόνο σε αυτή τη συσκευή." : " → Create API key → paste it here. Stored on this device only."), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "password",
+    value: val,
+    onChange: e => setVal(e.target.value),
+    onKeyDown: e => e.key === "Enter" && save(),
+    placeholder: el ? "Επικόλληση κλειδιού (AIza…)" : "Paste key (AIza…)",
+    autoComplete: "off",
+    style: {
+      ...inputStyle,
+      flex: 1,
+      fontSize: 13.5,
+      padding: "9px 11px"
+    }
+  }), /*#__PURE__*/React.createElement("button", {
+    onClick: save,
+    disabled: !val.trim(),
+    style: {
+      padding: "0 16px",
+      borderRadius: 10,
+      border: "none",
+      background: val.trim() ? S.teal : S.muted,
+      color: "#fff",
+      fontWeight: 700,
+      fontSize: 13.5,
+      cursor: "pointer",
+      fontFamily: "inherit"
+    }
+  }, el ? "Αποθήκευση" : "Save"), saved && /*#__PURE__*/React.createElement("button", {
+    onClick: () => setEditing(false),
+    style: {
+      border: "none",
+      background: "none",
+      color: S.muted,
+      fontWeight: 700,
+      fontSize: 13,
+      cursor: "pointer",
+      fontFamily: "inherit"
+    }
+  }, el ? "Άκυρο" : "Cancel")));
+}
 function AssistantTab({
   lang,
   weight,
@@ -2354,7 +2553,9 @@ function AssistantTab({
       gap: 12,
       height: "100%"
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement(ApiKeyBar, {
+    lang: lang
+  }), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
       gap: 4,
