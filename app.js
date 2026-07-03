@@ -263,6 +263,27 @@ const DRUGS = [{
   ciEl: "Ιστορικό κακοήθους υπερθερμίας",
   ciEn: "History of malignant hyperthermia"
 }, {
+  id: "n2o",
+  name: "Nitrous oxide (N₂O)",
+  cat: "volatile",
+  doses: [{
+    el: "MAC",
+    en: "MAC",
+    fixed: "104% (μόνο του δεν επαρκεί)"
+  }, {
+    el: "Συνήθης χρήση",
+    en: "Typical use",
+    fixed: "50–70% με O₂ (μείγμα)"
+  }, {
+    el: "Επίδραση MAC-sparing",
+    en: "MAC-sparing effect",
+    fixed: "~1% N₂O ≈ 1% μείωση MAC πτητικού"
+  }],
+  notesEl: "Αναλγητικό/αγχολυτικό αέριο, ταχεία έναρξη/αποδρομή. Μειώνει την απαιτούμενη συγκέντρωση πτητικού (αθροιστικό MAC). Second-gas effect, diffusion hypoxia στην αποδρομή (100% O₂). Αδρανοποιεί βιταμίνη B12 (παρατεταμένη έκθεση).",
+  notesEn: "Analgesic/anxiolytic gas, rapid on/offset. Reduces required volatile (additive MAC). Second-gas effect, diffusion hypoxia on emergence (100% O₂). Inactivates vitamin B12 (prolonged exposure).",
+  ciEl: "Πνευμοθώρακας, εντερική απόφραξη, μέση/κόλπος αέρα, πνευμοκρανίο, εμβολή αέρα, πρώιμη εγκυμοσύνη, ↑B12/φυλλικό έλλειμμα",
+  ciEn: "Pneumothorax, bowel obstruction, air-filled spaces, pneumocephalus, air embolism, early pregnancy, B12/folate deficiency"
+}, {
   id: "fentanyl",
   name: "Fentanyl",
   cat: "opioid",
@@ -1376,15 +1397,15 @@ const CATS = [{
   en: "Induction"
 }, {
   id: "volatile",
-  el: "Πτητικά",
-  en: "Volatiles"
+  el: "Αέρια",
+  en: "Gases"
 }, {
   id: "opioid",
   el: "Οπιοειδή",
   en: "Opioids"
 }, {
   id: "nmb",
-  el: "Μυοχαλαρωτικά",
+  el: "Π.Ν.Αποκλειστές",
   en: "NMBs"
 }, {
   id: "reversal",
@@ -7401,6 +7422,83 @@ function PostopAnalgesiaCard({
   }, el ? "Οπιοειδή: τακτική εκτίμηση καταστολής (π.χ. POSS) & αναπνοών· προσοχή σε OSA/ηλικιωμένους. Στόχος PROSPECT: procedure-specific πολυπαραγοντική με ελάχιστα οπιοειδή." : "Opioids: regular sedation (e.g. POSS) & RR checks; caution in OSA/elderly. PROSPECT goal: procedure-specific multimodal with minimal opioids."));
 }
 
+// ============ SOURCES & REFERENCES ============
+function ReferencesCard({
+  lang
+}) {
+  const el = lang === "el";
+  const Group = ({
+    title,
+    items
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 4
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 800,
+      fontSize: 13,
+      color: S.teal,
+      letterSpacing: 0.2,
+      marginBottom: 4
+    }
+  }, title), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 5
+    }
+  }, items.map((it, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      fontSize: 12,
+      color: S.ink,
+      lineHeight: 1.5,
+      background: S.bg,
+      borderRadius: 8,
+      padding: "7px 11px"
+    }
+  }, it))));
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.muted,
+      lineHeight: 1.5
+    }
+  }, el ? "Το περιεχόμενο βασίζεται στις παρακάτω κατευθυντήριες οδηγίες, πρωτόκολλα και βιβλιογραφικές πηγές. Οι δόσεις προσαρμόζονται στην κλινική πρακτική και πρέπει πάντα να επαληθεύονται με τις επίσημες πηγές." : "Content is based on the guidelines, protocols and references below. Doses are adapted to clinical practice and must always be verified against the official sources."), /*#__PURE__*/React.createElement(Group, {
+    title: el ? "Πρωτόκολλα / Θεσμικά" : "Protocols / Institutional",
+    items: [el ? "Πρωτόκολλα Β' Πανεπιστημιακής Αναισθησιολογικής Κλινικής, ΠΓΝ «Αττικόν» (περιεγχειρητική & παιδιατρική διαχείριση, μετεγχειρητική αναλγησία, φάρμακα επείγουσας)." : "Protocols, 2nd University Dept of Anaesthesiology, Attikon University Hospital (perioperative & paediatric management, postop analgesia, emergency drugs)."]
+  }), /*#__PURE__*/React.createElement(Group, {
+    title: el ? "Αεραγωγός & Αναζωογόνηση" : "Airway & Resuscitation",
+    items: ["Difficult Airway Society (DAS) Guidelines — unanticipated difficult intubation; awake tracheal intubation.", el ? "Ευρωπαϊκό Συμβούλιο Αναζωογόνησης (ERC) & APLS — αλγόριθμοι/δόσεις παιδιατρικής & ενήλικης αναζωογόνησης." : "European Resuscitation Council (ERC) & APLS — paediatric & adult resuscitation algorithms/doses."]
+  }), /*#__PURE__*/React.createElement(Group, {
+    title: el ? "Περιοχική & Αναλγησία" : "Regional & Analgesia",
+    items: ["ASRA — Local Anaesthetic Systemic Toxicity (LAST) checklist & regional/anticoagulation guidelines.", "PROSPECT (Procedure-Specific Postoperative Pain Management) recommendations.", el ? "Κατευθυντήριες PONV — Consensus Guidelines for the Management of Postoperative Nausea and Vomiting." : "PONV — Consensus Guidelines for the Management of Postoperative Nausea and Vomiting."]
+  }), /*#__PURE__*/React.createElement(Group, {
+    title: el ? "Αιμορραγία & Πήξη" : "Haemorrhage & Coagulation",
+    items: [el ? "ESAIC — Κατευθυντήριες διαχείρισης σοβαρής περιεγχειρητικής αιμορραγίας· ερμηνεία ROTEM/TEG (viscoelastic-guided)." : "ESAIC — Management of severe perioperative bleeding; ROTEM/TEG (viscoelastic-guided) interpretation.", "European trauma guideline (management of major bleeding & coagulopathy following trauma)."]
+  }), /*#__PURE__*/React.createElement(Group, {
+    title: el ? "Ειδικές καταστάσεις" : "Special situations",
+    items: ["AAGBI / SOBA — Peri-operative management of the obese surgical patient.", "AAGBI — Malignant Hyperthermia & Anaphylaxis (perioperative) guidelines; MHAUS resources.", "CPOC / Centre for Perioperative Care — diabetes, GLP-1 & SGLT2 perioperative guidance.", "ACC/AHA — Perioperative cardiovascular evaluation (stent/DAPT timing).", el ? "Age-adjusted MAC — Nickalls & Mapleson· meta-regression πτητικών (MAC ~6.4%/δεκαετία)." : "Age-adjusted MAC — Nickalls & Mapleson; volatile MAC meta-regression (~6.4%/decade)."]
+  }), /*#__PURE__*/React.createElement(Group, {
+    title: el ? "Φαρμακολογία & Γενική αναφορά" : "Pharmacology & General reference",
+    items: ["British National Formulary (BNF / BNFc) — drug dosing reference.", el ? "Summary of Product Characteristics (SmPC/ΠΧΠ) των επιμέρους φαρμάκων." : "Summary of Product Characteristics (SmPC) of individual drugs.", "Standard anaesthesia texts (e.g. Miller's Anesthesia; Oxford Handbook of Anaesthesia) for reference ranges."]
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.5,
+      marginTop: 4
+    }
+  }, el ? "Οι κατευθυντήριες οδηγίες ενημερώνονται· ανατρέχετε πάντα στην τρέχουσα επίσημη έκδοση. Το app δεν συνδέεται με τους φορείς αυτούς και δεν αναπαράγει αυτούσιο προστατευμένο περιεχόμενο — αποτελεί περίληψη/προσαρμογή για κλινική υποστήριξη." : "Guidelines are updated periodically; always consult the current official version. This app is not affiliated with these bodies and does not reproduce copyrighted content verbatim — it is a summary/adaptation for clinical support."));
+}
+
 // ============ ROTEM / TEG INTERPRETATION ============
 function ROTEMCard({
   lang,
@@ -8247,6 +8345,11 @@ function ToolsTab({
     en: "ROTEM / TEG (interpretation)",
     icon: "🩸"
   }, {
+    id: "refs",
+    el: "Πηγές & Βιβλιογραφία",
+    en: "Sources & References",
+    icon: "📚"
+  }, {
     id: "guidelines",
     el: "Κατευθυντήριες",
     en: "Guidelines",
@@ -8404,6 +8507,8 @@ function ToolsTab({
     }), sec.id === "rotem" && /*#__PURE__*/React.createElement(ROTEMCard, {
       lang: lang,
       weight: weight
+    }), sec.id === "refs" && /*#__PURE__*/React.createElement(ReferencesCard, {
+      lang: lang
     }), sec.id === "vent" && /*#__PURE__*/React.createElement(VentilationCalc, {
       lang: lang,
       height: height,
