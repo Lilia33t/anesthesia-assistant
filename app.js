@@ -1203,12 +1203,12 @@ const DRUGS = [{
     el: "Κακοήθης Υπερπυρεξία",
     en: "Malignant Hyperthermia",
     lo: 2.5,
-    hi: 2.5,
+    hi: 8,
     unit: "mg/kg",
     max: null
   }],
-  notesEl: "Επανάληψη έως 10 mg/kg. Διακοπή πτητικών, 100% O2, υπερκαλιαιμία/οξέωση.",
-  notesEn: "Repeat up to 10 mg/kg. Stop volatiles, 100% O2, treat hyperkalemia/acidosis.",
+  notesEl: "Bolus 2.5 mg/kg, τιτλοποίηση κατά ΚΣ/δυσκαμψία/θερμοκρασία· επανάληψη έως 10 mg/kg. Διακοπή πτητικών, 100% O2, υπερκαλιαιμία/οξέωση.",
+  notesEn: "Bolus 2.5 mg/kg, titrate to HR/rigidity/temperature; repeat up to 10 mg/kg. Stop volatiles, 100% O2, treat hyperkalemia/acidosis.",
   ciEl: "—",
   ciEn: "—"
 }, {
@@ -1732,6 +1732,64 @@ const CHECKLISTS = [
   color: "#1E3A5F",
   stepsEl: ["Έλεγχος: αναρρόφηση, 2 λαρυγγοσκόπια, bougie, ΕΤΤ ×2, φάρμακα", "Προοξυγόνωση 3–5 min (EtO2 >85%) ή 8 βαθιές αναπνοές", "Θέση: ramped/sniffing — προσθήκη HFNO αν διαθέσιμο", "Εισαγωγή: προποφόλη/ετομιδάτη/κεταμίνη + οπιοειδές", "Ροκουρόνιο 1–1.2 mg/kg ή σουκινυλοχολίνη 1–1.5 mg/kg", "Πίεση κρικοειδούς (αμφιλεγόμενη — άρση αν δυσχέρεια)", "Διασωλήνωση — επιβεβαίωση EtCO2", "Σχέδιο Β έτοιμο: VL, SGA, FONA kit"],
   stepsEn: ["Check: suction, 2 laryngoscopes, bougie, ETT ×2, drugs", "Preoxygenate 3–5 min (EtO2 >85%) or 8 deep breaths", "Position: ramped/sniffing — add HFNO if available", "Induction: propofol/etomidate/ketamine + opioid", "Rocuronium 1–1.2 mg/kg or succinylcholine 1–1.5 mg/kg", "Cricoid pressure (controversial — release if difficulty)", "Intubate — confirm EtCO2", "Plan B ready: VL, SGA, FONA kit"]
+},
+// ---------- Missing from ESA Emergency Quick Reference Guide ----------
+{
+  id: "newborn",
+  cat: "ob",
+  titleEl: "Ανάνηψη Νεογνού (Newborn Life Support)",
+  titleEn: "Newborn Life Support",
+  color: "#C9544B",
+  stepsEl: ["Σε κάθε στάδιο ρωτήστε: χρειάζεστε βοήθεια;", "Γέννηση: στέγνωμα μωρού, αφαίρεση υγρών πετσετών & κάλυψη, εκκίνηση χρόνου", "30 s: εκτίμηση τόνου, αναπνοής & καρδιακής συχνότητας", "60 s: αν gasping ή άπνοια → άνοιγμα αεραγωγού, 5 αναπνοές διάτασης (inflation breaths)", "Επανεκτίμηση: αν δεν αυξάνεται η ΚΣ, ελέγξτε κίνηση θώρακα", "Αν ο θώρακας δεν κινείται: επανέλεγχος θέσης κεφαλής, 2-χειριστών αεραγωγός, επανάληψη inflation breaths, SpO2 monitoring", "Όταν κινείται ο θώρακας: αν ΚΣ μη ανιχνεύσιμη ή αργή (<60) → θωρακικές συμπιέσεις 3:1 (3 συμπιέσεις ανά αναπνοή)", "Επανεκτίμηση ΚΣ κάθε 30 s· αν <60 → φλεβική πρόσβαση & φάρμακα", "Αποδεκτό προαγωγικό (pre-ductal) SpO2: 2min 60%, 3min 70%, 4min 80%, 5min 85%, 10min 90%"],
+  stepsEn: ["At all stages ask: do you need help?", "Birth: dry the baby, remove wet towels & cover, start the clock", "30 s: assess tone, breathing & heart rate", "60 s: if gasping or not breathing → open airway, give 5 inflation breaths", "Re-assess: if no increase in HR, look for chest movement", "If chest not moving: recheck head position, 2-person airway, repeat inflation breaths, consider SpO2 monitoring", "When chest moving: if HR undetectable or slow (<60) → chest compressions 3:1 (3 compressions per breath)", "Reassess HR every 30 s; if <60 → venous access & drugs", "Acceptable pre-ductal SpO2: 2min 60%, 3min 70%, 4min 80%, 5min 85%, 10min 90%"]
+}, {
+  id: "airway_pressure",
+  cat: "airway",
+  titleEl: "Αυξημένη Πίεση Αεραγωγού (Διαφορική)",
+  titleEn: "Increased Airway Pressure (Differential)",
+  color: "#D98A38",
+  stepsEl: ["ΔΙΑΚΡΙΝΕΤΕ — Κύκλωμα: ρυθμίσεις αναπνευστήρα, τσάκισμα σωλήνωσης, βλάβη βαλβίδας, βλάβη O2-flush", "Αεραγωγός: λαρυγγόσπασμος (αν μη διασωληνωμένος), θέση/μέγεθος σωλήνα, δάγκωμα/τσάκισμα σωλήνα", "Ασθενής: βρογχόσπασμος, πνευμοθώρακας, πνευμοπεριτόναιο, τραχειακή παθολογία (ξένο σώμα/εκκρίσεις/όγκος), δυσκαμψία θώρακα, παχυσαρκία, κυψελιδική παθολογία (οίδημα/λοίμωξη/ARDS/θλάση/ίνωση)", "ΕΝΕΡΓΕΙΕΣ — Έλεγχος: μυοχάλαση, βάθος αναισθησίας, καπνογράφημα (βρογχόσπασμος; τσάκισμα;), σπιρομετρία (ενδοβρογχική διασωλήνωση; τσάκισμα;), κύκλωμα σωλήνωσης", "Πράξεις: ακρόαση, χειροκίνητος αερισμός, αναρρόφηση βρογχικού δέντρου, εύκαμπτη βρογχοσκόπηση, αν LMA → σκέψη ETT", "Πιο πιθανά: ανεπαρκής μυοχάλαση, θέση ETT, λαρυγγόσπασμος, ρυθμίσεις αναπνευστήρα", "Αν επιμένει: επανεξέταση αιτίων ασθενούς, κλήση βοήθειας, επανάληψη checklist μαζί"],
+  stepsEn: ["DISTINGUISH — Circuit: respirator settings, kinked tubing, valve failure, O2-flush failure", "Airway: laryngospasm (if not intubated), tube position/size, blocked or kinked tube (biting)", "Patient: bronchospasm, pneumothorax, pneumoperitoneum, tracheal pathology (foreign body/secretions/tumour), chest wall rigidity, obesity, alveolar pathology (oedema/infection/ARDS/contusion/fibrosis)", "ACTIONS — Check: muscle relaxation, depth of anaesthesia, capnogram (bronchospasm? kink?), spirometry (endobronchial? kink?), tubing circuit", "Do: auscultate, manually ventilate, suction bronchial tree, flexible bronchoscopy, if LMA → consider ETT", "Most likely: insufficient relaxation, ETT position, laryngospasm, respirator settings", "If persists: review patient causes, call for assistance, repeat checklist together"]
+}, {
+  id: "hypocapnia",
+  cat: "airway",
+  titleEl: "Διαφορική: Υποκαπνία / Χαμηλό etCO₂",
+  titleEn: "DDx Hypocapnia / Low etCO₂",
+  color: "#1E3A5F",
+  stepsEl: ["ΚΑΘΟΛΟΥ etCO₂ → ΟΧΙ αερισμός, ΟΧΙ βατός αεραγωγός!!! Οισοφαγική διασωλήνωση; Αποσύνδεση/βλάβη αναπνευστήρα; Άπνοια; Ανακοπή;", "Μειωμένη παραγωγή CO₂: υποθερμία, βαθιά αναισθησία, υποθυρεοειδισμός", "Αυξημένη αποβολή CO₂: (αυτόματος) υπεραερισμός, ακατάλληλη ρύθμιση αναπνευστήρα", "Μειωμένη μεταφορά CO₂ στο αίμα: σοβαρή υπόταση, αναφυλαξία, ανακοπή, πνευμονική εμβολή", "Μειωμένη μεταφορά CO₂ στον πνεύμονα: απόφραξη ETT, λάθος θέση αεραγωγού (ενδοβρογχική), λαρυγγόσπασμος, σοβαρός βρογχόσπασμος", "Αραίωση δείγματος: αποσύνδεση, αραίωση με αέρα δωματίου, λάθος θέση δειγματολήπτη, υψηλή ροή φρέσκου αερίου", "Πιο πιθανά: αποκλεισμός λάθος θέσης αεραγωγού (οισοφαγική), υπεραερισμός, βρογχόσπασμος, λαρυγγόσπασμος, υπόταση"],
+  stepsEn: ["NO etCO₂ → NO VENTILATION, NO PATENT AIRWAY!!! Oesophageal intubation? Disconnection/respirator failure? Apnoea? Cardiac arrest?", "Diminished CO₂ production: hypothermia, deep anaesthesia, hypothyroidism", "Enhanced CO₂ excretion: (spontaneous) hyperventilation, inappropriate ventilator setting", "Reduced CO₂ transport in blood: severe hypotension, anaphylaxis, cardiac arrest, pulmonary embolus", "Reduced CO₂ transport in lung: ETT obstruction, incorrect airway placement (endobronchial), laryngospasm, severe bronchospasm", "Sampling dilution: disconnection, room-air dilution, gas sampler misplaced, high fresh gas flow", "Most likely: rule out malplaced airway (oesophageal), hyperventilation, bronchospasm, laryngospasm, hypotension"]
+}, {
+  id: "hypercapnia",
+  cat: "airway",
+  titleEl: "Διαφορική: Υπερκαπνία / Υψηλό etCO₂",
+  titleEn: "DDx Hypercapnia / High etCO₂",
+  color: "#1E3A5F",
+  stepsEl: ["Αυξημένη παραγωγή CO₂ (εξωγενής): εμφύσηση CO₂ (λαπαροσκόπηση), χορήγηση διττανθρακικών, επανεισπνοή (βαλβίδες, soda lime, ροή φρέσκου αερίου)", "Αυξημένη παραγωγή CO₂ (ενδογενής): επώδυνο ερέθισμα, αύξηση θερμοκρασίας, επαναιμάτωση μετά tourniquet, σήψη, κακοήθης υπερθερμία, θυρεοτοξική κρίση, κακόηθες νευροληπτικό σύνδρομο", "Μειωμένη αποβολή CO₂ (πνεύμονες): υποαερισμός (αυτόματος/ρυθμίσεις), βρογχόσπασμος/άσθμα, ΧΑΠ", "Μειωμένη αποβολή CO₂ (κύκλωμα): αυξημένος νεκρός χώρος, ανεπαρκής ροή φρέσκου αερίου, δυσλειτουργία βαλβίδας, λάθος ρυθμίσεις αναπνευστήρα", "Πιο πιθανά: υποαερισμός, εξαντλημένη soda lime, ρύθμιση ροής φρέσκου αερίου"],
+  stepsEn: ["Increased CO₂ production (exogenous): CO₂ insufflation (laparoscopy), bicarbonate administration, re-breathing (valves, soda lime, fresh gas flow)", "Increased CO₂ production (endogenous): painful stimulus, increased temperature, reperfusion after tourniquet, sepsis, malignant hyperthermia, thyroid storm, neuroleptic malignant syndrome", "Reduced CO₂ excretion (lungs): hypoventilation (spontaneous/settings), bronchospasm/asthma, COPD", "Reduced CO₂ excretion (circuit): increased dead space, inadequate fresh gas flow, valve malfunction, incorrect respirator settings", "Most likely: hypoventilation, exhausted soda lime, fresh gas flow setting"]
+}, {
+  id: "lv_shock",
+  cat: "circ",
+  titleEl: "Καταπληξία Αριστερής Κοιλίας (LV Shock)",
+  titleEn: "Left Ventricular Shock",
+  color: "#C9544B",
+  stepsEl: ["Υπόταση; → Echo/TEE σε διασωληνωμένο ασθενή", "Αν ΟΧΙ υπόταση αλλά SVR >1600 ή στενή πίεση παλμού → μείωση afterload (fenoldopam, νιτροπρωσσικό, nesiritide, ACEi)", "Μείωση PEEP", "Έλεγχος CVP & SPV/PPV", "CVP <12 mmHg ή SPV/PPV >12% → αν Hct <27–32% δώστε pRBC, αλλιώς plasma expander", "CVP >22, χαμηλό SvO2/ScvO2, SPV/PPV >15% → αποκλεισμός επιπωματισμού & πνευμοθώρακα υπό τάση", "CVP 12–22 & SPV/PPV <12% → έλεγχος SVR & πίεσης παλμού", "SVR <800 ή ευρεία πίεση παλμού → βαζοπρεσσίνη/νοραδρεναλίνη/αδρεναλίνη ± δοβουταμίνη/φαινυλεφρίνη (διατήρηση SVR <800)", "SVR >1000 ή στενή πίεση παλμού → δοβουταμίνη/αδρεναλίνη/IABP/VAD"],
+  stepsEn: ["Hypotensive? → Echo/TEE in intubated patient", "If NOT hypotensive but SVR >1600 or narrow pulse pressure → afterload reduction (fenoldopam, nitroprusside, nesiritide, ACEi)", "Decrease PEEP", "Check CVP & SPV/PPV", "CVP <12 mmHg or SPV/PPV >12% → if Hct <27–32% give pRBC, else plasma expander", "CVP >22, low SvO2/ScvO2, SPV/PPV >15% → rule out tamponade & tension PTX", "CVP 12–22 & SPV/PPV <12% → check SVR & pulse pressure", "SVR <800 or wide pulse pressure → vasopressin/norepinephrine/epi ± dobutamine/phenylephrine (maintain SVR <800)", "SVR >1000 or narrow pulse pressure → dobutamine/epinephrine/IABP/VAD"]
+}, {
+  id: "rv_shock",
+  cat: "circ",
+  titleEl: "Καταπληξία Δεξιάς Κοιλίας (RV Shock)",
+  titleEn: "Right Ventricular Shock",
+  color: "#C9544B",
+  stepsEl: ["Υπόταση; → Echo/TEE σε διασωληνωμένο ασθενή", "Δώστε O2, μείωση PEEP", "Υποογκαιμία / fluid responsive (CVP <12–16); → αν Hct <27–32% δώστε pRBC, αλλιώς plasma expanders", "CVP >20, SvO2/ScvO2 <65% → αποκλεισμός επιπωματισμού & πνευμοθώρακα υπό τάση", "Γνωστή/πιθανή ↑ PVR → O2, σκέψη μιλρινόνης ± βαζοπρεσσίνης, iNO", "Μειωμένη στεφανιαία αιμάτωση → φαινυλεφρίνη/νοραδρεναλίνη/βαζοπρεσσίνη (σημ.: μπορεί να ↑ PVR)", "Μειωμένη συσταλτικότητα RV → δοβουταμίνη/μιλρινόνη/αδρεναλίνη"],
+  stepsEn: ["Hypotensive? → Echo/TEE in intubated patient", "Give O2, decrease PEEP", "Hypovolemic / fluid responsive (CVP <12–16)? → if Hct <27–32% give pRBC, else plasma expanders", "CVP >20, SvO2/ScvO2 <65% → rule out tamponade & tension PTX", "Known/suspected ↑ PVR → O2, consider milrinone ± vasopressin, iNO", "Decreased coronary perfusion → phenylephrine/norepinephrine/vasopressin (note: may ↑ PVR)", "Diminished RV contractility → dobutamine/milrinone/epinephrine"]
+}, {
+  id: "hypertension_ddx",
+  cat: "circ",
+  titleEl: "Διαφορική: Υπέρταση",
+  titleEn: "DDx Hypertension",
+  color: "#D98A38",
+  stepsEl: ["Αναισθησιολογικά αίτια: πολύ ελαφριά αναισθησία, πόνος, υποξία, υπερκαπνία, κακοήθης υπερθερμία, φάρμακα (κοκαΐνη), ύψος μορφοτροπέα (invasive monitoring)", "Χειρουργικά αίτια: tourniquet, αορτικός αποκλεισμός, καρωτιδική ενδαρτηρεκτομή, διέγερση τασεοϋποδοχέων, πνευμοπεριτόναιο", "Αίτια ασθενούς: ιδιοπαθής υπέρταση, rebound (απότομη διακοπή β-αποκλειστή), πλήρης ουροδόχος κύστη, προεκλαμψία, νεφρική νόσος, φαιοχρωμοκύττωμα, θυρεοτοξική κρίση, ↑ ΕΚΠ", "Πιο πιθανά: διασωλήνωση & αφύπνιση, ανεπαρκής αναισθησία/αναλγησία, πνευμοπεριτόναιο, φάρμακα, ιδιοπαθής υπέρταση", "Αντιμετώπιση: βάθυνση αναισθησίας/αναλγησία πρώτα· αντιυπερτασικά βλ. Φάρμακα (λαβηταλόλη, εσμολόλη, ουραπιδίλη, νικαρδιπίνη, GTN)"],
+  stepsEn: ["Anaesthesia causes: too light anaesthesia, pain, hypoxia, hypercapnia, malignant hyperthermia, drugs (cocaine), transducer height (invasive monitoring)", "Surgery causes: tourniquet, aortic clamping, carotid endarterectomy, baroreceptor stimulation, pneumoperitoneum", "Patient causes: essential hypertension, rebound (sudden β-blocker stop), full bladder, pre-eclampsia, renal disease, phaeochromocytoma, thyroid storm, raised ICP", "Most likely: intubation & emergence, inadequate anaesthesia/analgesia, pneumoperitoneum, drugs, essential hypertension", "Management: deepen anaesthesia/analgesia first; antihypertensives see Meds (labetalol, esmolol, urapidil, nicardipine, GTN)"]
 }];
 
 // ============ TCI MODELS ============
@@ -7489,6 +7547,9 @@ function ReferencesCard({
   }), /*#__PURE__*/React.createElement(Group, {
     title: el ? "Φαρμακολογία & Γενική αναφορά" : "Pharmacology & General reference",
     items: ["British National Formulary (BNF / BNFc) — drug dosing reference.", el ? "Summary of Product Characteristics (SmPC/ΠΧΠ) των επιμέρους φαρμάκων." : "Summary of Product Characteristics (SmPC) of individual drugs.", "Standard anaesthesia texts (e.g. Miller's Anesthesia; Oxford Handbook of Anaesthesia) for reference ranges."]
+  }), /*#__PURE__*/React.createElement(Group, {
+    title: el ? "Ανάπτυξη" : "Development",
+    items: [el ? "Αναπτύχθηκε με τη χρήση εργαλείων τεχνητής νοημοσύνης (AI) για τη δόμηση και κωδικοποίηση, με κλινική επιμέλεια, επιλογή και επαλήθευση περιεχομένου από τη Dr Efstathia Pistioli, βάσει των αναφερόμενων πηγών." : "Developed using artificial intelligence (AI) tools for structuring and coding, with clinical curation, content selection and verification by Dr Efstathia Pistioli, based on the referenced sources."]
   }), /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 10.5,
@@ -8345,11 +8406,6 @@ function ToolsTab({
     en: "ROTEM / TEG (interpretation)",
     icon: "🩸"
   }, {
-    id: "refs",
-    el: "Πηγές & Βιβλιογραφία",
-    en: "Sources & References",
-    icon: "📚"
-  }, {
     id: "guidelines",
     el: "Κατευθυντήριες",
     en: "Guidelines",
@@ -8394,6 +8450,11 @@ function ToolsTab({
     el: "Context-Sensitive Half-Time",
     en: "Context-Sensitive Half-Time",
     icon: "⏱"
+  }, {
+    id: "refs",
+    el: "Πηγές & Βιβλιογραφία",
+    en: "Sources & References",
+    icon: "📚"
   }];
   const [scoreOpen, setScoreOpen] = useState("apfel");
   const allScores = [...SCORES, ...MULTI_SCORES];
