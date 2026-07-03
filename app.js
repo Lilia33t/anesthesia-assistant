@@ -1686,7 +1686,7 @@ const CHECKLISTS = [
   titleEl: "Εμβολή Αμνιακού Υγρού",
   titleEn: "Amniotic Fluid Embolism",
   color: "#C9544B",
-  stepsEl: ["Κλήση για βοήθεια (μαιευτική/αναισθησία/ΜΕΘ/αιμοδοσία)", "ABC: FiO2 100%, διασωλήνωση — ACLS αν ανακοπή", "Αριστερή μετατόπιση μήτρας", "Περιθανάτια καισαρική εντός 5 min αν ανακοπή μητέρας", "Καρδιαγγειακή κατάρρευση: αγγειοσυσπαστικά, ινότροπα, αποφυγή υπερφόρτωσης δεξιάς", "Μαζική αιμορραγία/DIC: προϊόντα αίματος, τρανεξαμικό, ινωδογόνο", "Σκέψη A-OK (ατροπίνη, ονδανσετρόνη, κετορολάκη), ECMO"],
+  stepsEl: ["Κλήση για βοήθεια (μαιευτική/αναισθησία/ΜΕΘ/αιμοδοσία)", "ABC: FiO2 100%, διασωλήνωση — ACLS αν ανακοπή", "Αριστερή μετατόπιση μήτρας", "Περιθανάτια καισαρική εντός 5 min αν ανακοπή μητέρας", "Καρδιαγγειακή κατακρήμνιση: αγγειοσυσπαστικά, ινότροπα, αποφυγή υπερφόρτωσης δεξιάς", "Μαζική αιμορραγία/DIC: προϊόντα αίματος, τρανεξαμικό, ινωδογόνο", "Σκέψη A-OK (ατροπίνη, ονδανσετρόνη, κετορολάκη), ECMO"],
   stepsEn: ["Call for help (obstetrics/anesthesia/ICU/blood bank)", "ABC: FiO2 100%, intubate — ACLS if arrest", "Left uterine displacement", "Perimortem cesarean within 5 min if maternal arrest", "Cardiovascular collapse: vasopressors, inotropes, avoid RV overload", "Massive hemorrhage/DIC: blood products, tranexamic acid, fibrinogen", "Consider A-OK (atropine, ondansetron, ketorolac), ECMO"]
 },
 // ---------- SYSTEMS ----------
@@ -7560,6 +7560,1335 @@ function ReferencesCard({
   }, el ? "Οι κατευθυντήριες οδηγίες ενημερώνονται· ανατρέχετε πάντα στην τρέχουσα επίσημη έκδοση. Το app δεν συνδέεται με τους φορείς αυτούς και δεν αναπαράγει αυτούσιο προστατευμένο περιεχόμενο — αποτελεί περίληψη/προσαρμογή για κλινική υποστήριξη." : "Guidelines are updated periodically; always consult the current official version. This app is not affiliated with these bodies and does not reproduce copyrighted content verbatim — it is a summary/adaptation for clinical support."));
 }
 
+// ============ CARDIAC ANAESTHESIA ============
+function CardiacCard({
+  lang,
+  weight
+}) {
+  const el = lang === "el";
+  const w = parseFloat(weight) || 0;
+  const [view, setView] = useState("cpb");
+  const tabs = [{
+    id: "cpb",
+    el: "CPB / Ηπαρίνη",
+    en: "CPB / Heparin",
+    icon: "🩸"
+  }, {
+    id: "inotropes",
+    el: "Ινότροπα",
+    en: "Inotropes",
+    icon: "💉"
+  }, {
+    id: "weaning",
+    el: "Αποσύνδεση",
+    en: "Weaning",
+    icon: "🔄"
+  }, {
+    id: "tee",
+    el: "TEE",
+    en: "TEE",
+    icon: "📺"
+  }];
+  const SectionLabel = ({
+    children
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 800,
+      fontSize: 13,
+      color: S.teal,
+      letterSpacing: 0.2,
+      marginTop: 6
+    }
+  }, children);
+  const Row = ({
+    l,
+    v,
+    hint,
+    warn
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "baseline",
+      gap: 8,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "8px 12px",
+      boxShadow: warn ? `inset 0 0 0 1.5px ${S.amber}` : "none"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 13,
+      color: S.ink
+    }
+  }, l, hint && /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: S.muted,
+      fontSize: 11.5
+    }
+  }, " · ", hint)), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      fontSize: 14,
+      color: warn ? S.amber : S.teal,
+      fontVariantNumeric: "tabular-nums",
+      whiteSpace: "nowrap",
+      textAlign: "right"
+    }
+  }, v));
+  const Step = ({
+    n,
+    title,
+    children,
+    danger
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: S.bg,
+      borderRadius: 10,
+      padding: "10px 12px",
+      boxShadow: danger ? `inset 0 0 0 1.5px ${S.red}` : "none"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8,
+      alignItems: "baseline"
+    }
+  }, n != null && /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      fontSize: 12,
+      color: "#fff",
+      background: danger ? S.red : S.teal,
+      borderRadius: 6,
+      padding: "1px 7px",
+      flexShrink: 0
+    }
+  }, n), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 700,
+      fontSize: 13,
+      color: S.ink
+    }
+  }, title)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12.5,
+      color: S.muted,
+      lineHeight: 1.5,
+      marginTop: 4
+    }
+  }, children));
+  const Hi = ({
+    children
+  }) => /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      color: S.teal
+    }
+  }, children);
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 4,
+      flexWrap: "wrap"
+    }
+  }, tabs.map(tb => /*#__PURE__*/React.createElement("button", {
+    key: tb.id,
+    onClick: () => setView(tb.id),
+    style: {
+      flex: "1 1 22%",
+      padding: "8px 3px",
+      borderRadius: 9,
+      border: "none",
+      fontSize: 11.5,
+      fontWeight: 700,
+      cursor: "pointer",
+      fontFamily: "inherit",
+      background: view === tb.id ? S.ink : S.bg,
+      color: view === tb.id ? "#fff" : S.muted
+    }
+  }, tb.icon, " ", el ? tb.el : tb.en))), view === "cpb" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Ηπαρινισμός" : "Heparinisation"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Ηπαρίνη (φόρτιση)" : "Heparin (loading)",
+    v: w ? `${fmt(300 * w)}–${fmt(400 * w)} U` : "300–400 U/kg",
+    hint: "300–400 U/kg",
+    warn: true
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Στόχος ACT (έναρξη CPB)" : "Target ACT (start CPB)",
+    v: "> 480 s",
+    hint: el ? "έλεγχος μετά 3–5 min" : "check after 3–5 min"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Επανάληψη ACT" : "Repeat ACT",
+    v: el ? "κάθε 20–30 min" : "every 20–30 min",
+    hint: ""
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Αντίσταση στην ηπαρίνη" : "Heparin resistance",
+    v: el ? "AT III / FFP" : "AT III / FFP",
+    hint: el ? "αν ACT δεν ↑" : "if ACT won't rise"
+  }), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Πρωταμίνη (αναστροφή)" : "Protamine (reversal)"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Δόση" : "Dose",
+    v: el ? "1 mg / 100 U ηπαρίνης" : "1 mg / 100 U heparin",
+    hint: el ? "~1–1.3 mg/mg ηπαρίνης" : "~1–1.3 mg/mg heparin"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Στόχος" : "Target",
+    v: el ? "ACT στο baseline" : "ACT to baseline",
+    hint: ""
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: S.amber,
+      fontWeight: 600,
+      lineHeight: 1.45,
+      background: "#FBF3E6",
+      borderRadius: 8,
+      padding: "7px 10px"
+    }
+  }, el ? "⚠ Αργή χορήγηση (>10 min). Αντίδραση πρωταμίνης: υπόταση, πνευμονική υπέρταση, αναφυλαξία (κίνδυνος σε NPH ινσουλίνη, προηγ. έκθεση, αλλεργία ψαριού)." : "⚠ Give slowly (>10 min). Protamine reaction: hypotension, pulmonary hypertension, anaphylaxis (risk with NPH insulin, prior exposure, fish allergy)."), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Στόχοι CPB" : "CPB targets"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "MAP" : "MAP",
+    v: "50–80 mmHg",
+    hint: ""
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Ροή (flow index)" : "Flow (index)",
+    v: "2.2–2.5 L/min/m²",
+    hint: ""
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Αιμοσφαιρίνη (CPB)" : "Haematocrit (CPB)",
+    v: "Hct > 21–24%",
+    hint: ""
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Αντιινωδολυτικό" : "Antifibrinolytic",
+    v: el ? "τρανεξαμικό" : "tranexamic acid",
+    hint: el ? "διεγχειρητικά" : "intraop"
+  })), view === "inotropes" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Ινότροπα" : "Inotropes"), /*#__PURE__*/React.createElement(Row, {
+    l: "Adrenaline",
+    v: "0.01–0.5 µg/kg/min",
+    hint: el ? "ινότροπο + αγγειοσύσπαση" : "inotrope + vasoconstrict"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: "Dobutamine",
+    v: "2–20 µg/kg/min",
+    hint: el ? "β1 · ↓SVR" : "β1 · ↓SVR"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: "Dopamine",
+    v: "2–10 µg/kg/min",
+    hint: ""
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: "Milrinone",
+    v: "0.375–0.75 µg/kg/min",
+    hint: el ? "± φόρτιση 50 µg/kg" : "± load 50 µg/kg"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: "Levosimendan",
+    v: "0.05–0.2 µg/kg/min",
+    hint: el ? "Ca-sensitiser · 24h" : "Ca-sensitiser · 24h"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: "Isoprenaline",
+    v: "0.02–0.2 µg/kg/min",
+    hint: el ? "χρονότροπο (βραδυκαρδία)" : "chronotrope (bradycardia)"
+  }), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Αγγειοσυσπαστικά" : "Vasopressors"), /*#__PURE__*/React.createElement(Row, {
+    l: "Noradrenaline",
+    v: "0.02–0.5 µg/kg/min",
+    hint: "α > β"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: "Vasopressin",
+    v: "0.01–0.04 U/min",
+    hint: el ? "αγγειοπληγία · διατηρεί PVR" : "vasoplegia · spares PVR"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: "Phenylephrine",
+    v: "0.1–1 µg/kg/min",
+    hint: el ? "καθαρό α" : "pure α"
+  }), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Πνευμονική υπέρταση / RV" : "Pulmonary HTN / RV"), /*#__PURE__*/React.createElement(Row, {
+    l: "Milrinone",
+    v: "0.375–0.75 µg/kg/min",
+    hint: el ? "↓PVR + ινότροπο" : "↓PVR + inotrope"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "iNO (εισπνεόμενο NO)" : "iNO (inhaled)",
+    v: "10–40 ppm",
+    hint: el ? "εκλεκτικό ↓PVR" : "selective ↓PVR"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Νιτρογλυκερίνη" : "GTN",
+    v: "0.5–5 µg/kg/min",
+    hint: el ? "φλεβοδιαστολή" : "venodilation"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45
+    }
+  }, el ? "Επιλογή κατά αιμοδυναμικό προφίλ (SVR/PVR/CO). Αγγειοπληγία μετά CPB: νοραδρεναλίνη + βαζοπρεσσίνη ± μεθυλενικό κυανό. Βλ. Εργαλεία → Έγχυση αγγειοσυσπαστικών για υπολογισμό." : "Choose by haemodynamic profile (SVR/PVR/CO). Post-CPB vasoplegia: noradrenaline + vasopressin ± methylene blue. See Tools → Vasopressor infusions to calculate.")), view === "weaning" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Checklist αποσύνδεσης CPB" : "CPB weaning checklist"), /*#__PURE__*/React.createElement(Step, {
+    n: "1",
+    title: el ? "Θερμοκρασία & ρυθμός" : "Temperature & rhythm"
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Θέρμανση > ", /*#__PURE__*/React.createElement(Hi, null, "36°C"), ". Φλεβοκομβικός ρυθμός (pacing αν χρειάζεται, στόχος ", /*#__PURE__*/React.createElement(Hi, null, "80–100/min"), "). Διόρθωση αποκλεισμών.") : /*#__PURE__*/React.createElement(React.Fragment, null, "Rewarm > ", /*#__PURE__*/React.createElement(Hi, null, "36°C"), ". Sinus rhythm (pace if needed, target ", /*#__PURE__*/React.createElement(Hi, null, "80–100/min"), "). Correct blocks.")), /*#__PURE__*/React.createElement(Step, {
+    n: "2",
+    title: el ? "Αερισμός & οξυγόνωση" : "Ventilation & oxygenation"
+  }, el ? "Επανέναρξη αερισμού, 100% O2, έλεγχος ατελεκτασιών (recruitment), καθαρός αεραγωγός." : "Resume ventilation, 100% O2, check atelectasis (recruit), clear airway."), /*#__PURE__*/React.createElement(Step, {
+    n: "3",
+    title: el ? "Μεταβολικά & ηλεκτρολύτες" : "Metabolic & electrolytes"
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "K⁺ ", /*#__PURE__*/React.createElement(Hi, null, "4–5"), ", Mg²⁺, iCa²⁺ > 1.1, pH/BE, γλυκόζη, Hct > 24%.") : /*#__PURE__*/React.createElement(React.Fragment, null, "K⁺ ", /*#__PURE__*/React.createElement(Hi, null, "4–5"), ", Mg²⁺, iCa²⁺ > 1.1, pH/BE, glucose, Hct > 24%.")), /*#__PURE__*/React.createElement(Step, {
+    n: "4",
+    title: el ? "Monitors & TEE" : "Monitors & TEE"
+  }, el ? "Μηδενισμός μορφοτροπέων, TEE: πλήρωση, συσταλτικότητα (LV/RV), απαέρωση, επάρκεια βαλβιδικής επιδιόρθωσης, αποκλεισμός νέου SAM/παθολογίας." : "Zero transducers, TEE: filling, contractility (LV/RV), de-airing, adequacy of valve repair, exclude new SAM/pathology."), /*#__PURE__*/React.createElement(Step, {
+    n: "5",
+    title: el ? "Σταδιακή αποσύνδεση" : "Gradual separation"
+  }, el ? "Σταδιακή μείωση φλεβικής επιστροφής, πλήρωση καρδιάς, εκτίμηση συσταλτικότητας. Έναρξη ινότροπων/αγγειοδραστικών κατά ανάγκη ΠΡΙΝ την πλήρη αποσύνδεση." : "Gradually reduce venous return, fill the heart, assess contractility. Start inotropes/vasopressors as needed BEFORE full separation."), /*#__PURE__*/React.createElement(Step, {
+    n: "6",
+    title: el ? "Πρωταμίνη" : "Protamine",
+    danger: true
+  }, el ? "Μετά επιτυχή αποσύνδεση & αιμοδυναμική σταθερότητα. Ενημέρωση χειρουργού & perfusionist (ΟΧΙ επιστροφή αίματος από αναρρόφηση καρδιοτομής μετά)." : "After successful separation & haemodynamic stability. Inform surgeon & perfusionist (NO cardiotomy suction return after)."), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Δύσκολη αποσύνδεση — αίτια" : "Difficult separation — causes"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.ink,
+      lineHeight: 1.55,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "• ", /*#__PURE__*/React.createElement("strong", null, "Χαμηλή συσταλτικότητα"), " → ινότροπα, IABP", /*#__PURE__*/React.createElement("br", null), "• ", /*#__PURE__*/React.createElement("strong", null, "RV ανεπάρκεια"), " → milrinone/iNO, ↓PVR, αποφυγή υποξίας/υπερκαπνίας", /*#__PURE__*/React.createElement("br", null), "• ", /*#__PURE__*/React.createElement("strong", null, "Αγγειοπληγία"), " (↓SVR) → νοραδρεναλίνη + βαζοπρεσσίνη ± μεθυλενικό κυανό", /*#__PURE__*/React.createElement("br", null), "• ", /*#__PURE__*/React.createElement("strong", null, "Ισχαιμία"), " → έλεγχος μοσχευμάτων, νιτρογλυκερίνη, TEE wall motion", /*#__PURE__*/React.createElement("br", null), "• ", /*#__PURE__*/React.createElement("strong", null, "Αρρυθμία"), " → pacing, αντιαρρυθμικά, ηλεκτρολύτες", /*#__PURE__*/React.createElement("br", null), "• ", /*#__PURE__*/React.createElement("strong", null, "Μηχανικό"), " (TEE) → SAM, υπολειπόμενη βαλβιδοπάθεια, επιπωματισμός, συστροφή μοσχεύματος") : /*#__PURE__*/React.createElement(React.Fragment, null, "• ", /*#__PURE__*/React.createElement("strong", null, "Low contractility"), " → inotropes, IABP", /*#__PURE__*/React.createElement("br", null), "• ", /*#__PURE__*/React.createElement("strong", null, "RV failure"), " → milrinone/iNO, ↓PVR, avoid hypoxia/hypercapnia", /*#__PURE__*/React.createElement("br", null), "• ", /*#__PURE__*/React.createElement("strong", null, "Αγγειοπληγία"), " (↓SVR) → noradrenaline + vasopressin ± methylene blue", /*#__PURE__*/React.createElement("br", null), "• ", /*#__PURE__*/React.createElement("strong", null, "Ischaemia"), " → check grafts, GTN, TEE wall motion", /*#__PURE__*/React.createElement("br", null), "• ", /*#__PURE__*/React.createElement("strong", null, "Arrhythmia"), " → pacing, antiarrhythmics, electrolytes", /*#__PURE__*/React.createElement("br", null), "• ", /*#__PURE__*/React.createElement("strong", null, "Mechanical"), " (TEE) → SAM, residual valve lesion, tamponade, graft kinking"))), view === "tee" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Βασικές προβολές TEE (ASE/SCA 11+)" : "Core TEE views (ASE/SCA 11+)"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.ink,
+      lineHeight: 1.6,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Mid-oesophageal: 4-chamber (0°), 2-chamber (60°), LAX (120°), AV SAX (30–45°), AV LAX (120°), bicaval (90–110°), RV inflow-outflow, mitral commissural (60°).", /*#__PURE__*/React.createElement("br", null), "Transgastric: mid-SAX (0° · συσταλτικότητα/πλήρωση), 2-chamber, deep TG (LVOT/AV Doppler).") : /*#__PURE__*/React.createElement(React.Fragment, null, "Mid-oesophageal: 4-chamber (0°), 2-chamber (60°), LAX (120°), AV SAX (30–45°), AV LAX (120°), bicaval (90–110°), RV inflow-outflow, mitral commissural (60°).", /*#__PURE__*/React.createElement("br", null), "Transgastric: mid-SAX (0° · contractility/filling), 2-chamber, deep TG (LVOT/AV Doppler).")), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Ταχεία περιεγχειρητική εκτίμηση" : "Rapid intraop assessment"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Συσταλτικότητα LV" : "LV contractility",
+    v: el ? "TG mid-SAX" : "TG mid-SAX",
+    hint: el ? "eyeball EF, wall motion" : "eyeball EF, wall motion"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Πλήρωση / προφορτίο" : "Filling / preload",
+    v: el ? "TG SAX (LVEDA)" : "TG SAX (LVEDA)",
+    hint: el ? "kissing walls = υποογκαιμία" : "kissing walls = hypovolaemia"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "RV λειτουργία" : "RV function",
+    v: "ME 4-ch (TAPSE, FAC)",
+    hint: el ? "διάταση = υπερφόρτωση" : "dilation = overload"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Απαέρωση (μετά CPB)" : "De-airing (post-CPB)",
+    v: el ? "ME 4-ch / 2-ch" : "ME 4-ch / 2-ch",
+    hint: el ? "αέρας → κορυφή/RCA" : "air → apex/RCA"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Επιπωματισμός" : "Tamponade",
+    v: el ? "συλλογή + κατάρρευση" : "effusion + collapse",
+    hint: ""
+  }), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Σοβαρότητα βαλβιδοπάθειας" : "Valve severity"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Σοβαρή AS" : "Severe AS",
+    v: "AVA < 1.0 cm²",
+    hint: el ? "Vmax >4 m/s, ΔPmean >40" : "Vmax >4 m/s, ΔPmean >40"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Σοβαρή MR" : "Severe MR",
+    v: "EROA ≥ 0.4 cm²",
+    hint: el ? "vena contracta >0.7 cm" : "vena contracta >0.7 cm"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Σοβαρή AR" : "Severe AR",
+    v: "PHT < 200 ms",
+    hint: el ? "vena contracta >0.6 cm" : "vena contracta >0.6 cm"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45
+    }
+  }, el ? "Πλήρες TEE reference: η αυτόνομη εφαρμογή TEE σου (22 προβολές, bull's-eye, calculators). Επιβεβαίωση με πολλαπλά κριτήρια." : "Full TEE reference: your standalone TEE app (22 views, bull's-eye, calculators). Confirm with multiple criteria.")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45,
+      marginTop: 2
+    }
+  }, el ? "Οι δόσεις/στόχοι ποικίλλουν ανά κέντρο & τεχνική. Ακολουθήστε το τοπικό πρωτόκολλο καρδιοχειρουργικής & επιβεβαιώστε με perfusionist/χειρουργό." : "Doses/targets vary by centre & technique. Follow your local cardiac protocol & confirm with perfusionist/surgeon."));
+}
+
+// ============ OBSTETRIC ANAESTHESIA ============
+function ObstetricCard({
+  lang,
+  weight
+}) {
+  const el = lang === "el";
+  const [view, setView] = useState("neuraxial");
+  const tabs = [{
+    id: "neuraxial",
+    el: "Νευραξονική",
+    en: "Neuraxial",
+    icon: "💉"
+  }, {
+    id: "ga",
+    el: "ΓΑ / ΚΤ",
+    en: "GA / CS",
+    icon: "🔪"
+  }, {
+    id: "emergencies",
+    el: "Επείγοντα",
+    en: "Emergencies",
+    icon: "🚨"
+  }];
+  const SectionLabel = ({
+    children
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 800,
+      fontSize: 13,
+      color: S.teal,
+      letterSpacing: 0.2,
+      marginTop: 6
+    }
+  }, children);
+  const Row = ({
+    l,
+    v,
+    hint,
+    warn
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "baseline",
+      gap: 8,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "8px 12px",
+      boxShadow: warn ? `inset 0 0 0 1.5px ${S.amber}` : "none"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 13,
+      color: S.ink
+    }
+  }, l, hint && /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: S.muted,
+      fontSize: 11.5
+    }
+  }, " · ", hint)), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      fontSize: 14,
+      color: warn ? S.amber : S.teal,
+      fontVariantNumeric: "tabular-nums",
+      whiteSpace: "nowrap",
+      textAlign: "right"
+    }
+  }, v));
+  const Step = ({
+    n,
+    title,
+    children,
+    danger
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: S.bg,
+      borderRadius: 10,
+      padding: "10px 12px",
+      boxShadow: danger ? `inset 0 0 0 1.5px ${S.red}` : "none"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8,
+      alignItems: "baseline"
+    }
+  }, n != null && /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      fontSize: 12,
+      color: "#fff",
+      background: danger ? S.red : S.teal,
+      borderRadius: 6,
+      padding: "1px 7px",
+      flexShrink: 0
+    }
+  }, n), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 700,
+      fontSize: 13,
+      color: S.ink
+    }
+  }, title)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12.5,
+      color: S.muted,
+      lineHeight: 1.5,
+      marginTop: 4
+    }
+  }, children));
+  const Hi = ({
+    children
+  }) => /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      color: S.teal
+    }
+  }, children);
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 5
+    }
+  }, tabs.map(tb => /*#__PURE__*/React.createElement("button", {
+    key: tb.id,
+    onClick: () => setView(tb.id),
+    style: {
+      flex: 1,
+      padding: "8px 4px",
+      borderRadius: 9,
+      border: "none",
+      fontSize: 12,
+      fontWeight: 700,
+      cursor: "pointer",
+      fontFamily: "inherit",
+      background: view === tb.id ? S.ink : S.bg,
+      color: view === tb.id ? "#fff" : S.muted
+    }
+  }, tb.icon, " ", el ? tb.el : tb.en))), view === "neuraxial" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Ραχιαία για ΚΤ" : "Spinal for CS"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Υπέρβαρη βουπιβακαΐνη 0.5%" : "Hyperbaric bupivacaine 0.5%",
+    v: "10–12.5 mg",
+    hint: "2–2.5 mL"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "+ Fentanyl" : "+ Fentanyl",
+    v: "10–25 µg",
+    hint: el ? "ενδοεγχειρητική ποιότητα" : "intraop quality"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "+ Μορφίνη" : "+ Morphine",
+    v: "100–150 µg",
+    hint: el ? "μετεγχ. αναλγησία 24h" : "postop analgesia 24h"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Στόχος αποκλεισμού" : "Target block",
+    v: "T4",
+    hint: el ? "ψυχρό/αφή" : "cold/touch"
+  }), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Επισκληρίδιος τοκετού" : "Labour epidural"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Φόρτιση" : "Loading",
+    v: "10–15 mL",
+    hint: el ? "βουπι 0.1% + fent 2 µg/mL" : "bupi 0.1% + fent 2 µg/mL"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Έγχυση (PIEB/CEI)" : "Infusion (PIEB/CEI)",
+    v: "8–12 mL/h",
+    hint: el ? "βουπι 0.0625–0.1% + fent" : "bupi 0.0625–0.1% + fent"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Επέκταση για ΚΤ" : "Top-up for CS",
+    v: "15–20 mL",
+    hint: el ? "λιδοκαΐνη 2% + αδρ + fent (± διττανθρακικά)" : "lidocaine 2% + adr + fent (± bicarb)"
+  }), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Υπόταση (ραχιαία)" : "Hypotension (spinal)"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Φαινυλεφρίνη (1η γραμμή)" : "Phenylephrine (1st line)",
+    v: "25–100 µg",
+    hint: el ? "ή έγχυση 25–50 µg/min" : "or infusion 25–50 µg/min"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Εφεδρίνη (αν βραδυκαρδία)" : "Ephedrine (if bradycardia)",
+    v: "5–10 mg",
+    hint: ""
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45
+    }
+  }, el ? "Αριστερή μετατόπιση μήτρας, co-loading κρυσταλλοειδών, προφυλακτική έγχυση φαινυλεφρίνης." : "Left uterine displacement, crystalloid co-load, prophylactic phenylephrine infusion.")), view === "ga" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(SectionLabel, null, el ? "ΓΑ για ΚΤ (RSI)" : "GA for CS (RSI)"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Προοξυγόνωση" : "Preoxygenation",
+    v: "3 min / 8 VC",
+    hint: el ? "ταχεία απο-oξυγόνωση!" : "rapid desaturation!",
+    warn: true
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Αντιόξινη προφύλαξη" : "Aspiration prophylaxis",
+    v: el ? "Na κιτρικό + H₂" : "Na citrate + H₂",
+    hint: el ? "+ μετοκλοπραμίδη" : "+ metoclopramide"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: "Thiopental / Propofol",
+    v: "4–5 / 2 mg/kg",
+    hint: el ? "± κεταμίνη αν αιμοδυναμικά" : "± ketamine if unstable"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: "Suxamethonium",
+    v: "1–1.5 mg/kg",
+    hint: el ? "ή rocuronium 1.2 (sugammadex διαθέσιμο)" : "or rocuronium 1.2 (sugammadex available)"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Συντήρηση" : "Maintenance",
+    v: el ? "πτητικό ≤ 1 MAC" : "volatile ≤ 1 MAC",
+    hint: el ? ">1 MAC → ατονία μήτρας" : ">1 MAC → uterine atony",
+    warn: true
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: S.amber,
+      fontWeight: 600,
+      lineHeight: 1.45,
+      background: "#FBF3E6",
+      borderRadius: 8,
+      padding: "7px 10px"
+    }
+  }, el ? "⚠ Δύσκολος αεραγωγός συχνότερος (οίδημα). Πλήρες στομάχι → RSI. Awareness κίνδυνος (χαμηλό πτητικό πριν το τοκετό). Αριστερή μετατόπιση μήτρας πάντα." : "⚠ Difficult airway more common (oedema). Full stomach → RSI. Awareness risk (low volatile pre-delivery). Always left uterine displacement."), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Ουτεροτονικά (μετά τοκετό)" : "Uterotonics (post-delivery)"), /*#__PURE__*/React.createElement(Row, {
+    l: "Oxytocin",
+    v: el ? "5 U αργά IV, μετά έγχυση" : "5 U slow IV, then infusion",
+    hint: el ? "ΟΧΙ bolus (υπόταση)" : "NO fast bolus (hypotension)",
+    warn: true
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: "Carbetocin",
+    v: "100 µg IV",
+    hint: el ? "μονή δόση" : "single dose"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Εργομετρίνη" : "Ergometrine",
+    v: "0.2–0.5 mg IM",
+    hint: el ? "ΟΧΙ σε υπέρταση/προεκλαμψία" : "NOT in HTN/pre-eclampsia",
+    warn: true
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Καρβοπρόστη" : "Carboprost",
+    v: "250 µg IM",
+    hint: el ? "ΟΧΙ σε άσθμα · q15min max 8" : "NOT in asthma · q15min max 8",
+    warn: true
+  })), view === "emergencies" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Μαιευτική αιμορραγία (PPH)" : "Obstetric haemorrhage (PPH)"), /*#__PURE__*/React.createElement(Step, {
+    n: "1",
+    title: el ? "Κλήση βοήθειας & 4 T" : "Call for help & 4 Ts"
+  }, el ? "Tone (ατονία), Trauma, Tissue (υπολείμματα), Thrombin (πήξη). Ουτεροτονικά, μάλαξη μήτρας." : "Tone (atony), Trauma, Tissue (retained), Thrombin (coagulopathy). Uterotonics, uterine massage."), /*#__PURE__*/React.createElement(Step, {
+    n: "2",
+    title: el ? "Αναζωογόνηση" : "Resuscitation"
+  }, el ? "2 μεγάλες γραμμές, θέρμανση, TXA 1 g, massive transfusion protocol, cell salvage, στόχοι όπως μαζική αιμορραγία." : "2 large-bore lines, warming, TXA 1 g, massive transfusion protocol, cell salvage, targets as massive haemorrhage."), /*#__PURE__*/React.createElement(Step, {
+    n: "3",
+    title: el ? "Χειρουργικά" : "Surgical"
+  }, el ? "Μπαλόνι Bakri, συρραφές B-Lynch, εμβολισμός μητριαίων, υστερεκτομή αν αποτύχει." : "Bakri balloon, B-Lynch sutures, uterine artery embolisation, hysterectomy if refractory."), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Σοβαρή προεκλαμψία / εκλαμψία" : "Severe pre-eclampsia / eclampsia"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Μαγνήσιο (φόρτιση)" : "Magnesium (load)",
+    v: "4 g IV / 15–20 min",
+    hint: el ? "μετά 1 g/h" : "then 1 g/h",
+    warn: true
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Σπασμοί (επιπλέον)" : "Seizure (further)",
+    v: "2 g IV",
+    hint: el ? "παρακολούθηση αντανακλαστικών/αναπνοής" : "monitor reflexes/RR"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Αντίδοτο Mg (τοξικότητα)" : "Mg antidote (toxicity)",
+    v: el ? "ασβεστίου γλυκονικό 1 g" : "calcium gluconate 1 g",
+    hint: ""
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Υπέρταση (λαβηταλόλη)" : "HTN (labetalol)",
+    v: "20 mg IV",
+    hint: el ? "ή υδραλαζίνη 5 mg / νιφεδιπίνη PO" : "or hydralazine 5 mg / nifedipine PO"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45
+    }
+  }, el ? "Στόχος ΑΠ < 160/110. Προσοχή αλληλεπίδραση Mg + NMBDs (ενίσχυση). Νευραξονική προτιμητέα αν αιμοπετάλια > 70–80 & όχι ταχεία πτώση." : "Target BP < 160/110. Caution Mg + NMBDs (potentiation). Neuraxial preferred if platelets > 70–80 & not rapidly falling."), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Εμβολή αμνιακού υγρού" : "Amniotic fluid embolism"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.ink,
+      lineHeight: 1.55,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Αιφνίδια κατακρήμνιση + υποξία + διάχυτη ενδαγγειακή πήξη σε τοκετό. Υποστήριξη: αεραγωγός/O₂, αγγειοδραστικά, RV υποστήριξη (πνευμονική υπέρταση), μαζική μετάγγιση για ΔΕΠ. Σκέψη ECMO. Περιθανάτια ΚΤ αν ανακοπή.") : /*#__PURE__*/React.createElement(React.Fragment, null, "Sudden collapse + hypoxia + DIC during labour/delivery. Support: airway/O₂, vasopressors, RV support (pulmonary HTN), massive transfusion for DIC. Consider ECMO. Perimortem CS if arrest."))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45,
+      marginTop: 2
+    }
+  }, el ? "Αριστερή μετατόπιση μήτρας μετά 20 εβδ. Δόσεις κατά τοπικό πρωτόκολλο. Περιθανάτια ΚΤ εντός 4–5 min από μητρική ανακοπή." : "Left uterine displacement after 20 wk. Doses per local protocol. Perimortem CS within 4–5 min of maternal arrest."));
+}
+
+// ============ THORACIC ANAESTHESIA ============
+function ThoracicCard({
+  lang,
+  weight
+}) {
+  const el = lang === "el";
+  const [view, setView] = useState("olv");
+  const tabs = [{
+    id: "olv",
+    el: "OLV",
+    en: "OLV",
+    icon: "🫁"
+  }, {
+    id: "hypoxia",
+    el: "Υποξία",
+    en: "Hypoxia",
+    icon: "⚠️"
+  }, {
+    id: "dlt",
+    el: "DLT / Bronchial",
+    en: "DLT / Bronchial",
+    icon: "🔧"
+  }];
+  const SectionLabel = ({
+    children
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 800,
+      fontSize: 13,
+      color: S.teal,
+      letterSpacing: 0.2,
+      marginTop: 6
+    }
+  }, children);
+  const Row = ({
+    l,
+    v,
+    hint,
+    warn
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "baseline",
+      gap: 8,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "8px 12px",
+      boxShadow: warn ? `inset 0 0 0 1.5px ${S.amber}` : "none"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 13,
+      color: S.ink
+    }
+  }, l, hint && /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: S.muted,
+      fontSize: 11.5
+    }
+  }, " · ", hint)), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      fontSize: 14,
+      color: warn ? S.amber : S.teal,
+      fontVariantNumeric: "tabular-nums",
+      whiteSpace: "nowrap",
+      textAlign: "right"
+    }
+  }, v));
+  const Step = ({
+    n,
+    title,
+    children
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: S.bg,
+      borderRadius: 10,
+      padding: "10px 12px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8,
+      alignItems: "baseline"
+    }
+  }, n != null && /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      fontSize: 12,
+      color: "#fff",
+      background: S.teal,
+      borderRadius: 6,
+      padding: "1px 7px",
+      flexShrink: 0
+    }
+  }, n), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 700,
+      fontSize: 13,
+      color: S.ink
+    }
+  }, title)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12.5,
+      color: S.muted,
+      lineHeight: 1.5,
+      marginTop: 4
+    }
+  }, children));
+  const Hi = ({
+    children
+  }) => /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      color: S.teal
+    }
+  }, children);
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 5
+    }
+  }, tabs.map(tb => /*#__PURE__*/React.createElement("button", {
+    key: tb.id,
+    onClick: () => setView(tb.id),
+    style: {
+      flex: 1,
+      padding: "8px 4px",
+      borderRadius: 9,
+      border: "none",
+      fontSize: 11.5,
+      fontWeight: 700,
+      cursor: "pointer",
+      fontFamily: "inherit",
+      background: view === tb.id ? S.ink : S.bg,
+      color: view === tb.id ? "#fff" : S.muted
+    }
+  }, tb.icon, " ", el ? tb.el : tb.en))), view === "olv" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Προστατευτικός αερισμός OLV" : "Protective OLV ventilation"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Αναπν. όγκος (ιδανικό βάρος)" : "Tidal volume (IBW)",
+    v: "4–6 mL/kg",
+    hint: el ? "στον αεριζόμενο πνεύμονα" : "to ventilated lung"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: "PEEP",
+    v: "5 cmH₂O",
+    hint: el ? "εξαρτημένος πνεύμονας" : "dependent lung"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Πίεση plateau" : "Plateau pressure",
+    v: "< 25 cmH₂O",
+    hint: el ? "peak < 35" : "peak < 35",
+    warn: true
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: "FiO₂",
+    v: el ? "χαμηλότερο ανεκτό" : "lowest tolerated",
+    hint: el ? "στόχος SpO₂ ≥ 90%" : "target SpO₂ ≥ 90%"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Συχνότητα" : "Rate",
+    v: el ? "↑ για normocapnia" : "↑ for normocapnia",
+    hint: el ? "permissive hypercapnia OK" : "permissive hypercapnia OK"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45
+    }
+  }, el ? "Recruitment maneuvers, αποφυγή υψηλού FiO₂ παρατεταμένα (ατελεκτασία απορρόφησης). Fluid restriction (κίνδυνος ARDS/οίδημα)." : "Recruitment maneuvers, avoid prolonged high FiO₂ (absorption atelectasis). Fluid restriction (ARDS/oedema risk).")), view === "hypoxia" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11.5,
+      color: S.muted,
+      lineHeight: 1.45
+    }
+  }, el ? "Υποξία στον OLV — σταδιακή προσέγγιση:" : "Hypoxia during OLV — stepwise approach:"), /*#__PURE__*/React.createElement(Step, {
+    n: "1",
+    title: el ? "Άμεσα" : "Immediate"
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "FiO₂ ", /*#__PURE__*/React.createElement(Hi, null, "100%"), ". Επιβεβαίωση θέσης σωλήνα με ", /*#__PURE__*/React.createElement(Hi, null, "ινοπτικό"), " (η πιο συχνή αιτία = μετατόπιση DLT).") : /*#__PURE__*/React.createElement(React.Fragment, null, "FiO₂ ", /*#__PURE__*/React.createElement(Hi, null, "100%"), ". Confirm tube position with ", /*#__PURE__*/React.createElement(Hi, null, "fibreoptic scope"), " (commonest cause = DLT malposition).")), /*#__PURE__*/React.createElement(Step, {
+    n: "2",
+    title: el ? "Έλεγχος" : "Check"
+  }, el ? "Αιμοδυναμική (↓CO → ↓SvO₂), αποκλεισμός βρογχόσπασμου/εκκρίσεων/πνευμοθώρακα, ακρόαση." : "Haemodynamics (↓CO → ↓SvO₂), exclude bronchospasm/secretions/pneumothorax, auscultate."), /*#__PURE__*/React.createElement(Step, {
+    n: "3",
+    title: el ? "Recruitment + PEEP" : "Recruitment + PEEP"
+  }, el ? "Recruitment στον εξαρτημένο (αεριζόμενο) πνεύμονα + PEEP 5–10." : "Recruit dependent (ventilated) lung + PEEP 5–10."), /*#__PURE__*/React.createElement(Step, {
+    n: "4",
+    title: el ? "CPAP στον μη-εξαρτημένο" : "CPAP to non-dependent"
+  }, el ? "CPAP 5 cmH₂O 100% O₂ στον χειρουργούμενο πνεύμονα (ενημέρωση χειρουργού)." : "CPAP 5 cmH₂O 100% O₂ to operative lung (inform surgeon)."), /*#__PURE__*/React.createElement(Step, {
+    n: "5",
+    title: el ? "Διαλείπων αερισμός 2 πνευμόνων" : "Intermittent two-lung ventilation"
+  }, el ? "Αν επιμένει: επιστροφή σε αερισμό 2 πνευμόνων. Χειρουργική απολίνωση πνευμονικής αρτηρίας μειώνει shunt." : "If persists: resume two-lung ventilation. Surgical PA clamping reduces shunt.")), view === "dlt" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Double-lumen tube (DLT)" : "Double-lumen tube (DLT)"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Μέγεθος (γυναίκες)" : "Size (women)",
+    v: "35–37 Fr",
+    hint: el ? "ύψος-εξαρτώμενο" : "height-dependent"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Μέγεθος (άνδρες)" : "Size (men)",
+    v: "39–41 Fr",
+    hint: ""
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Προτίμηση" : "Preference",
+    v: el ? "αριστερό DLT" : "left-sided DLT",
+    hint: el ? "ασφαλέστερο (εκτός αρ. πνευμονεκτομής)" : "safer (except L pneumonectomy)"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Επιβεβαίωση θέσης" : "Confirm position",
+    v: el ? "ινοπτικό πάντα" : "always fibreoptic",
+    hint: el ? "μετά & μετά repositioning" : "after & after repositioning",
+    warn: true
+  }), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Βρογχικός αποκλειστής (BB)" : "Bronchial blocker (BB)"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.ink,
+      lineHeight: 1.55,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Εναλλακτική σε δύσκολο αεραγωγό / ήδη διασωληνωμένο / παιδιά. Πιο αργή κατάρρευση πνεύμονα, ευκολότερη μετατόπιση. Τοποθέτηση υπό ινοπτικό.") : /*#__PURE__*/React.createElement(React.Fragment, null, "Alternative for difficult airway / already intubated / children. Slower lung collapse, easier displacement. Position under fibreoptic guidance.")), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Θέση επιβεβαίωσης (αριστερό DLT)" : "Position check (left DLT)"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.ink,
+      lineHeight: 1.55,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Τραχειακός αυλός: βλέπεις carina, μπλε αεροθάλαμο ακριβώς στο αριστερό βρόγχο (όχι προβολή). Βρογχικός αυλός: ανοιχτός αριστερός άνω/κάτω λοβαίος. Επανέλεγχος μετά πλάγια θέση.") : /*#__PURE__*/React.createElement(React.Fragment, null, "Tracheal lumen: see carina, blue cuff just in left bronchus (no herniation). Bronchial lumen: patent left upper/lower lobar. Recheck after lateral positioning."))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45,
+      marginTop: 2
+    }
+  }, el ? "Προεγχειρητική εκτίμηση πνευμονικής λειτουργίας (ppoFEV1, DLCO). Επισκληρίδιος/παραπλεύριος για αναλγησία. Επιβεβαίωση θέσης σωλήνα με ινοπτικό." : "Preop lung function assessment (ppoFEV1, DLCO). Epidural/paravertebral for analgesia. Confirm tube position with fibreoptic."));
+}
+
+// ============ NEUROANAESTHESIA ============
+function NeuroCard({
+  lang,
+  weight
+}) {
+  const el = lang === "el";
+  const w = parseFloat(weight) || 0;
+  const [view, setView] = useState("icp");
+  const tabs = [{
+    id: "icp",
+    el: "ICP / CPP",
+    en: "ICP / CPP",
+    icon: "🧠"
+  }, {
+    id: "management",
+    el: "Διαχείριση",
+    en: "Management",
+    icon: "⚙️"
+  }, {
+    id: "special",
+    el: "Ειδικά",
+    en: "Special",
+    icon: "⭐"
+  }];
+  const SectionLabel = ({
+    children
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 800,
+      fontSize: 13,
+      color: S.teal,
+      letterSpacing: 0.2,
+      marginTop: 6
+    }
+  }, children);
+  const Row = ({
+    l,
+    v,
+    hint,
+    warn
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "baseline",
+      gap: 8,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "8px 12px",
+      boxShadow: warn ? `inset 0 0 0 1.5px ${S.amber}` : "none"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 13,
+      color: S.ink
+    }
+  }, l, hint && /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: S.muted,
+      fontSize: 11.5
+    }
+  }, " · ", hint)), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      fontSize: 14,
+      color: warn ? S.amber : S.teal,
+      fontVariantNumeric: "tabular-nums",
+      whiteSpace: "nowrap",
+      textAlign: "right"
+    }
+  }, v));
+  const Hi = ({
+    children
+  }) => /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      color: S.teal
+    }
+  }, children);
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 5
+    }
+  }, tabs.map(tb => /*#__PURE__*/React.createElement("button", {
+    key: tb.id,
+    onClick: () => setView(tb.id),
+    style: {
+      flex: 1,
+      padding: "8px 4px",
+      borderRadius: 9,
+      border: "none",
+      fontSize: 12,
+      fontWeight: 700,
+      cursor: "pointer",
+      fontFamily: "inherit",
+      background: view === tb.id ? S.ink : S.bg,
+      color: view === tb.id ? "#fff" : S.muted
+    }
+  }, tb.icon, " ", el ? tb.el : tb.en))), view === "icp" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Στόχοι πίεσης" : "Pressure targets"), /*#__PURE__*/React.createElement(Row, {
+    l: "ICP",
+    v: "< 20–22 mmHg",
+    hint: ""
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "CPP (= MAP − ICP)" : "CPP (= MAP − ICP)",
+    v: "60–70 mmHg",
+    hint: el ? "αποφυγή < 50" : "avoid < 50",
+    warn: true
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: "MAP",
+    v: el ? "κατά CPP στόχο" : "per CPP target",
+    hint: ""
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: "PaCO₂",
+    v: "35–40 mmHg",
+    hint: el ? "normocapnia (όχι <30)" : "normocapnia (not <30)"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: "PaO₂",
+    v: "> 100 mmHg",
+    hint: el ? "αποφυγή υποξίας" : "avoid hypoxia"
+  }), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Επείγουσα μείωση ICP" : "Emergency ICP reduction"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Μαννιτόλη" : "Mannitol",
+    v: w ? `${fmt(0.25 * w)}–${fmt(w)} g` : "0.25–1 g/kg",
+    hint: el ? "έλεγχος ωσμωτικότητας < 320" : "check osmolality < 320"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Υπέρτονο NaCl 3%" : "Hypertonic 3% NaCl",
+    v: "2–5 mL/kg",
+    hint: el ? "στόχος Na 145–155" : "target Na 145–155"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Υπεραερισμός (προσωρινά)" : "Hyperventilation (temporary)",
+    v: "PaCO₂ 30–35",
+    hint: el ? "γέφυρα μόνο — ισχαιμία" : "bridge only — ischaemia",
+    warn: true
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45
+    }
+  }, el ? "Κεφαλή 30° ουδέτερη, αποφυγή σύσφιξης τραχήλου, νορμογλυκαιμία, νορμοθερμία, αντιμετώπιση σπασμών, βαθιά καταστολή/αναλγησία." : "Head 30° neutral, avoid neck constriction, normoglycaemia, normothermia, treat seizures, deep sedation/analgesia.")), view === "management" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Αναισθητική τεχνική" : "Anaesthetic technique"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.ink,
+      lineHeight: 1.55,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "• TIVA (προποφόλη/remi) ή πτητικό ", /*#__PURE__*/React.createElement(Hi, null, "< 1 MAC"), " (διατηρεί αυτορρύθμιση)", /*#__PURE__*/React.createElement("br", null), "• Αποφυγή N₂O (↑CBV, pneumocephalus)", /*#__PURE__*/React.createElement("br", null), "• Ομαλή εισαγωγή/αφύπνιση (αποφυγή ↑ICP από βήχα/υπέρταση)", /*#__PURE__*/React.createElement("br", null), "• Remifentanil για βαθιά αναλγησία & ταχεία αφύπνιση για νευρολογική εκτίμηση") : /*#__PURE__*/React.createElement(React.Fragment, null, "• TIVA (propofol/remi) or volatile ", /*#__PURE__*/React.createElement(Hi, null, "< 1 MAC"), " (preserves autoregulation)", /*#__PURE__*/React.createElement("br", null), "• Avoid N₂O (↑CBV, pneumocephalus)", /*#__PURE__*/React.createElement("br", null), "• Smooth induction/emergence (avoid ↑ICP from cough/hypertension)", /*#__PURE__*/React.createElement("br", null), "• Remifentanil for deep analgesia & rapid emergence for neuro assessment")), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Αιμοδυναμική" : "Haemodynamics"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Λαρυγγοσκόπηση (απόσβεση)" : "Laryngoscopy (blunt)",
+    v: el ? "opioid/λιδοκαΐνη/β-block" : "opioid/lidocaine/β-block",
+    hint: ""
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Υπέρταση" : "Hypertension",
+    v: el ? "labetalol/esmolol" : "labetalol/esmolol",
+    hint: el ? "αποφυγή αγγειοδιασταλτικών (↑ICP)" : "avoid vasodilators (↑ICP)"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Ισοτονικά υγρά" : "Isotonic fluids",
+    v: el ? "NaCl 0.9% / balanced" : "NaCl 0.9% / balanced",
+    hint: el ? "ΟΧΙ υπότονα/γλυκόζη" : "NOT hypotonic/glucose",
+    warn: true
+  }), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Σπασμοί / προστασία" : "Seizures / protection"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Αντιεπιληπτικά" : "Antiepileptics",
+    v: el ? "λεβετιρακετάμη" : "levetiracetam",
+    hint: el ? "κατά ένδειξη" : "as indicated"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Δεξαμεθαζόνη" : "Dexamethasone",
+    v: el ? "για περιεστιακό οίδημα (όγκος)" : "for peritumoral oedema",
+    hint: el ? "ΟΧΙ σε τραύμα" : "NOT in trauma"
+  })), view === "special" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Ξύπνια κρανιοτομή" : "Awake craniotomy"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.ink,
+      lineHeight: 1.55,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Τεχνικές: asleep-awake-asleep ή monitored anaesthesia care. Αποκλεισμός τριχωτού (scalp block). Dexmedetomidine + remifentanil. Έτοιμος για σπασμούς (ψυχρό NaCl στον φλοιό), ναυτία, αεραγωγό.") : /*#__PURE__*/React.createElement(React.Fragment, null, "Techniques: asleep-awake-asleep or MAC. Scalp block. Dexmedetomidine + remifentanil. Ready for seizures (cold saline on cortex), nausea, airway.")), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Καθιστή θέση — αεροεμβολή" : "Sitting position — air embolism"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.ink,
+      lineHeight: 1.55,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Υψηλός κίνδυνος VAE: παρακολούθηση με precordial Doppler/EtCO₂/TEE. Αν συμβεί: ενημέρωση χειρουργού (πλημμύρα πεδίου), αναρρόφηση από κεντρικό καθετήρα, 100% O₂, αριστερή πλάγια θέση. Βλ. Κρίσεις → Αεροεμβολή.") : /*#__PURE__*/React.createElement(React.Fragment, null, "High VAE risk: monitor with precordial Doppler/EtCO₂/TEE. If it occurs: alert surgeon (flood field), aspirate central line, 100% O₂, left lateral. See Crises → Air embolism.")), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Νωτιαία χειρουργική" : "Spine surgery"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.ink,
+      lineHeight: 1.55,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Πρηνής θέση: προστασία οφθαλμών (POVL), κοιλιακή αποσυμπίεση, έλεγχος σημείων πίεσης. Νευροπαρακολούθηση (MEP/SSEP) → αποφυγή μυοχάλασης & περιορισμός πτητικού. Αιμορραγία → TXA, cell salvage.") : /*#__PURE__*/React.createElement(React.Fragment, null, "Prone: eye protection (POVL), abdominal decompression, check pressure points. Neuromonitoring (MEP/SSEP) → avoid NMB & limit volatile. Bleeding → TXA, cell salvage."))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45,
+      marginTop: 2
+    }
+  }, el ? "Στόχος: διατήρηση CPP & οξυγόνωσης εγκεφάλου, αποφυγή δευτερογενούς βλάβης (υποξία/υπόταση/υπερ-υποκαπνία/υπεργλυκαιμία). Δόσεις κατά τοπικό πρωτόκολλο." : "Goal: maintain CPP & brain oxygenation, avoid secondary injury (hypoxia/hypotension/hyper-hypocapnia/hyperglycaemia). Doses per local protocol."));
+}
+
+// ============ VASCULAR ANAESTHESIA ============
+function VascularCard({
+  lang,
+  weight
+}) {
+  const el = lang === "el";
+  const [view, setView] = useState("aaa");
+  const tabs = [{
+    id: "aaa",
+    el: "AAA",
+    en: "AAA",
+    icon: "🎈"
+  }, {
+    id: "carotid",
+    el: "Καρωτίδα",
+    en: "Carotid",
+    icon: "🫀"
+  }, {
+    id: "general",
+    el: "Γενικά",
+    en: "General",
+    icon: "📋"
+  }];
+  const SectionLabel = ({
+    children
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 800,
+      fontSize: 13,
+      color: S.teal,
+      letterSpacing: 0.2,
+      marginTop: 6
+    }
+  }, children);
+  const Row = ({
+    l,
+    v,
+    hint,
+    warn
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "baseline",
+      gap: 8,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "8px 12px",
+      boxShadow: warn ? `inset 0 0 0 1.5px ${S.amber}` : "none"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 13,
+      color: S.ink
+    }
+  }, l, hint && /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: S.muted,
+      fontSize: 11.5
+    }
+  }, " · ", hint)), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      fontSize: 14,
+      color: warn ? S.amber : S.teal,
+      fontVariantNumeric: "tabular-nums",
+      whiteSpace: "nowrap",
+      textAlign: "right"
+    }
+  }, v));
+  const Step = ({
+    n,
+    title,
+    children,
+    danger
+  }) => /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: S.bg,
+      borderRadius: 10,
+      padding: "10px 12px",
+      boxShadow: danger ? `inset 0 0 0 1.5px ${S.red}` : "none"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8,
+      alignItems: "baseline"
+    }
+  }, n != null && /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      fontSize: 12,
+      color: "#fff",
+      background: danger ? S.red : S.teal,
+      borderRadius: 6,
+      padding: "1px 7px",
+      flexShrink: 0
+    }
+  }, n), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 700,
+      fontSize: 13,
+      color: S.ink
+    }
+  }, title)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12.5,
+      color: S.muted,
+      lineHeight: 1.5,
+      marginTop: 4
+    }
+  }, children));
+  const Hi = ({
+    children
+  }) => /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 800,
+      color: S.teal
+    }
+  }, children);
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 5
+    }
+  }, tabs.map(tb => /*#__PURE__*/React.createElement("button", {
+    key: tb.id,
+    onClick: () => setView(tb.id),
+    style: {
+      flex: 1,
+      padding: "8px 4px",
+      borderRadius: 9,
+      border: "none",
+      fontSize: 12,
+      fontWeight: 700,
+      cursor: "pointer",
+      fontFamily: "inherit",
+      background: view === tb.id ? S.ink : S.bg,
+      color: view === tb.id ? "#fff" : S.muted
+    }
+  }, tb.icon, " ", el ? tb.el : tb.en))), view === "aaa" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Ανοικτή αποκατάσταση ΑΚΑ" : "Open AAA repair"), /*#__PURE__*/React.createElement(Step, {
+    n: "1",
+    title: el ? "Πριν την αορτική απόφραξη (clamp)" : "Before aortic clamp"
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Επαρκής μυοχάλαση, βάθυνση αναισθησίας. Προετοιμασία για ", /*#__PURE__*/React.createElement(Hi, null, "↑afterload"), " — έτοιμα αγγειοδιασταλτικά (GTN/νιτροπρωσσικό). Ήπια βάθυνση πριν το clamp.") : /*#__PURE__*/React.createElement(React.Fragment, null, "Adequate relaxation, deepen anaesthesia. Prepare for ", /*#__PURE__*/React.createElement(Hi, null, "↑afterload"), " — vasodilators ready (GTN/nitroprusside). Deepen before clamp.")), /*#__PURE__*/React.createElement(Step, {
+    n: "2",
+    title: el ? "Αορτική απόφραξη (cross-clamp)" : "Aortic cross-clamp",
+    danger: true
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Απότομη ", /*#__PURE__*/React.createElement(Hi, null, "↑SVR/afterload"), " → υπέρταση, ↑ φορτίο LV, ισχαιμία. Αντιμετώπιση: αγγειοδιαστολή, βάθυνση, μείωση προφορτίου. Έλεγχος ισχαιμίας/CO.") : /*#__PURE__*/React.createElement(React.Fragment, null, "Sudden ", /*#__PURE__*/React.createElement(Hi, null, "↑SVR/afterload"), " → hypertension, ↑ LV load, ischaemia. Treat: vasodilate, deepen, reduce preload. Watch ischaemia/CO.")), /*#__PURE__*/React.createElement(Step, {
+    n: "3",
+    title: el ? "Άρση απόφραξης (declamp)" : "Declamping",
+    danger: true
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Απότομη ", /*#__PURE__*/React.createElement(Hi, null, "↓SVR"), " + επιστροφή ισχαιμικών μεταβολιτών → υπόταση («declamping shock»). Προετοιμασία: ", /*#__PURE__*/React.createElement(Hi, null, "φόρτιση υγρών πριν"), ", μείωση αγγειοδιασταλτικών, σταδιακή άρση από χειρουργό, αγγειοσυσπαστικά έτοιμα, διόρθωση οξέωσης.") : /*#__PURE__*/React.createElement(React.Fragment, null, "Sudden ", /*#__PURE__*/React.createElement(Hi, null, "↓SVR"), " + ischaemic metabolite washout → hypotension (\"declamping shock\"). Prepare: ", /*#__PURE__*/React.createElement(Hi, null, "volume load before"), ", reduce vasodilators, gradual release by surgeon, vasopressors ready, correct acidosis.")), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Ηπαρίνη (πριν clamp)" : "Heparin (before clamp)",
+    v: "50–100 U/kg",
+    hint: el ? "ACT κατευθυνόμενη" : "ACT-guided"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Παρακολούθηση" : "Monitoring",
+    v: el ? "αρτηριακή γραμμή, ± CVC/TEE" : "arterial line, ± CVC/TEE",
+    hint: el ? "διούρηση, θερμοκρασία" : "urine output, temp"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45
+    }
+  }, el ? "EVAR (ενδαγγειακή): λιγότερο επεμβατική, τοπική/περιοχική δυνατή· κίνδυνος contrast, endoleak. Θωρακοκοιλιακά: κίνδυνος νωτιαίας ισχαιμίας → CSF drain, MAP support." : "EVAR (endovascular): less invasive, local/regional possible; contrast risk, endoleak. Thoraco-abdominal: spinal cord ischaemia risk → CSF drain, MAP support.")), view === "carotid" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Καρωτιδική ενδαρτηρεκτομή (CEA)" : "Carotid endarterectomy (CEA)"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Στόχος ΑΠ" : "BP target",
+    v: el ? "υψηλό-φυσιολογικό" : "high-normal",
+    hint: el ? "+20% baseline στο clamp" : "+20% baseline at clamp",
+    warn: true
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Νευροπαρακολούθηση" : "Neuromonitoring",
+    v: el ? "ξύπνιος / EEG / stump P / NIRS" : "awake / EEG / stump P / NIRS",
+    hint: el ? "ανίχνευση ισχαιμίας" : "detect ischaemia"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Shunt" : "Shunt",
+    v: el ? "αν ισχαιμία στο clamp" : "if ischaemia at clamp",
+    hint: ""
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Ηπαρίνη (πριν clamp)" : "Heparin (before clamp)",
+    v: "70–100 U/kg",
+    hint: ""
+  }), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Τεχνική" : "Technique"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.ink,
+      lineHeight: 1.55,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "• ", /*#__PURE__*/React.createElement("strong", null, "Περιοχική"), " (επιπολής/εν τω βάθει αυχενικό block): ξύπνια νευρολογική παρακολούθηση — gold standard ανίχνευσης", /*#__PURE__*/React.createElement("br", null), "• ", /*#__PURE__*/React.createElement("strong", null, "Γενική"), ": ομαλή, ταχεία αφύπνιση για νευρολογική εκτίμηση", /*#__PURE__*/React.createElement("br", null), "• Απόσβεση καρωτιδικού κόλπου (βραδυκαρδία) — τοπικό από χειρουργό, ατροπίνη έτοιμη") : /*#__PURE__*/React.createElement(React.Fragment, null, "• ", /*#__PURE__*/React.createElement("strong", null, "Regional"), " (superficial/deep cervical block): awake neuro monitoring — gold standard", /*#__PURE__*/React.createElement("br", null), "• ", /*#__PURE__*/React.createElement("strong", null, "General"), ": smooth, rapid emergence for neuro assessment", /*#__PURE__*/React.createElement("br", null), "• Carotid sinus reflex (bradycardia) — surgeon infiltrates, atropine ready")), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Μετεγχειρητικά" : "Postoperative"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.ink,
+      lineHeight: 1.55,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Στενός έλεγχος ΑΠ (υπέρταση → αιμάτωμα/hyperperfusion, υπόταση → θρόμβωση). Παρακολούθηση: αιμάτωμα τραχήλου (αεραγωγός!), νέα νευρολογικά ελλείμματα, σύνδρομο υπεραιμάτωσης.") : /*#__PURE__*/React.createElement(React.Fragment, null, "Tight BP control (HTN → haematoma/hyperperfusion, hypotension → thrombosis). Watch: neck haematoma (airway!), new neuro deficits, hyperperfusion syndrome."))), view === "general" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Ο αγγειοπαθής ασθενής" : "The vascular patient"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: S.ink,
+      lineHeight: 1.55,
+      background: S.bg,
+      borderRadius: 10,
+      padding: "9px 12px"
+    }
+  }, el ? /*#__PURE__*/React.createElement(React.Fragment, null, "Υψηλού κινδύνου: διάχυτη αθηροσκλήρωση (στεφανιαία/ΑΕΕ), ΣΔ, ΧΑΠ, ΧΝΝ. Συνέχιση στατινών & ασπιρίνης περιεγχειρητικά. Βελτιστοποίηση β-αποκλειστών (όχι νέα έναρξη ακριβώς πριν).") : /*#__PURE__*/React.createElement(React.Fragment, null, "High-risk: diffuse atherosclerosis (coronary/stroke), diabetes, COPD, CKD. Continue statins & aspirin perioperatively. Optimise β-blockers (don't start de novo just before).")), /*#__PURE__*/React.createElement(SectionLabel, null, el ? "Στόχοι" : "Targets"), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Καρδιακή προστασία" : "Cardioprotection",
+    v: el ? "αποφυγή ταχυκαρδίας/υπότασης" : "avoid tachycardia/hypotension",
+    hint: el ? "ισοζύγιο O₂ μυοκαρδίου" : "myocardial O₂ balance"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Νεφρική προστασία" : "Renal protection",
+    v: el ? "νορμοογκαιμία, αποφυγή contrast" : "normovolaemia, limit contrast",
+    hint: ""
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Θερμορύθμιση" : "Temperature",
+    v: el ? "ενεργός θέρμανση" : "active warming",
+    hint: el ? "μακρές επεμβάσεις" : "long cases"
+  }), /*#__PURE__*/React.createElement(Row, {
+    l: el ? "Γλυκαιμία" : "Glycaemia",
+    v: "6–10 mmol/L",
+    hint: ""
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45
+    }
+  }, el ? "Βλ. Περιεγχειρητική ιατρική → Καρδιακά/DAPT & Διαβήτης. Επισκληρίδιος αναλγησία μειώνει καρδιοπνευμονικές επιπλοκές (αν όχι αντιπηκτικά)." : "See Perioperative medicine → Cardiac/DAPT & Diabetes. Epidural analgesia reduces cardiopulmonary complications (if not anticoagulated).")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10.5,
+      color: S.muted,
+      lineHeight: 1.45,
+      marginTop: 2
+    }
+  }, el ? "Αιμοδυναμική σταθερότητα κατά clamp/declamp είναι το κλειδί. Δόσεις/στόχοι κατά τοπικό πρωτόκολλο & καρδιολογική εκτίμηση." : "Haemodynamic stability across clamp/declamp is key. Doses/targets per local protocol & cardiology assessment."));
+}
+
 // ============ ROTEM / TEG INTERPRETATION ============
 function ROTEMCard({
   lang,
@@ -8365,239 +9694,453 @@ function ToolsTab({
     s: sex,
     bmi: bmiCalc(parseFloat(weight) || 0, parseFloat(height) || 0)
   };
-  const sections = [{
-    id: "scores",
-    el: "Κλίμακες κινδύνου",
-    en: "Risk scores",
-    icon: "📊"
-  }, {
+  const sections = [
+  // Emergencies & scores
+  {
     id: "crisis",
+    group: "emergency",
     el: "Κρίσεις — Αλγόριθμοι",
     en: "Crises — Algorithms",
     icon: "🚨"
   }, {
-    id: "periop",
-    el: "Περιεγχειρητική ιατρική",
-    en: "Perioperative medicine",
+    id: "scores",
+    group: "emergency",
+    el: "Κλίμακες κινδύνου",
+    en: "Risk scores",
+    icon: "📊"
+  }, {
+    id: "rotem",
+    group: "emergency",
+    el: "ROTEM / TEG (ερμηνεία)",
+    en: "ROTEM / TEG (interpretation)",
+    icon: "🩸"
+  },
+  // Subspecialties
+  {
+    id: "cardiac",
+    group: "subspecialty",
+    el: "Καρδιοχειρουργική αναισθησία",
+    en: "Cardiac anaesthesia",
+    icon: "❤️"
+  }, {
+    id: "obstetric",
+    group: "subspecialty",
+    el: "Μαιευτική αναισθησία",
+    en: "Obstetric anaesthesia",
+    icon: "🤰"
+  }, {
+    id: "thoracic",
+    group: "subspecialty",
+    el: "Θωρακοχειρουργική αναισθησία",
+    en: "Thoracic anaesthesia",
+    icon: "🫁"
+  }, {
+    id: "neuro",
+    group: "subspecialty",
+    el: "Νευροαναισθησία",
+    en: "Neuroanaesthesia",
+    icon: "🧠"
+  }, {
+    id: "vascular",
+    group: "subspecialty",
+    el: "Αγγειοχειρουργική αναισθησία",
+    en: "Vascular anaesthesia",
     icon: "🫀"
   }, {
-    id: "quickcalc",
-    el: "Γρήγοροι υπολογιστές",
-    en: "Quick calculators",
-    icon: "🧮"
-  }, {
-    id: "mac",
-    el: "MAC πτητικών (κατά ηλικία)",
-    en: "Volatile MAC (age-adjusted)",
-    icon: "💨"
-  }, {
+    id: "bariatric",
+    group: "subspecialty",
+    el: "Βαριατρικός / Παχύσαρκος ασθενής",
+    en: "Bariatric / Obese patient",
+    icon: "⚖️"
+  },
+  // Analgesia & regional
+  {
     id: "postop",
+    group: "analgesia",
     el: "Οξεία μετεγχειρητική αναλγησία",
     en: "Acute postop analgesia",
     icon: "💉"
   }, {
     id: "neuraxial",
+    group: "analgesia",
     el: "Νευραξονική & Περιοχική",
     en: "Neuraxial & Regional",
     icon: "🎯"
   }, {
-    id: "rotem",
-    el: "ROTEM / TEG (ερμηνεία)",
-    en: "ROTEM / TEG (interpretation)",
-    icon: "🩸"
-  }, {
-    id: "guidelines",
-    el: "Κατευθυντήριες",
-    en: "Guidelines",
-    icon: "📖"
-  }, {
-    id: "vent",
-    el: "Αερισμός & Μηχανική πνεύμονα",
-    en: "Ventilation & Lung mechanics",
-    icon: "🫁"
-  }, {
-    id: "bariatric",
-    el: "Βαριατρικός / Παχύσαρκος ασθενής",
-    en: "Bariatric / Obese patient",
-    icon: "⚖️"
-  }, {
-    id: "vaso",
-    el: "Έγχυση αγγειοσυσπαστικών",
-    en: "Vasopressor infusions",
-    icon: "💉"
-  }, {
-    id: "anticoag",
-    el: "Αντιπηκτικά & Νευραξονικός",
-    en: "Anticoagulants & Neuraxial",
-    icon: "🩸"
-  }, {
-    id: "fluids",
-    el: "Υγρά & Αίμα (περιεγχειρητικά)",
-    en: "Fluids & Blood (periop)",
-    icon: "💧"
-  }, {
-    id: "abx",
-    el: "Αντιβιοτική προφύλαξη",
-    en: "Antibiotic prophylaxis",
-    icon: "🧫"
-  }, {
     id: "la",
+    group: "analgesia",
     el: "Όρια τοπικών αναισθητικών",
     en: "Local anesthetic limits",
     icon: "🧴"
   }, {
+    id: "anticoag",
+    group: "analgesia",
+    el: "Αντιπηκτικά & Νευραξονικός",
+    en: "Anticoagulants & Neuraxial",
+    icon: "🩸"
+  },
+  // Calculators & pharmacology
+  {
+    id: "tci",
+    group: "calc",
+    el: "TCI / Στοχευμένη έγχυση",
+    en: "TCI / Target-controlled",
+    icon: "📉"
+  }, {
+    id: "quickcalc",
+    group: "calc",
+    el: "Γρήγοροι υπολογιστές",
+    en: "Quick calculators",
+    icon: "🧮"
+  }, {
+    id: "mac",
+    group: "calc",
+    el: "MAC πτητικών (κατά ηλικία)",
+    en: "Volatile MAC (age-adjusted)",
+    icon: "💨"
+  }, {
+    id: "vaso",
+    group: "calc",
+    el: "Έγχυση αγγειοσυσπαστικών",
+    en: "Vasopressor infusions",
+    icon: "💉"
+  }, {
+    id: "vent",
+    group: "calc",
+    el: "Αερισμός & Μηχανική πνεύμονα",
+    en: "Ventilation & Lung mechanics",
+    icon: "🫁"
+  }, {
+    id: "fluids",
+    group: "calc",
+    el: "Υγρά & Αίμα (περιεγχειρητικά)",
+    en: "Fluids & Blood (periop)",
+    icon: "💧"
+  }, {
     id: "csht",
+    group: "calc",
     el: "Context-Sensitive Half-Time",
     en: "Context-Sensitive Half-Time",
     icon: "⏱"
+  },
+  // Perioperative & reference
+  {
+    id: "periop",
+    group: "reference",
+    el: "Περιεγχειρητική ιατρική",
+    en: "Perioperative medicine",
+    icon: "🫀"
+  }, {
+    id: "abx",
+    group: "reference",
+    el: "Αντιβιοτική προφύλαξη",
+    en: "Antibiotic prophylaxis",
+    icon: "🧫"
+  }, {
+    id: "guidelines",
+    group: "reference",
+    el: "Κατευθυντήριες",
+    en: "Guidelines",
+    icon: "📖"
   }, {
     id: "refs",
+    group: "reference",
     el: "Πηγές & Βιβλιογραφία",
     en: "Sources & References",
     icon: "📚"
   }];
+  const GROUPS = [{
+    id: "emergency",
+    el: "Επείγοντα & Κλίμακες",
+    en: "Emergencies & Scores"
+  }, {
+    id: "subspecialty",
+    el: "Υποειδικότητες",
+    en: "Subspecialties"
+  }, {
+    id: "analgesia",
+    el: "Αναλγησία & Περιοχική",
+    en: "Analgesia & Regional"
+  }, {
+    id: "calc",
+    el: "Υπολογιστές & Φαρμακολογία",
+    en: "Calculators & Pharmacology"
+  }, {
+    id: "reference",
+    el: "Περιεγχειρητικά & Πηγές",
+    en: "Perioperative & Reference"
+  }];
   const [scoreOpen, setScoreOpen] = useState("apfel");
   const allScores = [...SCORES, ...MULTI_SCORES];
+  const [q, setQ] = useState("");
+  const [favs, setFavs] = useState(() => storeGet("aa_tool_favs") || []);
+  const toggleFav = (id, e) => {
+    e.stopPropagation();
+    const next = favs.includes(id) ? favs.filter(f => f !== id) : [...favs, id];
+    setFavs(next);
+    storeSet("aa_tool_favs", next);
+  };
+  const query = q.trim().toLowerCase();
+  const matches = sec => !query || sec.el.toLowerCase().includes(query) || sec.en.toLowerCase().includes(query);
+  const favSections = sections.filter(s => favs.includes(s.id));
   return /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
       flexDirection: "column",
       gap: 10
     }
-  }, sections.map(sec => {
-    const isOpen = open === sec.id;
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "relative"
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    value: q,
+    onChange: e => setQ(e.target.value),
+    placeholder: lang === "el" ? "🔍 Αναζήτηση εργαλείου…" : "🔍 Search tools…",
+    style: {
+      ...inputStyle,
+      fontSize: 14.5,
+      padding: "11px 36px 11px 13px"
+    }
+  }), q && /*#__PURE__*/React.createElement("button", {
+    onClick: () => setQ(""),
+    style: {
+      position: "absolute",
+      right: 8,
+      top: "50%",
+      transform: "translateY(-50%)",
+      border: "none",
+      background: "none",
+      color: S.muted,
+      fontSize: 18,
+      cursor: "pointer",
+      fontFamily: "inherit"
+    }
+  }, "×")), !query && favSections.length > 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 6
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 800,
+      fontSize: 12,
+      color: S.muted,
+      letterSpacing: 0.6,
+      textTransform: "uppercase",
+      padding: "4px 4px 0"
+    }
+  }, "⭐ ", lang === "el" ? "Αγαπημένα" : "Favourites"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 6,
+      flexWrap: "wrap"
+    }
+  }, favSections.map(sec => /*#__PURE__*/React.createElement("button", {
+    key: "fav-" + sec.id,
+    onClick: () => setOpen(sec.id),
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 6,
+      padding: "8px 12px",
+      borderRadius: 10,
+      border: `1.5px solid ${open === sec.id ? S.teal : S.line}`,
+      background: S.card,
+      fontSize: 13,
+      fontWeight: 700,
+      color: S.ink,
+      cursor: "pointer",
+      fontFamily: "inherit"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 15
+    }
+  }, sec.icon), sec[lang])))), GROUPS.map(grp => {
+    const groupSecs = sections.filter(s => s.group === grp.id && matches(s));
+    if (groupSecs.length === 0) return null;
     return /*#__PURE__*/React.createElement("div", {
-      key: sec.id,
-      style: {
-        background: S.card,
-        borderRadius: 14,
-        border: `1.5px solid ${isOpen ? S.teal : S.line}`,
-        overflow: "hidden"
-      }
-    }, /*#__PURE__*/React.createElement("button", {
-      onClick: () => setOpen(isOpen ? null : sec.id),
-      style: {
-        width: "100%",
-        padding: "14px",
-        background: "none",
-        border: "none",
-        cursor: "pointer",
-        display: "flex",
-        alignItems: "center",
-        gap: 10,
-        fontFamily: "inherit",
-        textAlign: "left"
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 17
-      }
-    }, sec.icon), /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontWeight: 700,
-        fontSize: 15.5,
-        color: S.ink,
-        flex: 1
-      }
-    }, sec[lang]), /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: S.muted,
-        fontSize: 18,
-        transform: isOpen ? "rotate(90deg)" : "none",
-        transition: "transform .15s"
-      }
-    }, "›")), isOpen && /*#__PURE__*/React.createElement("div", {
-      style: {
-        padding: "0 14px 14px"
-      }
-    }, sec.id === "scores" && /*#__PURE__*/React.createElement("div", {
+      key: grp.id,
       style: {
         display: "flex",
         flexDirection: "column",
-        gap: 10
+        gap: 8
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
-        display: "flex",
-        gap: 5,
-        flexWrap: "wrap"
+        fontWeight: 800,
+        fontSize: 12,
+        color: S.muted,
+        letterSpacing: 0.6,
+        textTransform: "uppercase",
+        padding: "4px 4px 0"
       }
-    }, allScores.map(sc => /*#__PURE__*/React.createElement("button", {
-      key: sc.id,
-      onClick: () => setScoreOpen(sc.id),
-      style: {
-        flex: "1 1 28%",
-        padding: "7px 4px",
-        borderRadius: 9,
-        border: "none",
-        fontSize: 11.5,
-        fontWeight: 700,
-        cursor: "pointer",
-        fontFamily: "inherit",
-        background: scoreOpen === sc.id ? S.ink : S.bg,
-        color: scoreOpen === sc.id ? "#fff" : S.muted
-      }
-    }, sc.name))), SCORES.filter(sc => sc.id === scoreOpen).map(sc => /*#__PURE__*/React.createElement(ScoreCard, {
-      key: `${sc.id}-${weight}-${age}-${sex}-${height}`,
-      sc: sc,
-      lang: lang,
-      patient: patient
-    })), MULTI_SCORES.filter(sc => sc.id === scoreOpen).map(sc => /*#__PURE__*/React.createElement(MultiScoreCard, {
-      key: sc.id,
-      sc: sc,
-      lang: lang
-    }))), sec.id === "guidelines" && /*#__PURE__*/React.createElement(GuidelinesList, {
-      lang: lang
-    }), sec.id === "crisis" && /*#__PURE__*/React.createElement(CrisisCard, {
-      lang: lang,
-      weight: weight
-    }), sec.id === "periop" && /*#__PURE__*/React.createElement(PeriopMedCard, {
-      lang: lang
-    }), sec.id === "quickcalc" && /*#__PURE__*/React.createElement(QuickCalcCard, {
-      lang: lang,
-      weight: weight
-    }), sec.id === "mac" && /*#__PURE__*/React.createElement(MACCard, {
-      lang: lang,
-      age: age
-    }), sec.id === "postop" && /*#__PURE__*/React.createElement(PostopAnalgesiaCard, {
-      lang: lang,
-      weight: weight
-    }), sec.id === "neuraxial" && /*#__PURE__*/React.createElement(NeuraxialCard, {
-      lang: lang,
-      weight: weight
-    }), sec.id === "rotem" && /*#__PURE__*/React.createElement(ROTEMCard, {
-      lang: lang,
-      weight: weight
-    }), sec.id === "refs" && /*#__PURE__*/React.createElement(ReferencesCard, {
-      lang: lang
-    }), sec.id === "vent" && /*#__PURE__*/React.createElement(VentilationCalc, {
-      lang: lang,
-      height: height,
-      sex: sex
-    }), sec.id === "bariatric" && /*#__PURE__*/React.createElement(BariatricCard, {
-      lang: lang,
-      weight: weight,
-      height: height,
-      sex: sex
-    }), sec.id === "vaso" && /*#__PURE__*/React.createElement(VasopressorCalc, {
-      lang: lang,
-      weight: weight
-    }), sec.id === "anticoag" && /*#__PURE__*/React.createElement(AnticoagList, {
-      lang: lang
-    }), sec.id === "fluids" && /*#__PURE__*/React.createElement(FluidsCalc, {
-      lang: lang,
-      weight: weight,
-      age: age,
-      sex: sex
-    }), sec.id === "abx" && /*#__PURE__*/React.createElement(AbxList, {
-      lang: lang,
-      weight: weight
-    }), sec.id === "la" && /*#__PURE__*/React.createElement(LACalc, {
-      lang: lang,
-      weight: weight
-    }), sec.id === "csht" && /*#__PURE__*/React.createElement(CSHTCalc, {
-      lang: lang
-    })));
+    }, grp[lang]), groupSecs.map(sec => {
+      const isOpen = open === sec.id;
+      const isFav = favs.includes(sec.id);
+      return /*#__PURE__*/React.createElement("div", {
+        key: sec.id,
+        style: {
+          background: S.card,
+          borderRadius: 14,
+          border: `1.5px solid ${isOpen ? S.teal : S.line}`,
+          overflow: "hidden"
+        }
+      }, /*#__PURE__*/React.createElement("button", {
+        onClick: () => setOpen(isOpen ? null : sec.id),
+        style: {
+          width: "100%",
+          padding: "14px",
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          fontFamily: "inherit",
+          textAlign: "left"
+        }
+      }, /*#__PURE__*/React.createElement("span", {
+        style: {
+          fontSize: 17
+        }
+      }, sec.icon), /*#__PURE__*/React.createElement("span", {
+        style: {
+          fontWeight: 700,
+          fontSize: 15.5,
+          color: S.ink,
+          flex: 1
+        }
+      }, sec[lang]), /*#__PURE__*/React.createElement("span", {
+        onClick: e => toggleFav(sec.id, e),
+        style: {
+          fontSize: 17,
+          cursor: "pointer",
+          color: isFav ? S.amber : S.line
+        }
+      }, "★"), /*#__PURE__*/React.createElement("span", {
+        style: {
+          color: S.muted,
+          fontSize: 18,
+          transform: isOpen ? "rotate(90deg)" : "none",
+          transition: "transform .15s"
+        }
+      }, "›")), isOpen && /*#__PURE__*/React.createElement("div", {
+        style: {
+          padding: "0 14px 14px"
+        }
+      }, sec.id === "scores" && /*#__PURE__*/React.createElement("div", {
+        style: {
+          display: "flex",
+          flexDirection: "column",
+          gap: 10
+        }
+      }, /*#__PURE__*/React.createElement("div", {
+        style: {
+          display: "flex",
+          gap: 5,
+          flexWrap: "wrap"
+        }
+      }, allScores.map(sc => /*#__PURE__*/React.createElement("button", {
+        key: sc.id,
+        onClick: () => setScoreOpen(sc.id),
+        style: {
+          flex: "1 1 28%",
+          padding: "7px 4px",
+          borderRadius: 9,
+          border: "none",
+          fontSize: 11.5,
+          fontWeight: 700,
+          cursor: "pointer",
+          fontFamily: "inherit",
+          background: scoreOpen === sc.id ? S.ink : S.bg,
+          color: scoreOpen === sc.id ? "#fff" : S.muted
+        }
+      }, sc.name))), SCORES.filter(sc => sc.id === scoreOpen).map(sc => /*#__PURE__*/React.createElement(ScoreCard, {
+        key: `${sc.id}-${weight}-${age}-${sex}-${height}`,
+        sc: sc,
+        lang: lang,
+        patient: patient
+      })), MULTI_SCORES.filter(sc => sc.id === scoreOpen).map(sc => /*#__PURE__*/React.createElement(MultiScoreCard, {
+        key: sc.id,
+        sc: sc,
+        lang: lang
+      }))), sec.id === "guidelines" && /*#__PURE__*/React.createElement(GuidelinesList, {
+        lang: lang
+      }), sec.id === "crisis" && /*#__PURE__*/React.createElement(CrisisCard, {
+        lang: lang,
+        weight: weight
+      }), sec.id === "periop" && /*#__PURE__*/React.createElement(PeriopMedCard, {
+        lang: lang
+      }), sec.id === "quickcalc" && /*#__PURE__*/React.createElement(QuickCalcCard, {
+        lang: lang,
+        weight: weight
+      }), sec.id === "mac" && /*#__PURE__*/React.createElement(MACCard, {
+        lang: lang,
+        age: age
+      }), sec.id === "postop" && /*#__PURE__*/React.createElement(PostopAnalgesiaCard, {
+        lang: lang,
+        weight: weight
+      }), sec.id === "neuraxial" && /*#__PURE__*/React.createElement(NeuraxialCard, {
+        lang: lang,
+        weight: weight
+      }), sec.id === "rotem" && /*#__PURE__*/React.createElement(ROTEMCard, {
+        lang: lang,
+        weight: weight
+      }), sec.id === "cardiac" && /*#__PURE__*/React.createElement(CardiacCard, {
+        lang: lang,
+        weight: weight
+      }), sec.id === "obstetric" && /*#__PURE__*/React.createElement(ObstetricCard, {
+        lang: lang,
+        weight: weight
+      }), sec.id === "thoracic" && /*#__PURE__*/React.createElement(ThoracicCard, {
+        lang: lang,
+        weight: weight
+      }), sec.id === "refs" && /*#__PURE__*/React.createElement(ReferencesCard, {
+        lang: lang
+      }), sec.id === "vent" && /*#__PURE__*/React.createElement(VentilationCalc, {
+        lang: lang,
+        height: height,
+        sex: sex
+      }), sec.id === "bariatric" && /*#__PURE__*/React.createElement(BariatricCard, {
+        lang: lang,
+        weight: weight,
+        height: height,
+        sex: sex
+      }), sec.id === "vaso" && /*#__PURE__*/React.createElement(VasopressorCalc, {
+        lang: lang,
+        weight: weight
+      }), sec.id === "anticoag" && /*#__PURE__*/React.createElement(AnticoagList, {
+        lang: lang
+      }), sec.id === "fluids" && /*#__PURE__*/React.createElement(FluidsCalc, {
+        lang: lang,
+        weight: weight,
+        age: age,
+        sex: sex
+      }), sec.id === "abx" && /*#__PURE__*/React.createElement(AbxList, {
+        lang: lang,
+        weight: weight
+      }), sec.id === "la" && /*#__PURE__*/React.createElement(LACalc, {
+        lang: lang,
+        weight: weight
+      }), sec.id === "csht" && /*#__PURE__*/React.createElement(CSHTCalc, {
+        lang: lang
+      }), sec.id === "neuro" && /*#__PURE__*/React.createElement(NeuroCard, {
+        lang: lang,
+        weight: weight
+      }), sec.id === "vascular" && /*#__PURE__*/React.createElement(VascularCard, {
+        lang: lang,
+        weight: weight
+      }), sec.id === "tci" && /*#__PURE__*/React.createElement(TCITab, {
+        lang: lang,
+        weight: weight,
+        age: age,
+        height: height,
+        sex: sex
+      })));
+    }));
   }));
 }
 
@@ -8638,9 +10181,6 @@ function AnesthesiaAssistant() {
   const tabs = [{
     id: "meds",
     icon: "💊"
-  }, {
-    id: "tci",
-    icon: "📉"
   }, {
     id: "tools",
     icon: "🧮"
@@ -8843,12 +10383,6 @@ function AnesthesiaAssistant() {
   }, tab === "meds" && /*#__PURE__*/React.createElement(MedsTab, {
     lang: lang,
     weight: weight
-  }), tab === "tci" && /*#__PURE__*/React.createElement(TCITab, {
-    lang: lang,
-    weight: weight,
-    age: age,
-    height: height,
-    sex: sex
   }), tab === "tools" && /*#__PURE__*/React.createElement(ToolsTab, {
     lang: lang,
     weight: weight,
