@@ -55,14 +55,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js" crossorigin></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js" crossorigin></script>
 
-<!-- App (pre-compiled, no in-browser Babel needed) -->
-<script src="app.js"></script>
+<!-- App (pre-compiled, no in-browser Babel needed). Split into ordered
+     modules for maintainability — plain classic scripts (no bundler, no
+     ES-module import/export) so load order matters and must stay as-is. -->
+<script src="src/data.js"></script>
+<script src="src/formulas.js"></script>
+<script src="src/primitives.js"></script>
+<script src="src/tabs.js"></script>
+<script src="src/root.js"></script>
 
 <script>
   (function () {
     try {
       var root = ReactDOM.createRoot(document.getElementById("root"));
-      root.render(React.createElement(AnesthesiaAssistant));
+      root.render(React.createElement(ErrorBoundary, null, React.createElement(AnesthesiaAssistant)));
       var boot = document.getElementById("boot");
       if (boot) { boot.classList.add("hide"); setTimeout(function(){ boot.remove(); }, 350); }
     } catch (e) {
