@@ -1,6 +1,6 @@
 function PatientBar({ lang, weight, setWeight, age, setAge, height, setHeight, sex, setSex }) {
   const t = T[lang];
-  const fieldStyle = { ...inputStyle, background: "#F8FAFC", border: `1.5px solid ${S.line}`, color: S.ink, padding: "8px 8px", fontSize: 14 };
+  const fieldStyle = { ...inputStyle, background: S.cardAlt, border: `1.5px solid ${S.line}`, color: S.ink, padding: "8px 8px", fontSize: 14 };
   const [ageUnit, setAgeUnit] = useState("y");
   const ageDisplay = age === "" ? "" : ageUnit === "m" ? String(Math.round(parseFloat(age) * 12 * 100) / 100) : age;
   const onAgeChange = (val) => {
@@ -70,7 +70,7 @@ function PatientBar({ lang, weight, setWeight, age, setAge, height, setHeight, s
       }
     },
     sex === "M" ? "\u2642" : "\u2640"
-  ))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, paddingLeft: 32 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11.5, color: S.muted, fontWeight: 600 } }, lang === "el" ? "\u039C\u03BF\u03BD\u03AC\u03B4\u03B1 \u03B7\u03BB\u03B9\u03BA\u03AF\u03B1\u03C2:" : "Age unit:"), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", background: "#EEF2F7", borderRadius: 8, padding: 2 } }, [["y", lang === "el" ? "\u0388\u03C4\u03B7" : "Years"], ["m", lang === "el" ? "\u039C\u03AE\u03BD\u03B5\u03C2" : "Months"]].map(([u, lbl]) => /* @__PURE__ */ React.createElement(
+  ))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, paddingLeft: 32 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11.5, color: S.muted, fontWeight: 600 } }, lang === "el" ? "\u039C\u03BF\u03BD\u03AC\u03B4\u03B1 \u03B7\u03BB\u03B9\u03BA\u03AF\u03B1\u03C2:" : "Age unit:"), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", background: S.tintNeutral, borderRadius: 8, padding: 2 } }, [["y", lang === "el" ? "\u0388\u03C4\u03B7" : "Years"], ["m", lang === "el" ? "\u039C\u03AE\u03BD\u03B5\u03C2" : "Months"]].map(([u, lbl]) => /* @__PURE__ */ React.createElement(
     "button",
     {
       key: u,
@@ -84,17 +84,25 @@ function PatientBar({ lang, weight, setWeight, age, setAge, height, setHeight, s
         cursor: "pointer",
         fontFamily: "inherit",
         background: ageUnit === u ? S.teal : "transparent",
-        color: ageUnit === u ? "#fff" : S.muted
+        color: ageUnit === u ? S.card : S.muted
       }
     },
     lbl
   )))));
 }
-function MedsTab({ lang, weight }) {
+function MedsTab({ lang, weight, focus }) {
   const t = T[lang];
   const [q, setQ] = useState("");
   const [cat, setCat] = useState("all");
   const [open, setOpen] = useState(null);
+  // A global-search pick lands here: clear any local filter so the chosen
+  // drug is definitely visible, then open it.
+  useEffect(() => {
+    if (!focus) return;
+    setQ("");
+    setCat("all");
+    setOpen(focus.id);
+  }, [focus]);
   const w = parseFloat(weight) || 0;
   const list = DRUGS.filter(
     (d) => (cat === "all" || d.cat === cat) && d.name.toLowerCase().includes(q.toLowerCase())
@@ -108,8 +116,8 @@ function MedsTab({ lang, weight }) {
     fontWeight: 600,
     cursor: "pointer",
     fontFamily: "inherit",
-    background: cat === c.id ? S.teal : "#fff",
-    color: cat === c.id ? "#fff" : S.muted,
+    background: cat === c.id ? S.teal : S.card,
+    color: cat === c.id ? S.card : S.muted,
     boxShadow: cat === c.id ? "none" : `inset 0 0 0 1.5px ${S.line}`
   } }, c[lang]))), !w && /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, color: S.amber, fontWeight: 600, padding: "2px 4px" } }, "\u2696 ", t.weightNeeded), list.map((d) => {
     const isOpen = open === d.id;
@@ -130,11 +138,17 @@ function MedsTab({ lang, weight }) {
     }), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13.5, color: S.ink, lineHeight: 1.45 } }, /* @__PURE__ */ React.createElement("strong", { style: { color: S.teal } }, t.notes, ": "), lang === "el" ? d.notesEl : d.notesEn), (lang === "el" ? d.ciEl : d.ciEn) !== "\u2014" && /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13.5, color: S.red, lineHeight: 1.45 } }, /* @__PURE__ */ React.createElement("strong", null, t.ci, ": "), lang === "el" ? d.ciEl : d.ciEn), w > 0 && d.doses.some((ds) => typeof doseText(ds, w, lang) !== "string") && /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: S.amber, fontWeight: 600, lineHeight: 1.4 } }, lang === "el" ? "\u26A0 \u03A5\u03C0\u03BF\u03BB\u03BF\u03B3\u03B9\u03C3\u03BC\u03AD\u03BD\u03B5\u03C2 \u03C4\u03B9\u03BC\u03AD\u03C2 \u03C3\u03C4\u03BF \u03B2\u03AC\u03C1\u03BF\u03C2 \u2014 \u03B5\u03C0\u03B1\u03BB\u03B7\u03B8\u03B5\u03CD\u03C3\u03C4\u03B5 \u03C0\u03C1\u03B9\u03BD \u03C4\u03B7 \u03C7\u03BF\u03C1\u03AE\u03B3\u03B7\u03C3\u03B7." : "\u26A0 Weight-calculated values \u2014 verify before administration.")));
   }));
 }
-function ChecklistTab({ lang }) {
+function ChecklistTab({ lang, focus }) {
   const [open, setOpen] = useState(null);
   const [cat, setCat] = useState("all");
   const [q, setQ] = useState("");
   const [done, setDone] = useState({});
+  useEffect(() => {
+    if (!focus) return;
+    setQ("");
+    setCat("all");
+    setOpen(focus.id);
+  }, [focus]);
   const t = T[lang];
   const toggleStep = (id, i) => {
     const k = `${id}:${i}`;
@@ -173,8 +187,8 @@ function ChecklistTab({ lang }) {
     fontWeight: 600,
     cursor: "pointer",
     fontFamily: "inherit",
-    background: cat === c.id ? S.teal : "#fff",
-    color: cat === c.id ? "#fff" : S.muted,
+    background: cat === c.id ? S.teal : S.card,
+    color: cat === c.id ? S.card : S.muted,
     boxShadow: cat === c.id ? "none" : `inset 0 0 0 1.5px ${S.line}`
   } }, c[lang]))), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11.5, color: S.muted, fontWeight: 600, padding: "0 2px", lineHeight: 1.4 } }, lang === "el" ? "\u0392\u03AC\u03C3\u03B5\u03B9 Stanford Emergency Manual, DAS 2025 (\u03B1\u03B5\u03C1\u03B1\u03B3\u03C9\u03B3\u03CC\u03C2), DAS/BAETS/ENT-UK (SCOOP), AHA-ACLS, ASRA LAST, MHAUS & ESAIC." : "Based on Stanford Emergency Manual, DAS 2025 (airway), DAS/BAETS/ENT-UK (SCOOP), AHA-ACLS, ASRA LAST, MHAUS & ESAIC."), list.length === 0 && /* @__PURE__ */ React.createElement("div", { style: { color: S.muted, fontWeight: 600, fontSize: 14, textAlign: "center", padding: 20 } }, lang === "el" ? "\u0394\u03B5\u03BD \u03B2\u03C1\u03AD\u03B8\u03B7\u03BA\u03B5 \u03BA\u03B1\u03C4\u03AC\u03C3\u03C4\u03B1\u03C3\u03B7." : "No emergency found."), list.map((c) => {
     const isOpen = open === c.id;
@@ -196,8 +210,8 @@ function ChecklistTab({ lang }) {
       fontSize: 12,
       fontWeight: 800,
       fontVariantNumeric: "tabular-nums",
-      color: complete ? "#fff" : S.teal,
-      background: complete ? S.teal : "#E4E9F0",
+      color: complete ? S.card : S.teal,
+      background: complete ? S.teal : S.lineStrong,
       borderRadius: 99,
       padding: "3px 9px"
     } }, nDone, "/", steps.length), /* @__PURE__ */ React.createElement("span", { style: { color: S.muted, fontWeight: 600, fontSize: 18, transform: isOpen ? "rotate(90deg)" : "none", transition: "transform .15s" } }, "\u203A")), isOpen && /* @__PURE__ */ React.createElement("div", { style: { padding: "0 14px 14px", display: "flex", flexDirection: "column", gap: 6 } }, steps.map((s, i) => {
@@ -207,7 +221,7 @@ function ChecklistTab({ lang }) {
         alignItems: "flex-start",
         gap: 10,
         textAlign: "left",
-        background: checked ? "#E8EDF4" : S.bg,
+        background: checked ? S.tintSelected : S.bg,
         border: "none",
         cursor: "pointer",
         borderRadius: 10,
@@ -222,9 +236,9 @@ function ChecklistTab({ lang }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: checked ? S.teal : "#fff",
+        background: checked ? S.teal : S.card,
         boxShadow: checked ? "none" : `inset 0 0 0 2px ${S.line}`,
-        color: "#fff",
+        color: S.onAccent,
         fontSize: 14,
         fontWeight: 900
       } }, checked ? "\u2713" : ""), /* @__PURE__ */ React.createElement("span", { style: {
@@ -240,7 +254,7 @@ function ChecklistTab({ lang }) {
       padding: "7px 16px",
       borderRadius: 9,
       border: `1.5px solid ${S.line}`,
-      background: "#fff",
+      background: S.card,
       color: S.muted,
       fontWeight: 700,
       fontSize: 13,
@@ -278,8 +292,8 @@ function TCITab({ lang, weight, age, height, sex }) {
     fontWeight: 700,
     cursor: "pointer",
     fontFamily: "inherit",
-    background: drug === dr ? S.teal : "#fff",
-    color: drug === dr ? "#fff" : S.muted,
+    background: drug === dr ? S.teal : S.card,
+    color: drug === dr ? S.card : S.muted,
     boxShadow: drug === dr ? "none" : `inset 0 0 0 1.5px ${S.line}`
   } }, dr))), models.map((m) => {
     const isOpen = openModel === m.id;
@@ -299,11 +313,11 @@ function TCITab({ lang, weight, age, height, sex }) {
       alignItems: "center",
       fontFamily: "inherit",
       textAlign: "left"
-    } }, /* @__PURE__ */ React.createElement("span", { style: { display: "flex", flexDirection: "column", gap: 2 } }, /* @__PURE__ */ React.createElement("span", { style: { fontWeight: 700, fontSize: 15.5, color: S.ink } }, m.name), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 12, color: S.muted, fontWeight: 600 } }, m.targetType)), /* @__PURE__ */ React.createElement("span", { style: { display: "flex", alignItems: "center", gap: 8 } }, !ready && /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: S.amber } }, "\u26A0"), ready && !valid && /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: S.amber } }, "!"), valid && /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: S.teal } }, "\u25CF"), /* @__PURE__ */ React.createElement("span", { style: { color: S.muted, fontWeight: 600, fontSize: 18, transform: isOpen ? "rotate(90deg)" : "none", transition: "transform .15s" } }, "\u203A"))), isOpen && /* @__PURE__ */ React.createElement("div", { style: { padding: "0 14px 14px", display: "flex", flexDirection: "column", gap: 10 } }, !ready && /* @__PURE__ */ React.createElement("div", { style: { background: "#EEF2F7", borderRadius: 10, padding: "9px 12px", fontSize: 13, color: S.amber, fontWeight: 600 } }, t.needCov, " ", missing.map((r) => covLabel[r][lang]).join(", ")), /* @__PURE__ */ React.createElement("div", { style: { background: S.bg, borderRadius: 10, padding: "9px 12px" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, color: S.muted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 3 } }, t.targetsHead), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 14, color: S.ink, lineHeight: 1.5 } }, lang === "el" ? m.targetsEl : m.targetsEn)), ready && v1 && /* @__PURE__ */ React.createElement("div", { style: { background: S.bg, borderRadius: 10, padding: "9px 12px" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, color: S.muted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.4 } }, t.bolusEst), /* @__PURE__ */ React.createElement(BolusRows, { drug, v1, lang }), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: S.muted, fontWeight: 600, marginTop: 4 } }, "V1 \u2248 ", fmt(v1), " L \xB7 ", lang === "el" ? "\u03C0\u03BF\u03C3\u03CC\u03C4\u03B7\u03C4\u03B1 = \u03C3\u03C4\u03CC\u03C7\u03BF\u03C2 \xD7 V1 (\u03BF \u03B1\u03BB\u03B3\u03CC\u03C1\u03B9\u03B8\u03BC\u03BF\u03C2 TCI \u03C4\u03BF \u03B1\u03BD\u03B1\u03BB\u03B1\u03BC\u03B2\u03AC\u03BD\u03B5\u03B9)" : "amount = target \xD7 V1 (your TCI pump handles this)")), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13.5, color: S.ink, lineHeight: 1.45 } }, /* @__PURE__ */ React.createElement("strong", { style: { color: S.teal } }, lang === "el" ? "\u03A0\u03B5\u03B4\u03AF\u03BF" : "Range", ": "), lang === "el" ? m.rangeEl : m.rangeEn), ready && !valid && (m.warnEl || m.warnEn) && /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13.5, color: S.amber, lineHeight: 1.45, fontWeight: 600 } }, "\u26A0 ", lang === "el" ? m.warnEl || "\u0395\u03BA\u03C4\u03CC\u03C2 \u03B5\u03CD\u03C1\u03BF\u03C5\u03C2 \u03B5\u03C0\u03B9\u03BA\u03CD\u03C1\u03C9\u03C3\u03B7\u03C2" : m.warnEn || "Outside validation range"), ready && !valid && !(m.warnEl || m.warnEn) && /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13.5, color: S.amber, lineHeight: 1.45, fontWeight: 600 } }, "\u26A0 ", lang === "el" ? "\u0391\u03C3\u03B8\u03B5\u03BD\u03AE\u03C2 \u03B5\u03BA\u03C4\u03CC\u03C2 \u03B5\u03CD\u03C1\u03BF\u03C5\u03C2 \u03B5\u03C0\u03B9\u03BA\u03CD\u03C1\u03C9\u03C3\u03B7\u03C2 \u03C4\u03BF\u03C5 \u03BC\u03BF\u03BD\u03C4\u03AD\u03BB\u03BF\u03C5." : "Patient outside the model's validation range.")));
+    } }, /* @__PURE__ */ React.createElement("span", { style: { display: "flex", flexDirection: "column", gap: 2 } }, /* @__PURE__ */ React.createElement("span", { style: { fontWeight: 700, fontSize: 15.5, color: S.ink } }, m.name), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 12, color: S.muted, fontWeight: 600 } }, m.targetType)), /* @__PURE__ */ React.createElement("span", { style: { display: "flex", alignItems: "center", gap: 8 } }, !ready && /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: S.amber } }, "\u26A0"), ready && !valid && /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: S.amber } }, "!"), valid && /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: S.teal } }, "\u25CF"), /* @__PURE__ */ React.createElement("span", { style: { color: S.muted, fontWeight: 600, fontSize: 18, transform: isOpen ? "rotate(90deg)" : "none", transition: "transform .15s" } }, "\u203A"))), isOpen && /* @__PURE__ */ React.createElement("div", { style: { padding: "0 14px 14px", display: "flex", flexDirection: "column", gap: 10 } }, !ready && /* @__PURE__ */ React.createElement("div", { style: { background: S.tintNeutral, borderRadius: 10, padding: "9px 12px", fontSize: 13, color: S.amber, fontWeight: 600 } }, t.needCov, " ", missing.map((r) => covLabel[r][lang]).join(", ")), /* @__PURE__ */ React.createElement("div", { style: { background: S.bg, borderRadius: 10, padding: "9px 12px" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, color: S.muted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 3 } }, t.targetsHead), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 14, color: S.ink, lineHeight: 1.5 } }, lang === "el" ? m.targetsEl : m.targetsEn)), ready && v1 && /* @__PURE__ */ React.createElement("div", { style: { background: S.bg, borderRadius: 10, padding: "9px 12px" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, color: S.muted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.4 } }, t.bolusEst), /* @__PURE__ */ React.createElement(BolusRows, { drug, v1, lang }), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: S.muted, fontWeight: 600, marginTop: 4 } }, "V1 \u2248 ", fmt(v1), " L \xB7 ", lang === "el" ? "\u03C0\u03BF\u03C3\u03CC\u03C4\u03B7\u03C4\u03B1 = \u03C3\u03C4\u03CC\u03C7\u03BF\u03C2 \xD7 V1 (\u03BF \u03B1\u03BB\u03B3\u03CC\u03C1\u03B9\u03B8\u03BC\u03BF\u03C2 TCI \u03C4\u03BF \u03B1\u03BD\u03B1\u03BB\u03B1\u03BC\u03B2\u03AC\u03BD\u03B5\u03B9)" : "amount = target \xD7 V1 (your TCI pump handles this)")), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13.5, color: S.ink, lineHeight: 1.45 } }, /* @__PURE__ */ React.createElement("strong", { style: { color: S.teal } }, lang === "el" ? "\u03A0\u03B5\u03B4\u03AF\u03BF" : "Range", ": "), lang === "el" ? m.rangeEl : m.rangeEn), ready && !valid && (m.warnEl || m.warnEn) && /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13.5, color: S.amber, lineHeight: 1.45, fontWeight: 600 } }, "\u26A0 ", lang === "el" ? m.warnEl || "\u0395\u03BA\u03C4\u03CC\u03C2 \u03B5\u03CD\u03C1\u03BF\u03C5\u03C2 \u03B5\u03C0\u03B9\u03BA\u03CD\u03C1\u03C9\u03C3\u03B7\u03C2" : m.warnEn || "Outside validation range"), ready && !valid && !(m.warnEl || m.warnEn) && /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13.5, color: S.amber, lineHeight: 1.45, fontWeight: 600 } }, "\u26A0 ", lang === "el" ? "\u0391\u03C3\u03B8\u03B5\u03BD\u03AE\u03C2 \u03B5\u03BA\u03C4\u03CC\u03C2 \u03B5\u03CD\u03C1\u03BF\u03C5\u03C2 \u03B5\u03C0\u03B9\u03BA\u03CD\u03C1\u03C9\u03C3\u03B7\u03C2 \u03C4\u03BF\u03C5 \u03BC\u03BF\u03BD\u03C4\u03AD\u03BB\u03BF\u03C5." : "Patient outside the model's validation range.")));
   }));
 }
 function Chip({ label, val }) {
-  return /* @__PURE__ */ React.createElement("div", { style: { background: "#fff", borderRadius: 10, padding: "6px 11px", boxShadow: `inset 0 0 0 1.5px ${S.line}` } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, color: S.muted, fontWeight: 600 } }, label, " "), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13.5, color: S.ink, fontWeight: 800, fontVariantNumeric: "tabular-nums" } }, val));
+  return /* @__PURE__ */ React.createElement("div", { style: { background: S.card, borderRadius: 10, padding: "6px 11px", boxShadow: `inset 0 0 0 1.5px ${S.line}` } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, color: S.muted, fontWeight: 600 } }, label, " "), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13.5, color: S.ink, fontWeight: 800, fontVariantNumeric: "tabular-nums" } }, val));
 }
 function BolusRows({ drug, v1, lang }) {
   const sets = {

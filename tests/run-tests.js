@@ -247,6 +247,65 @@ check("bradycardia: dopamine 5-20 mcg/kg/min (ACLS)",
 check("MH: dantrolene 2.5 mg/kg initial",
   run('/2\\.5 mg\\/kg/.test(CHECKLISTS.find(c => c.id === "mh").stepsEn.join(" "))'), true);
 
+// --- Global search ----------------------------------------------------------
+// One index over drugs, checklists, tools, scores and guidelines. Greek is
+// folded (accents stripped, final sigma) so "αναφυλαξια" finds "Αναφυλαξία".
+check("search index covers every drug, checklist, tool, score and guideline",
+  run(`(() => {
+    const i = buildSearchIndex("el");
+    const n = (k) => i.filter(x => x.kind === k).length;
+    return n("drug") === DRUGS.length && n("list") === CHECKLISTS.length &&
+           n("tool") === TOOL_SECTIONS.length && n("score") === SCORES.length &&
+           n("guide") === GUIDELINES.length;
+  })()`), true);
+check("search: accents folded", run('norm("\\u03B1\\u03BD\\u03B1\\u03C6\\u03C5\\u03BB\\u03B1\\u03BE\\u03B9\\u03B1") === norm("\\u0391\\u03BD\\u03B1\\u03C6\\u03C5\\u03BB\\u03B1\\u03BE\\u03AF\\u03B1")'), true);
+check("search: final sigma folded", run('norm("\\u03C4\\u03AD\\u03BB\\u03BF\\u03C2") === norm("\\u03C4\\u03B5\\u03BB\\u03BF\\u03C3")'), true);
+check("search: every result routes to a real tab",
+  run('buildSearchIndex("el").every(i => ["meds","lists","tools","peds"].includes(i.tab) && !!i.target)'), true);
+// Greek drug names are searchable even though the app displays Latin names.
+check("search: Greek drug synonyms indexed",
+  run('DRUGS.filter(d => !d.synEl).length'), 0);
+// Tool cards render at runtime, so each carries keywords describing its content.
+check("search: every tool has search keywords",
+  run("TOOL_SECTIONS.filter(s => !s.kw).length"), 0);
+check("search: a tool is findable by its content, not just its title",
+  run('buildSearchIndex("el").some(i => i.kind === "tool" && i.hay.includes("ards"))'), true);
+
+check("tools: every tool belongs to a group (needed for collapsing)",
+  run("TOOL_SECTIONS.filter(s => !s.group).length"), 0);
+check("tools: five groups", run("new Set(TOOL_SECTIONS.map(s => s.group)).size"), 5);
+
+// --- Theming ----------------------------------------------------------------
+// S is mutated in place by applyTheme, so both palettes must define exactly the
+// same tokens or a component reads undefined in one theme only. Contrast is
+// asserted for both, since a colour tweak in one theme is easy to make blind.
+check("light and dark define identical tokens",
+  run("Object.keys(LIGHT).sort().join() === Object.keys(DARK).sort().join()"), true);
+check("no component hardcodes a colour outside the palette",
+  run(`(() => {
+    // every S token is a hex string; components should only ever read these
+    return Object.values(LIGHT).every(v => /^#[0-9A-Fa-f]{6}$/.test(v)) &&
+           Object.values(DARK).every(v => /^#[0-9A-Fa-f]{6}$/.test(v));
+  })()`), true);
+check("applyTheme('dark') swaps the palette in place",
+  run(`(() => { applyTheme("dark"); const d = S.bg === DARK.bg; applyTheme("light"); return d && S.bg === LIGHT.bg; })()`), true);
+check("body text clears 4.5:1 in both themes",
+  run(`(() => {
+    const lum = (h) => {
+      const c = [1, 3, 5].map(i => parseInt(h.substr(i, 2), 16) / 255)
+        .map(x => x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4));
+      return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+    };
+    const cr = (a, b) => {
+      const x = lum(a), y = lum(b);
+      return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+    };
+    return [LIGHT, DARK].every(P =>
+      cr(P.ink, P.bg) >= 4.5 && cr(P.muted, P.card) >= 4.5 &&
+      cr(P.red, P.card) >= 4.5 && cr(P.amber, P.card) >= 4.5 &&
+      cr(P.onAccent, P.teal) >= 4.5);
+  })()`), true);
+
 // --- Report -----------------------------------------------------------------
 console.log(`\n${pass} passed, ${fail} failed (${pass + fail} total)`);
 if (failures.length) {

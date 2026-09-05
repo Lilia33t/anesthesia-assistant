@@ -248,18 +248,71 @@ function doseText(d, w, lang) {
   const calc = lo === hi ? fmt(lo) : `${fmt(lo)}\u2013${fmt(hi)}`;
   return { base, calc: `${calc} ${baseUnit}`, capped };
 }
-const S = {
+// Palette. `S` is deliberately a *mutable* object: every component reads
+// S.token at render time, so swapping the values in place and re-rendering
+// re-themes the whole app without touching a single component.
+//
+// Tokens are semantic, not literal. "tintWarn" is the pale background behind a
+// caution panel; in dark mode it is a deep amber rather than a pale one, so
+// components never need to know which theme is active.
+const LIGHT = {
   ink: "#1C2836",
   teal: "#1E3A5F",
   tealDark: "#14253F",
+  onAccent: "#FFFFFF",
   monitor: "#7C90AB",
   bg: "#F4F6F9",
   card: "#FFFFFF",
+  cardAlt: "#F8FAFC",
   line: "#E1E7EE",
-  red: "#C9544B",
-  amber: "#D98A38",
-  muted: "#49535F"
+  lineStrong: "#E4E9F0",
+  red: "#BC4238",
+  amber: "#A9661B",
+  muted: "#49535F",
+  // pale panels + their text
+  tintInfo: "#E8F0F7",   tintInfoFg: "#1E3A5F",
+  tintWarn: "#FBF0DD",   tintWarnFg: "#8A6320",
+  tintWarnAlt: "#FBF3E6",
+  tintDanger: "#FDECEC", tintDangerFg: "#B3403F",
+  tintOk: "#E4F0EA",     tintOkFg: "#2F7355",
+  tintOkAlt: "#3B8C6E",  tintOkSoft: "#6E8B6A",
+  tintGuide: "#EDE8F5",  tintGuideFg: "#544A7D",
+  tintNeutral: "#EEF2F7",
+  tintSelected: "#E8EDF4"
 };
+
+// Same identity, inverted luminance. The navy accent lightens so it still
+// reads as the app's colour against a dark ground, and text on the accent
+// flips to near-black.
+const DARK = {
+  ink: "#E9EEF4",
+  teal: "#8FB4DC",
+  tealDark: "#A9C7E6",
+  onAccent: "#0E1620",
+  monitor: "#8FA3BC",
+  bg: "#111820",
+  card: "#1A2330",
+  cardAlt: "#212C3B",
+  line: "#2E3A49",
+  lineStrong: "#3A485A",
+  red: "#F08379",
+  amber: "#E8A75A",
+  muted: "#A6B3C2",
+  tintInfo: "#1E2E42",   tintInfoFg: "#A8C8E8",
+  tintWarn: "#3A2E1B",   tintWarnFg: "#EDBF7C",
+  tintWarnAlt: "#332A1A",
+  tintDanger: "#3B2222", tintDangerFg: "#F2938A",
+  tintOk: "#1C3129",     tintOkFg: "#8ED0B0",
+  tintOkAlt: "#7CC4A4",  tintOkSoft: "#9CBF98",
+  tintGuide: "#2B2740",  tintGuideFg: "#BDB2E0",
+  tintNeutral: "#232E3D",
+  tintSelected: "#26344A"
+};
+
+const S = { ...LIGHT };
+function applyTheme(mode) {
+  Object.assign(S, mode === "dark" ? DARK : LIGHT);
+}
 const inputStyle = {
   width: "100%",
   padding: "10px 12px",

@@ -10,11 +10,12 @@
  * Provided for clinical decision support only; it does not replace clinical
  * judgement. No warranty is given as to accuracy or fitness for any purpose.
  */
-const { useState, useRef, useEffect } = React;
+const { useState, useRef, useEffect, useMemo } = React;
 const LOGO_DATA = "data:image/png;base64,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";
 const DRUGS = [
   {
     id: "propofol",
+    synEl: "\u03C0\u03C1\u03BF\u03C0\u03BF\u03C6\u03CC\u03BB\u03B7",
     name: "Propofol",
     cat: "induction",
     doses: [
@@ -30,6 +31,7 @@ const DRUGS = [
   },
   {
     id: "etomidate",
+    synEl: "\u03B5\u03C4\u03BF\u03BC\u03B9\u03B4\u03AC\u03C4\u03B7",
     name: "Etomidate",
     cat: "induction",
     doses: [{ el: "\u0395\u03B9\u03C3\u03B1\u03B3\u03C9\u03B3\u03AE", en: "Induction", lo: 0.2, hi: 0.3, unit: "mg/kg", max: null }],
@@ -40,6 +42,7 @@ const DRUGS = [
   },
   {
     id: "ketamine",
+    synEl: "\u03BA\u03B5\u03C4\u03B1\u03BC\u03AF\u03BD\u03B7",
     name: "Ketamine",
     cat: "induction",
     doses: [
@@ -54,6 +57,7 @@ const DRUGS = [
   },
   {
     id: "midazolam",
+    synEl: "\u03BC\u03B9\u03B4\u03B1\u03B6\u03BF\u03BB\u03AC\u03BC\u03B7",
     name: "Midazolam",
     cat: "induction",
     doses: [
@@ -67,6 +71,7 @@ const DRUGS = [
   },
   {
     id: "remimazolam",
+    synEl: "\u03C1\u03B5\u03BC\u03B9\u03BC\u03B1\u03B6\u03BF\u03BB\u03AC\u03BC\u03B7",
     name: "Remimazolam (Byfavo)",
     cat: "induction",
     doses: [
@@ -81,6 +86,7 @@ const DRUGS = [
   },
   {
     id: "thiopental",
+    synEl: "\u03B8\u03B5\u03B9\u03BF\u03C0\u03B5\u03BD\u03C4\u03AC\u03BB\u03B7",
     name: "Thiopental",
     cat: "induction",
     doses: [{ el: "\u0395\u03B9\u03C3\u03B1\u03B3\u03C9\u03B3\u03AE", en: "Induction", lo: 3, hi: 5, unit: "mg/kg", max: null }],
@@ -91,6 +97,7 @@ const DRUGS = [
   },
   {
     id: "sevoflurane",
+    synEl: "\u03C3\u03B5\u03B2\u03BF\u03C6\u03BB\u03BF\u03C5\u03C1\u03AC\u03BD\u03B9\u03BF",
     name: "Sevoflurane",
     cat: "volatile",
     doses: [
@@ -105,6 +112,7 @@ const DRUGS = [
   },
   {
     id: "desflurane",
+    synEl: "\u03B4\u03B5\u03C3\u03C6\u03BB\u03BF\u03C5\u03C1\u03AC\u03BD\u03B9\u03BF",
     name: "Desflurane",
     cat: "volatile",
     doses: [
@@ -118,6 +126,7 @@ const DRUGS = [
   },
   {
     id: "isoflurane",
+    synEl: "\u03B9\u03C3\u03BF\u03C6\u03BB\u03BF\u03C5\u03C1\u03AC\u03BD\u03B9\u03BF",
     name: "Isoflurane",
     cat: "volatile",
     doses: [
@@ -131,6 +140,7 @@ const DRUGS = [
   },
   {
     id: "n2o",
+    synEl: "\u03C5\u03C0\u03BF\u03BE\u03B5\u03AF\u03B4\u03B9\u03BF \u03C4\u03BF\u03C5 \u03B1\u03B6\u03CE\u03C4\u03BF\u03C5 \u03B3\u03B5\u03BB\u03B1\u03C3\u03C4\u03B9\u03BA\u03CC",
     name: "Nitrous oxide (N\u2082O)",
     cat: "volatile",
     doses: [
@@ -145,6 +155,7 @@ const DRUGS = [
   },
   {
     id: "fentanyl",
+    synEl: "\u03C6\u03B5\u03BD\u03C4\u03B1\u03BD\u03CC\u03BB\u03B7",
     name: "Fentanyl",
     cat: "opioid",
     doses: [
@@ -161,6 +172,7 @@ const DRUGS = [
   },
   {
     id: "sufentanil",
+    synEl: "\u03C3\u03BF\u03C5\u03C6\u03B5\u03BD\u03C4\u03B1\u03BD\u03AF\u03BB\u03B7",
     name: "Sufentanil",
     cat: "opioid",
     doses: [
@@ -177,6 +189,7 @@ const DRUGS = [
   },
   {
     id: "alfentanil",
+    synEl: "\u03B1\u03BB\u03C6\u03B5\u03BD\u03C4\u03B1\u03BD\u03AF\u03BB\u03B7",
     name: "Alfentanil",
     cat: "opioid",
     doses: [
@@ -191,6 +204,7 @@ const DRUGS = [
   },
   {
     id: "remifentanil",
+    synEl: "\u03C1\u03B5\u03BC\u03B9\u03C6\u03B5\u03BD\u03C4\u03B1\u03BD\u03AF\u03BB\u03B7",
     name: "Remifentanil",
     cat: "opioid",
     doses: [
@@ -204,6 +218,7 @@ const DRUGS = [
   },
   {
     id: "morphine",
+    synEl: "\u03BC\u03BF\u03C1\u03C6\u03AF\u03BD\u03B7",
     name: "Morphine",
     cat: "opioid",
     doses: [
@@ -218,6 +233,7 @@ const DRUGS = [
   },
   {
     id: "rocuronium",
+    synEl: "\u03C1\u03BF\u03BA\u03BF\u03C5\u03C1\u03CC\u03BD\u03B9\u03BF",
     name: "Rocuronium",
     cat: "nmb",
     doses: [
@@ -232,6 +248,7 @@ const DRUGS = [
   },
   {
     id: "succinylcholine",
+    synEl: "\u03C3\u03BF\u03C5\u03BA\u03BA\u03B9\u03BD\u03C5\u03BB\u03BF\u03C7\u03BF\u03BB\u03AF\u03BD\u03B7 \u03C3\u03BF\u03C5\u03BA\u03B9\u03BD\u03C5\u03BB\u03BF\u03C7\u03BF\u03BB\u03AF\u03BD\u03B7 \u03C3\u03BF\u03C5\u03BE\u03B1\u03BC\u03B5\u03B8\u03CC\u03BD\u03B9\u03BF",
     name: "Succinylcholine",
     cat: "nmb",
     doses: [
@@ -245,6 +262,7 @@ const DRUGS = [
   },
   {
     id: "cisatracurium",
+    synEl: "\u03C3\u03B9\u03C3\u03B1\u03C4\u03C1\u03B1\u03BA\u03BF\u03CD\u03C1\u03B9\u03BF",
     name: "Cisatracurium",
     cat: "nmb",
     doses: [
@@ -258,6 +276,7 @@ const DRUGS = [
   },
   {
     id: "sugammadex",
+    synEl: "\u03C3\u03BF\u03C5\u03B3\u03BA\u03B1\u03BC\u03B1\u03B4\u03AD\u03BE\u03B7",
     name: "Sugammadex",
     cat: "reversal",
     doses: [
@@ -272,6 +291,7 @@ const DRUGS = [
   },
   {
     id: "neostigmine",
+    synEl: "\u03BD\u03B5\u03BF\u03C3\u03C4\u03B9\u03B3\u03BC\u03AF\u03BD\u03B7",
     name: "Neostigmine + Glycopyrrolate",
     cat: "reversal",
     doses: [{ el: "\u0391\u03BD\u03B1\u03C3\u03C4\u03C1\u03BF\u03C6\u03AE (TOF\u22654 \u03BC\u03B5 fade)", en: "Reversal (TOF\u22654 with fade)", lo: 0.04, hi: 0.07, unit: "mg/kg", max: 5 }],
@@ -282,6 +302,7 @@ const DRUGS = [
   },
   {
     id: "nalbuphine",
+    synEl: "\u03BD\u03B1\u03BB\u03BC\u03C0\u03BF\u03C5\u03C6\u03AF\u03BD\u03B7 \u03BD\u03B1\u03BB\u03B2\u03BF\u03C5\u03C6\u03AF\u03BD\u03B7",
     name: "Nalbuphine",
     cat: "opioid",
     doses: [
@@ -302,6 +323,7 @@ const DRUGS = [
   },
   {
     id: "naloxone",
+    synEl: "\u03BD\u03B1\u03BB\u03BF\u03BE\u03CC\u03BD\u03B7",
     name: "Naloxone (Narcan)",
     cat: "reversal",
     doses: [
@@ -317,6 +339,7 @@ const DRUGS = [
   },
   {
     id: "flumazenil",
+    synEl: "\u03C6\u03BB\u03BF\u03C5\u03BC\u03B1\u03B6\u03B5\u03BD\u03AF\u03BB\u03B7",
     name: "Flumazenil (Anexate)",
     cat: "reversal",
     doses: [
@@ -331,6 +354,7 @@ const DRUGS = [
   },
   {
     id: "atropine",
+    synEl: "\u03B1\u03C4\u03C1\u03BF\u03C0\u03AF\u03BD\u03B7",
     name: "Atropine",
     cat: "emergency",
     doses: [{ el: "\u0392\u03C1\u03B1\u03B4\u03C5\u03BA\u03B1\u03C1\u03B4\u03AF\u03B1", en: "Bradycardia", lo: 0.02, hi: 0.02, unit: "mg/kg", max: 1, minAbs: 0.1 }],
@@ -341,6 +365,7 @@ const DRUGS = [
   },
   {
     id: "adrenaline",
+    synEl: "\u03B1\u03B4\u03C1\u03B5\u03BD\u03B1\u03BB\u03AF\u03BD\u03B7 \u03B5\u03C0\u03B9\u03BD\u03B5\u03C6\u03C1\u03AF\u03BD\u03B7",
     name: "Adrenaline (Epinephrine)",
     cat: "emergency",
     doses: [
@@ -356,6 +381,7 @@ const DRUGS = [
   },
   {
     id: "ephedrine",
+    synEl: "\u03B5\u03C6\u03B5\u03B4\u03C1\u03AF\u03BD\u03B7",
     name: "Ephedrine",
     cat: "vasoactive",
     doses: [{ el: "Bolus", en: "Bolus", fixed: "5\u201310 mg IV (\u03B5\u03BD\u03AE\u03BB.) / 0.1\u20130.2 mg/kg (\u03C0\u03B1\u03B9\u03B4\u03B9\u03AC)", fixedEn: "5\u201310 mg IV (adults) / 0.1\u20130.2 mg/kg (children)" }],
@@ -366,6 +392,7 @@ const DRUGS = [
   },
   {
     id: "phenylephrine",
+    synEl: "\u03C6\u03B1\u03B9\u03BD\u03C5\u03BB\u03B5\u03C6\u03C1\u03AF\u03BD\u03B7",
     name: "Phenylephrine",
     cat: "vasoactive",
     doses: [
@@ -379,6 +406,7 @@ const DRUGS = [
   },
   {
     id: "noradrenaline",
+    synEl: "\u03BD\u03BF\u03C1\u03B1\u03B4\u03C1\u03B5\u03BD\u03B1\u03BB\u03AF\u03BD\u03B7 \u03BD\u03BF\u03C1\u03B5\u03C0\u03B9\u03BD\u03B5\u03C6\u03C1\u03AF\u03BD\u03B7",
     name: "Noradrenaline",
     cat: "vasoactive",
     doses: [{ el: "\u0388\u03B3\u03C7\u03C5\u03C3\u03B7", en: "Infusion", lo: 0.05, hi: 0.5, unit: "mcg/kg/min", max: null }],
@@ -389,6 +417,7 @@ const DRUGS = [
   },
   {
     id: "dobutamine",
+    synEl: "\u03BD\u03C4\u03BF\u03B2\u03BF\u03C5\u03C4\u03B1\u03BC\u03AF\u03BD\u03B7 \u03B4\u03BF\u03B2\u03BF\u03C5\u03C4\u03B1\u03BC\u03AF\u03BD\u03B7",
     name: "Dobutamine",
     cat: "vasoactive",
     doses: [{ el: "\u0388\u03B3\u03C7\u03C5\u03C3\u03B7", en: "Infusion", lo: 2.5, hi: 10, unit: "mcg/kg/min", max: null }],
@@ -400,6 +429,7 @@ const DRUGS = [
   // ---------- Αντιυπερτασικά ----------
   {
     id: "labetalol",
+    synEl: "\u03BB\u03B1\u03B2\u03B7\u03C4\u03B1\u03BB\u03CC\u03BB\u03B7",
     name: "Labetalol",
     cat: "antihtn",
     doses: [
@@ -413,6 +443,7 @@ const DRUGS = [
   },
   {
     id: "esmolol",
+    synEl: "\u03B5\u03C3\u03BC\u03BF\u03BB\u03CC\u03BB\u03B7",
     name: "Esmolol",
     cat: "antihtn",
     doses: [
@@ -426,6 +457,7 @@ const DRUGS = [
   },
   {
     id: "metoprolol",
+    synEl: "\u03BC\u03B5\u03C4\u03BF\u03C0\u03C1\u03BF\u03BB\u03CC\u03BB\u03B7",
     name: "Metoprolol",
     cat: "antihtn",
     doses: [{ el: "Bolus IV", en: "IV bolus", fixed: "1\u20135 mg/2min, \u03B5\u03C0\u03B1\u03BD\u03AC\u03BB\u03B7\u03C8\u03B7 \u03AD\u03C9\u03C2 ~15 mg", fixedEn: "1\u20135 mg/2min, repeat up to ~15 mg" }],
@@ -436,6 +468,7 @@ const DRUGS = [
   },
   {
     id: "urapidil",
+    synEl: "\u03BF\u03C5\u03C1\u03B1\u03C0\u03B9\u03B4\u03AF\u03BB\u03B7",
     name: "Urapidil (Ebrantil)",
     cat: "antihtn",
     doses: [
@@ -449,6 +482,7 @@ const DRUGS = [
   },
   {
     id: "hydralazine",
+    synEl: "\u03C5\u03B4\u03C1\u03B1\u03BB\u03B1\u03B6\u03AF\u03BD\u03B7",
     name: "Hydralazine",
     cat: "antihtn",
     doses: [{ el: "Bolus IV", en: "IV bolus", fixed: "5\u201310 mg \u03BA\u03AC\u03B8\u03B5 20\u201330 min", fixedEn: "5\u201310 mg every 20\u201330 min" }],
@@ -459,6 +493,7 @@ const DRUGS = [
   },
   {
     id: "nicardipine",
+    synEl: "\u03BD\u03B9\u03BA\u03B1\u03C1\u03B4\u03B9\u03C0\u03AF\u03BD\u03B7",
     name: "Nicardipine",
     cat: "antihtn",
     doses: [{ el: "\u0388\u03B3\u03C7\u03C5\u03C3\u03B7", en: "Infusion", fixed: "5 mg/h, \u21912.5 mg/h \u03BA\u03AC\u03B8\u03B5 5\u201315 min (max 15 mg/h)", fixedEn: "5 mg/h, \u21912.5 mg/h every 5\u201315 min (max 15 mg/h)" }],
@@ -469,6 +504,7 @@ const DRUGS = [
   },
   {
     id: "gtn",
+    synEl: "\u03BD\u03B9\u03C4\u03C1\u03BF\u03B3\u03BB\u03C5\u03BA\u03B5\u03C1\u03AF\u03BD\u03B7 \u03BD\u03B9\u03C4\u03C1\u03CE\u03B4\u03B7 \u03C4\u03C1\u03B9\u03BD\u03B9\u03C4\u03C1\u03B9\u03BA\u03AE \u03B3\u03BB\u03C5\u03BA\u03B5\u03C1\u03AF\u03BD\u03B7",
     name: "Glyceryl trinitrate (GTN)",
     cat: "antihtn",
     doses: [{ el: "\u0388\u03B3\u03C7\u03C5\u03C3\u03B7", en: "Infusion", fixed: "5\u2013200 \xB5g/min, \u03C4\u03B9\u03C4\u03BB\u03BF\u03C0\u03BF\u03AF\u03B7\u03C3\u03B7", fixedEn: "5\u2013200 \u00B5g/min, titrate" }],
@@ -479,6 +515,7 @@ const DRUGS = [
   },
   {
     id: "snp",
+    synEl: "\u03BD\u03B9\u03C4\u03C1\u03BF\u03C0\u03C1\u03BF\u03C5\u03C3\u03C3\u03B9\u03BA\u03CC \u03BD\u03AC\u03C4\u03C1\u03B9\u03BF",
     name: "Sodium nitroprusside",
     cat: "antihtn",
     doses: [{ el: "\u0388\u03B3\u03C7\u03C5\u03C3\u03B7", en: "Infusion", lo: 0.3, hi: 10, unit: "mcg/kg/min", max: null }],
@@ -489,6 +526,7 @@ const DRUGS = [
   },
   {
     id: "clonidine",
+    synEl: "\u03BA\u03BB\u03BF\u03BD\u03B9\u03B4\u03AF\u03BD\u03B7",
     name: "Clonidine",
     cat: "antihtn",
     doses: [{ el: "IV (\u03B1\u03C1\u03B3\u03CC, 10 min)", en: "IV (slow, 10 min)", lo: 1, hi: 2, unit: "mcg/kg", max: 150 }],
@@ -499,6 +537,7 @@ const DRUGS = [
   },
   {
     id: "dexmedetomidine",
+    synEl: "\u03B4\u03B5\u03BE\u03BC\u03B5\u03B4\u03B5\u03C4\u03BF\u03BC\u03B9\u03B4\u03AF\u03BD\u03B7",
     name: "Dexmedetomidine",
     cat: "sedation",
     doses: [
@@ -512,6 +551,7 @@ const DRUGS = [
   },
   {
     id: "lidocaine",
+    synEl: "\u03BB\u03B9\u03B4\u03BF\u03BA\u03B1\u0390\u03BD\u03B7 \u03BE\u03C5\u03BB\u03BF\u03BA\u03B1\u0390\u03BD\u03B7",
     name: "Lidocaine",
     cat: "local",
     doses: [
@@ -526,6 +566,7 @@ const DRUGS = [
   },
   {
     id: "ropivacaine",
+    synEl: "\u03C1\u03BF\u03C0\u03B9\u03B2\u03B1\u03BA\u03B1\u0390\u03BD\u03B7",
     name: "Ropivacaine",
     cat: "local",
     doses: [{ el: "\u039C\u03AD\u03B3\u03B9\u03C3\u03C4\u03B7 \u03B4\u03CC\u03C3\u03B7", en: "Max dose", lo: 3, hi: 3, unit: "mg/kg", max: 225 }],
@@ -536,6 +577,7 @@ const DRUGS = [
   },
   {
     id: "bupivacaine",
+    synEl: "\u03BC\u03C0\u03BF\u03C5\u03C0\u03B9\u03B2\u03B1\u03BA\u03B1\u0390\u03BD\u03B7",
     name: "Bupivacaine",
     cat: "local",
     doses: [{ el: "\u039C\u03AD\u03B3\u03B9\u03C3\u03C4\u03B7 \u03B4\u03CC\u03C3\u03B7", en: "Max dose", lo: 2, hi: 2.5, unit: "mg/kg", max: 175 }],
@@ -546,6 +588,7 @@ const DRUGS = [
   },
   {
     id: "ondansetron",
+    synEl: "\u03BF\u03BD\u03B4\u03B1\u03BD\u03C3\u03B5\u03C4\u03C1\u03CC\u03BD\u03B7",
     name: "Ondansetron",
     cat: "antiemetic",
     doses: [{ el: "\u03A0\u03C1\u03BF\u03C6\u03CD\u03BB\u03B1\u03BE\u03B7 PONV", en: "PONV prophylaxis", lo: 0.1, hi: 0.1, unit: "mg/kg", max: 4 }],
@@ -556,6 +599,7 @@ const DRUGS = [
   },
   {
     id: "metoclopramide",
+    synEl: "\u03BC\u03B5\u03C4\u03BF\u03BA\u03BB\u03BF\u03C0\u03C1\u03B1\u03BC\u03AF\u03B4\u03B7",
     name: "Metoclopramide",
     cat: "antiemetic",
     doses: [{ el: "\u0391\u03BD\u03C4\u03B9\u03B5\u03BC\u03B5\u03C4\u03B9\u03BA\u03CC", en: "Antiemetic", fixed: "10 mg IV (\u03C0\u03B1\u03B9\u03B4\u03B9\u03AC 0.15 mg/kg)", fixedEn: "10 mg IV (children 0.15 mg/kg)" }],
@@ -566,6 +610,7 @@ const DRUGS = [
   },
   {
     id: "droperidol",
+    synEl: "\u03B4\u03C1\u03BF\u03C0\u03B5\u03C1\u03B9\u03B4\u03CC\u03BB\u03B7",
     name: "Droperidol",
     cat: "antiemetic",
     doses: [{ el: "\u03A0\u03C1\u03BF\u03C6\u03CD\u03BB\u03B1\u03BE\u03B7 PONV", en: "PONV prophylaxis", fixed: "0.625\u20131.25 mg IV" }],
@@ -576,6 +621,7 @@ const DRUGS = [
   },
   {
     id: "dexamethasone",
+    synEl: "\u03B4\u03B5\u03BE\u03B1\u03BC\u03B5\u03B8\u03B1\u03B6\u03CC\u03BD\u03B7",
     name: "Dexamethasone",
     cat: "antiemetic",
     doses: [{ el: "PONV / \u03B1\u03BD\u03B1\u03BB\u03B3\u03B7\u03C3\u03AF\u03B1", en: "PONV / analgesia", lo: 0.1, hi: 0.15, unit: "mg/kg", max: 8 }],
@@ -586,6 +632,7 @@ const DRUGS = [
   },
   {
     id: "paracetamol",
+    synEl: "\u03C0\u03B1\u03C1\u03B1\u03BA\u03B5\u03C4\u03B1\u03BC\u03CC\u03BB\u03B7",
     name: "Paracetamol",
     cat: "adjunct",
     doses: [
@@ -599,6 +646,7 @@ const DRUGS = [
   },
   {
     id: "parecoxib",
+    synEl: "\u03C0\u03B1\u03C1\u03B5\u03BA\u03BF\u03BE\u03AF\u03BC\u03C0\u03B7",
     name: "Parecoxib (Dynastat)",
     cat: "adjunct",
     doses: [{ el: "IV/IM", en: "IV/IM", fixed: "40 mg, \u03BC\u03B5\u03C4\u03AC 20\u201340 mg q6\u201312h (max 80 mg/24h)", fixedEn: "40 mg, then 20\u201340 mg q6\u201312h (max 80 mg/24h)" }],
@@ -609,6 +657,7 @@ const DRUGS = [
   },
   {
     id: "ketorolac",
+    synEl: "\u03BA\u03B5\u03C4\u03BF\u03C1\u03BF\u03BB\u03AC\u03BA\u03B7",
     name: "Ketorolac",
     cat: "adjunct",
     doses: [{ el: "IV/IM", en: "IV/IM", fixed: "10\u201330 mg q6h (max 90 mg/24h\xB7 >65y \u03AE <50kg: 60 mg/24h)", fixedEn: "10\u201330 mg q6h (max 90 mg/24h\u00B7 >65y or <50kg: 60 mg/24h)" }],
@@ -619,6 +668,7 @@ const DRUGS = [
   },
   {
     id: "diclofenac_ad",
+    synEl: "\u03B4\u03B9\u03BA\u03BB\u03BF\u03C6\u03B5\u03BD\u03AC\u03BA\u03B7",
     name: "Diclofenac",
     cat: "adjunct",
     doses: [{ el: "IV/IM/PO/PR", en: "IV/IM/PO/PR", fixed: "50 mg q8h \u03AE 75 mg q12h (max 150 mg/24h)", fixedEn: "50 mg q8h or 75 mg q12h (max 150 mg/24h)" }],
@@ -629,6 +679,7 @@ const DRUGS = [
   },
   {
     id: "ibuprofen_ad",
+    synEl: "\u03B9\u03B2\u03BF\u03C5\u03C0\u03C1\u03BF\u03C6\u03AD\u03BD\u03B7",
     name: "Ibuprofen",
     cat: "adjunct",
     doses: [{ el: "PO / IV", en: "PO / IV", fixed: "400 mg q6\u20138h (max 2.4 g/24h PO\xB7 1.2 g IV)" }],
@@ -639,6 +690,7 @@ const DRUGS = [
   },
   {
     id: "lornoxicam",
+    synEl: "\u03BB\u03BF\u03C1\u03BD\u03BF\u03BE\u03B9\u03BA\u03AC\u03BC\u03B7",
     name: "Lornoxicam (Xefo)",
     cat: "adjunct",
     doses: [{ el: "IV/IM/PO", en: "IV/IM/PO", fixed: "8 mg q12h (max 16 mg/24h)" }],
@@ -649,6 +701,7 @@ const DRUGS = [
   },
   {
     id: "magnesium",
+    synEl: "\u03BC\u03B1\u03B3\u03BD\u03AE\u03C3\u03B9\u03BF",
     name: "Magnesium sulfate",
     cat: "adjunct",
     doses: [
@@ -664,6 +717,7 @@ const DRUGS = [
   },
   {
     id: "glycopyrrolate",
+    synEl: "\u03B3\u03BB\u03C5\u03BA\u03BF\u03C0\u03C5\u03C1\u03C1\u03BF\u03BB\u03AC\u03C4\u03B9\u03BF \u03B3\u03BB\u03C5\u03BA\u03BF\u03C0\u03C5\u03C1\u03C1\u03BF\u03BB\u03AC\u03C4\u03B7",
     name: "Glycopyrrolate",
     cat: "adjunct",
     doses: [
@@ -677,6 +731,7 @@ const DRUGS = [
   },
   {
     id: "ketamine_analgesic",
+    synEl: "\u03BA\u03B5\u03C4\u03B1\u03BC\u03AF\u03BD\u03B7 \u03B1\u03BD\u03B1\u03BB\u03B3\u03B7\u03C4\u03B9\u03BA\u03AE",
     name: "Ketamine (analgesic)",
     cat: "adjunct",
     doses: [
@@ -690,6 +745,7 @@ const DRUGS = [
   },
   {
     id: "lidocaine_iv",
+    synEl: "\u03BB\u03B9\u03B4\u03BF\u03BA\u03B1\u0390\u03BD\u03B7 \u03B5\u03BD\u03B4\u03BF\u03C6\u03BB\u03AD\u03B2\u03B9\u03B1",
     name: "Lidocaine IV (systemic)",
     cat: "adjunct",
     doses: [
@@ -703,6 +759,7 @@ const DRUGS = [
   },
   {
     id: "txa",
+    synEl: "\u03C4\u03C1\u03B1\u03BD\u03B5\u03BE\u03B1\u03BC\u03B9\u03BA\u03CC \u03BF\u03BE\u03CD",
     name: "Tranexamic acid",
     cat: "hemostatic",
     doses: [{ el: "\u03A6\u03CC\u03C1\u03C4\u03B9\u03C3\u03B7", en: "Loading", lo: 10, hi: 15, unit: "mg/kg", max: 1e3 }],
@@ -713,6 +770,7 @@ const DRUGS = [
   },
   {
     id: "dantrolene",
+    synEl: "\u03B4\u03B1\u03BD\u03C4\u03C1\u03BF\u03BB\u03AD\u03BD\u03B9\u03BF",
     name: "Dantrolene",
     cat: "emergency",
     doses: [{ el: "\u039A\u03B1\u03BA\u03BF\u03AE\u03B8\u03B7\u03C2 \u03A5\u03C0\u03B5\u03C1\u03C0\u03C5\u03C1\u03B5\u03BE\u03AF\u03B1", en: "Malignant Hyperthermia", lo: 2.5, hi: 8, unit: "mg/kg", max: null }],
@@ -723,6 +781,7 @@ const DRUGS = [
   },
   {
     id: "intralipid",
+    synEl: "\u03B3\u03B1\u03BB\u03AC\u03BA\u03C4\u03C9\u03BC\u03B1 \u03BB\u03B9\u03C0\u03B9\u03B4\u03AF\u03C9\u03BD",
     name: "Intralipid 20% (LAST)",
     cat: "emergency",
     doses: [
@@ -737,6 +796,7 @@ const DRUGS = [
   // ---------- Αιμοστατικά ----------
   {
     id: "fibrinogen",
+    synEl: "\u03B9\u03BD\u03C9\u03B4\u03BF\u03B3\u03CC\u03BD\u03BF",
     name: "Fibrinogen concentrate",
     cat: "hemostatic",
     doses: [
@@ -750,6 +810,7 @@ const DRUGS = [
   },
   {
     id: "pcc",
+    synEl: "\u03C3\u03C5\u03BC\u03C0\u03CD\u03BA\u03BD\u03C9\u03BC\u03B1 \u03C0\u03C1\u03BF\u03B8\u03C1\u03BF\u03BC\u03B2\u03AF\u03BD\u03B7\u03C2",
     name: "Prothrombin complex concentrate (4F-PCC)",
     cat: "hemostatic",
     doses: [
@@ -765,6 +826,7 @@ const DRUGS = [
   },
   {
     id: "desmopressin",
+    synEl: "\u03B4\u03B5\u03C3\u03BC\u03BF\u03C0\u03C1\u03B5\u03C3\u03C3\u03AF\u03BD\u03B7",
     name: "Desmopressin (DDAVP)",
     cat: "hemostatic",
     doses: [{ el: "IV (\u03C3\u03B5 20\u201330 min)", en: "IV (over 20\u201330 min)", lo: 0.3, hi: 0.3, unit: "mcg/kg", max: 20 }],
@@ -776,6 +838,7 @@ const DRUGS = [
   // ---------- Αντίδοτα DOAC ----------
   {
     id: "idarucizumab",
+    synEl: "\u03B9\u03B4\u03B1\u03C1\u03BF\u03C5\u03C3\u03B9\u03B6\u03BF\u03C5\u03BC\u03AC\u03BC\u03B7",
     name: "Idarucizumab (Praxbind)",
     cat: "hemostatic",
     doses: [{ el: "\u0391\u03BD\u03B1\u03C3\u03C4\u03C1\u03BF\u03C6\u03AE dabigatran", en: "Dabigatran reversal", fixed: "5 g IV (2 \xD7 2.5 g, \u226415 min \u03BC\u03B5\u03C4\u03B1\u03BE\u03CD)", fixedEn: "5 g IV (2 \u00D7 2.5 g, \u226415 min apart)" }],
@@ -786,6 +849,7 @@ const DRUGS = [
   },
   {
     id: "andexanet",
+    synEl: "\u03B1\u03BD\u03C4\u03B5\u03BE\u03B1\u03BD\u03AD\u03C4\u03B7",
     name: "Andexanet alfa (Ondexxya)",
     cat: "hemostatic",
     doses: [
@@ -800,6 +864,7 @@ const DRUGS = [
   // ---------- Inodilators ----------
   {
     id: "milrinone",
+    synEl: "\u03BC\u03B9\u03BB\u03C1\u03B9\u03BD\u03CC\u03BD\u03B7",
     name: "Milrinone",
     cat: "vasoactive",
     doses: [
@@ -813,6 +878,7 @@ const DRUGS = [
   },
   {
     id: "levosimendan",
+    synEl: "\u03BB\u03B5\u03B2\u03BF\u03C3\u03B9\u03BC\u03B5\u03BD\u03B4\u03AC\u03BD\u03B7",
     name: "Levosimendan",
     cat: "vasoactive",
     doses: [
